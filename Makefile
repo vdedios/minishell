@@ -38,6 +38,9 @@ fclean: 		clean
 				make -C $(LIB_DIR) fclean
 				$(RM) $(NAME)
 
-re: fclean all
+re: 			fclean all
+
+run:			
+				./minishell
 
 .PHONY: all clean fclean re
