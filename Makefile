@@ -2,13 +2,14 @@ NAME=minishell
 
 CC=gcc
 RM = rm -rf
-CFLAGS=-Wall -Wextra -Werror
+CFLAGS=-g -Wall -Wextra -Werror
 LFLAGS=-I includes/
 
 SRC_FILES =		main.c \
-				get_next_line_bonus.c \
-				get_next_line_utils_bonus.c \
-				parser.c
+				get_next_line.c \
+				get_next_line_utils.c \
+				parser.c \
+				search.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs

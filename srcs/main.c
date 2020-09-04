@@ -1,20 +1,10 @@
 #include "minishell.h"
 
-static char 	*get_path(char **args, char **env)
-{
-	(void)args;
-	(void)env;
-	char *path;
-	
-	path = "/bin/ls";
-	return (path);		
-}
-
 static int		run_command(char **args, char **env)
 {
 	char 	*path;
 	
-	path = get_path(args, env);
+	path = ft_strjoin(get_path(args[0], env), args[0]);
 	if (fork() == 0)
 		execve(path, args, env);
 	wait(NULL);
