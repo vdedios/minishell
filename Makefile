@@ -9,7 +9,10 @@ SRC_FILES =		main.c \
 				get_next_line.c \
 				get_next_line_utils.c \
 				parser.c \
-				search.c
+				search.c \
+				ft_env.c \
+				ft_cd.c \
+				signals.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
@@ -22,22 +25,22 @@ OBJS=$(OBJ_FILES:%=$(OBJ_DIR)/%)
 all: 			$(OBJ_DIR) $(NAME)
 
 $(OBJ_DIR):		
-				mkdir -p $(OBJ_DIR)
+				@mkdir -p $(OBJ_DIR)
 
 $(NAME): 		$(OBJS)
-				make -C $(LIB_DIR)
-				$(CC) $(CFLAGS) $(LFLAGS) -Llibft -lft $(OBJS) -o $(NAME)
+				@make -C $(LIB_DIR)
+				@$(CC) $(CFLAGS) $(LFLAGS) -Llibft -lft $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
-				$(CC) $(LFLAGS) $(CFLAGS) -c $< -o $@
+				@$(CC) $(LFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:	
-				make -C $(LIB_DIR) clean
-				$(RM) $(OBJ_DIR)
+				@make -C $(LIB_DIR) clean
+				@$(RM) $(OBJ_DIR)
 
 fclean: 		clean
-				make -C $(LIB_DIR) fclean
-				$(RM) $(NAME)
+				@make -C $(LIB_DIR) fclean
+				@$(RM) $(NAME)
 
 re: 			fclean all
 

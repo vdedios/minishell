@@ -13,50 +13,62 @@ static int		run_command(char **args, char **env)
 
 static int		check_builtin(char **args, char **env)
 {
-	/*if (ft_strcmp(*args, "echo"))
+	char cwd[1024];
+
+	if (ft_strncmp(*args, "echo", ft_strlen("echo")) == 0)
+		return (0);
+	else if (ft_strncmp(*args, "cd", ft_strlen("cd")) == 0)
+		return (ft_cd(args[1]));
+	else if(ft_strncmp(*args, "pwd", ft_strlen("pwd")) == 0)
 	{
-		
+		if (getcwd(cwd, sizeof(cwd)) != NULL)
+			ft_putendl_fd(cwd, 1);
+		return (1);
 	}
-	else if (ft_strcmp(*args, "cd"))
+	else if (ft_strncmp(*args, "export", ft_strlen("export")) == 0)
+		return (0);
+	else if (ft_strncmp(*args, "unset", ft_strlen("unset")) == 0)
+		return (0);
+	else if (ft_strncmp(*args, "env", ft_strlen("env")) == 0)
+		return (ft_env(env));
+	else if (ft_strncmp(*args, "exit", ft_strlen("exit")) == 0)
+		return (0);
+	else
+		return (run_command(args, env));
+}
+
+static int	run_commands(char **commands, char **env)
+{
+	char **args;
+	int status;
+	size_t it;
+	
+	it = 0;
+	while (commands[it])
 	{
-		
+		args = get_args(commands[it]);
+		status = check_builtin(args, env);
+		it++;
 	}
-	else if(ft_strcmp(*args, "pwd"))
-	{
-		
-	}
-	else if (ft_strcmp(*args, "export"))
-	{
-		
-	}
-	else if (ft_strcmp(*args, "unset"))
-	{
-		
-	}
-	else if (ft_strcmp(*args, "env"))
-	{
-		
-	}*/
-	//if (ft_strncmp(*args, "exit", ft_strlen("exit")))
-	//	return (0);
-	//else
-		run_command(args, env);
-	return (0);
+	return (status);
 }
 
 static void	minishell(char **env)
 {
 	int 	status;
 	char 	*line;
-	char 	**args;
+	char	**commands;
 
 	status = 1;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, signal_handler);
 	while (status)
 	{
 		ft_putstr_fd("minishell:\\>", 1);
 		get_next_line(0, &line);
-		args = get_args(line);
-		check_builtin(args, env);
+		commands = ft_split(line, ';');	
+		free(line);
+		status = run_commands(commands, env);
 		//status = ft_ctrld();
 	}
 }
