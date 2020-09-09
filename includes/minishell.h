@@ -13,6 +13,8 @@ char	*get_path(char *arg, char **env);
 int		ft_env(char **env);
 int		ft_cd(char *arg);
 int		ft_echo(char **args);
+int		ft_pwd();
+int		ft_unset(char *var, char **env);
 void	signal_handler(int signal);
 
 #endif

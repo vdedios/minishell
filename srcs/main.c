@@ -13,22 +13,16 @@ static int		run_command(char **args, char **env)
 
 static int		check_builtin(char **args, char **env)
 {
-	char cwd[1024];
-
 	if (ft_strncmp(*args, "echo", ft_strlen("echo")) == 0)
 		return (ft_echo(args));
 	else if (ft_strncmp(*args, "cd", ft_strlen("cd")) == 0)
 		return (ft_cd(args[1]));
 	else if(ft_strncmp(*args, "pwd", ft_strlen("pwd")) == 0)
-	{
-		if (getcwd(cwd, sizeof(cwd)) != NULL)
-			ft_putendl_fd(cwd, 1);
-		return (1);
-	}
+		return (ft_pwd());
 	else if (ft_strncmp(*args, "export", ft_strlen("export")) == 0)
 		return (0);
 	else if (ft_strncmp(*args, "unset", ft_strlen("unset")) == 0)
-		return (0);
+		return ft_unset(args[1], env);
 	else if (ft_strncmp(*args, "env", ft_strlen("env")) == 0)
 		return (ft_env(env));
 	else if (ft_strncmp(*args, "exit", ft_strlen("exit")) == 0)
