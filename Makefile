@@ -12,6 +12,7 @@ SRC_FILES =		main.c \
 				search.c \
 				ft_env.c \
 				ft_cd.c \
+				ft_echo.c \
 				signals.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)

@@ -16,7 +16,7 @@ static int		check_builtin(char **args, char **env)
 	char cwd[1024];
 
 	if (ft_strncmp(*args, "echo", ft_strlen("echo")) == 0)
-		return (0);
+		return (ft_echo(args));
 	else if (ft_strncmp(*args, "cd", ft_strlen("cd")) == 0)
 		return (ft_cd(args[1]));
 	else if(ft_strncmp(*args, "pwd", ft_strlen("pwd")) == 0)

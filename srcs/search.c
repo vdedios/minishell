@@ -27,14 +27,20 @@ static char *in_path(char *binary, char *path, size_t len)
 
 static char *check_binary(char *binary, char **paths)
 {
-	char *path;
-	size_t it;
+	char 		*path;
+	size_t 		it;
+	struct stat s;
 	
 	it = 0;
 	while (paths[it])
 	{
 		if ((path = in_path(binary, paths[it], ft_strlen(paths[it]))))
-			return (path);
+		{
+			if (lstat(path, &s) == -1)
+				free(path);
+			else
+				return (path);
+		}
 		it++;
 	}
 	return (NULL);
