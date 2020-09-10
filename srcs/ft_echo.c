@@ -9,12 +9,8 @@ int		ft_echo(char **args)
 	end = ft_strdup("\n");
 	args++;
 	it = 0;
-	if ((*args)[it] == '-' && (*args)[it + 1] == 'n')
-	{
-		free(end);
+	if (*args && (*args)[it++] == '-' && (*args++)[it] == 'n')
 		end = NULL;
-		args++;
-	}
 	while (*args)
 	{
 		len = ft_strlen(*args);

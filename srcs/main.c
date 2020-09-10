@@ -59,7 +59,14 @@ static void	minishell(char **env)
 	while (status)
 	{
 		ft_putstr_fd("minishell:\\>", 1);
-		get_next_line(0, &line);
+		if (!(get_next_line(0, &line)))
+		{
+			if (!line[0])
+			{
+				ft_putendl_fd("exit", 1);
+				exit(0);
+			}
+		}	
 		commands = ft_split(line, ';');	
 		free(line);
 		status = run_commands(commands, env);
