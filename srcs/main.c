@@ -3,8 +3,16 @@
 static int		run_command(char **args, char **env)
 {
 	char 	*path;
-	
-	path = ft_strjoin(get_path(args[0], env), args[0]);
+	char	*value;
+	char	**paths;
+	char 	*bin;	
+
+	value 	= get_env(env, "PATH");
+	paths 	= ft_split(value, ':');  
+	path	= search_binary(args[0], paths);
+	bin 	= ft_strjoin("/", args[0]);
+	path 	= ft_strjoin(path, bin);
+
 	if (fork() == 0)
 		execve(path, args, env);
 	wait(NULL);
@@ -16,7 +24,7 @@ static int		check_builtin(char **args, char **env)
 	if (ft_strncmp(*args, "echo", ft_strlen("echo")) == 0)
 		return (ft_echo(args));
 	else if (ft_strncmp(*args, "cd", ft_strlen("cd")) == 0)
-		return (ft_cd(args[1]));
+		return (ft_cd(args[1], env));
 	else if(ft_strncmp(*args, "pwd", ft_strlen("pwd")) == 0)
 		return (ft_pwd());
 	else if (ft_strncmp(*args, "export", ft_strlen("export")) == 0)
@@ -70,7 +78,6 @@ static void	minishell(char **env)
 		commands = ft_split(line, ';');	
 		free(line);
 		status = run_commands(commands, env);
-		//status = ft_ctrld();
 	}
 }
 
