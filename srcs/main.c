@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 10:18:25 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/12 11:50:38 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static int		run_commands(char **commands, char **env)
 	size_t	it;
 
 	it = 0;
+	status = 1;
 	while (commands[it])
 	{
 		args = get_args(commands[it]);
@@ -78,13 +79,10 @@ static void		minishell(char **env)
 	while (status)
 	{
 		ft_putstr_fd("minishell:\\>", 1);
-		if (!(get_next_line(0, &line)))
+		if (get_next_line(0, &line) == 0)
 		{
-			if (!line[0])
-			{
-				ft_putendl_fd("exit", 1);
-				exit(0);
-			}
+			ft_putendl_fd("exit\n", 1);
+			exit(0);
 		}
 		commands = ft_split(line, ';');
 		free(line);
