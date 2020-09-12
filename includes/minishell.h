@@ -8,6 +8,12 @@
 # include <signal.h>
 # include "get_next_line_bonus.h"
 
+typedef struct	s_shell{
+	char		**commands;
+	char		**args;
+	char		**env;
+}				t_shell;
+
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
