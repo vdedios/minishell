@@ -11,7 +11,7 @@
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
-int		ft_env(char **env);
+int		ft_env(char **args, char **env);
 int		ft_cd(char **arg, char **env);
 int		ft_echo(char **args);
 int		ft_pwd();

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 13:14:20 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/12 13:40:19 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int		check_builtin(char **args, char **env)
 	else if (!ft_strncmp(*args, "unset", ft_strlen("unset")))
 		return (ft_unset(args[1], env));
 	else if (!ft_strncmp(*args, "env", ft_strlen("env")))
-		return (ft_env(env));
+		return (ft_env(args + 1, env));
 	else if (!ft_strncmp(*args, "exit", ft_strlen("exit")))
 		return (ft_exit(args + 1));
 	else
