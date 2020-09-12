@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
+/*   Updated: 2020/09/12 11:14:53 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int		ft_unset(char *var, char **env)
@@ -12,10 +24,9 @@ int		ft_unset(char *var, char **env)
 		if (ft_strncmp(var, env[it], len) == 0)
 			break ;
 		it++;
-	}	
+	}
 	if (env[it])
 	{
-		//free(env[it]);
 		env[it] = NULL;
 		it++;
 		while (env[it])

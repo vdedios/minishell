@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   search.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
+/*   Updated: 2020/09/12 10:08:22 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char *search_binary(char *binary, char **paths)
+char	*search_binary(char *binary, char **paths)
 {
-	size_t 			it;
-	struct stat 	s;
+	size_t			it;
+	struct stat		s;
 	struct dirent	*direntp;
-	DIR				*pdir;	
+	DIR				*pdir;
 
 	it = -1;
 	while (paths[++it])
@@ -16,23 +28,23 @@ char *search_binary(char *binary, char **paths)
 				return (NULL);
 			while ((direntp = readdir(pdir)))
 			{
-				if (ft_strncmp(direntp->d_name, binary, ft_strlen(binary) + 1) == 0)
+				if (!ft_strncmp(direntp->d_name, binary, ft_strlen(binary) + 1))
 				{
 					closedir(pdir);
 					return (paths[it]);
 				}
 				direntp++;
 			}
-		}		
+		}
 	}
 	return (NULL);
 }
 
-char *get_env(char **env, char *arg)
+char	*get_env(char **env, char *arg)
 {
 	size_t it;
 	size_t len;
-	
+
 	len = ft_strlen(arg);
 	it = 0;
 	while (env[it])
