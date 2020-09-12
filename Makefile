@@ -15,6 +15,7 @@ SRC_FILES =		main.c \
 				ft_echo.c \
 				ft_pwd.c \
 				ft_unset.c \
+				ft_exit.c \
 				signals.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)

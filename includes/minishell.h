@@ -16,6 +16,7 @@ int		ft_cd(char **arg, char **env);
 int		ft_echo(char **args);
 int		ft_pwd();
 int		ft_unset(char *var, char **env);
+int		ft_exit(char **exit);
 void	signal_handler(int signal);
 
 #endif

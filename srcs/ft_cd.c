@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 10:58:43 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/12 12:40:30 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		ft_cd(char **args, char **env)
 {
 	char	*path;
 
-	if (!args[0] || !ft_strncmp(args[0], "--", 3))
+	if (!args[0] || !ft_strncmp(args[0], "--", 3) || !ft_strncmp(args[0], "~", 2))
 		path = get_env(env, "HOME");
 	else if (!ft_strncmp(args[0], "-", 2))
 		path = get_env(env, "OLDPWD");

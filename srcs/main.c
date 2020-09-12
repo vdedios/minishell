@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 11:50:38 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/12 13:14:20 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int		check_builtin(char **args, char **env)
 	else if (!ft_strncmp(*args, "env", ft_strlen("env")))
 		return (ft_env(env));
 	else if (!ft_strncmp(*args, "exit", ft_strlen("exit")))
-		return (0);
+		return (ft_exit(args + 1));
 	else
 		return (run_command(args, env));
 }
