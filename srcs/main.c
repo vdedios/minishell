@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 22:30:35 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/13 18:59:53 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,13 @@ static int		run_command(t_shell *shell)
 	bin = ft_strjoin("/", shell->args[0]);
 	path = ft_strjoin(path, bin);
 	if (fork() == 0)
+	{
 		execve(path, shell->args, shell->env);
+		ft_putstr_fd("minishell: command not found ", 1);
+		ft_putstr_fd(bin, 1);
+		ft_putstr_fd("\n", 1);
+		exit(0);
+	}
 	wait(NULL);
 	return (1);
 }
@@ -39,7 +45,7 @@ static int		check_builtin(t_shell *shell)
 	else if (!ft_strncmp(*shell->args, "pwd", ft_strlen("pwd")))
 		return (ft_pwd());
 	else if (!ft_strncmp(*shell->args, "export", ft_strlen("export")))
-		return (1);
+		return (ft_export(shell->args + 1, shell));
 	else if (!ft_strncmp(*shell->args, "unset", ft_strlen("unset")))
 		return (ft_unset(shell->args[1], shell->env));
 	else if (!ft_strncmp(*shell->args, "env", ft_strlen("env")))
@@ -57,6 +63,7 @@ static void		run_commands(t_shell *shell)
 	while (shell->commands[it])
 	{
 		shell->args = get_args(shell->commands[it]);
+		expand_var(shell);
 		if (!check_builtin(shell))
 			run_command(shell);
 		it++;
@@ -72,9 +79,9 @@ static void		minishell(t_shell *shell)
 	while (1)
 	{
 		ft_putstr_fd("$:\\>", 1);
-		if (get_next_line(0, &line) == 0)
+		if (get_next_line(&line) == 0)
 		{
-			ft_putendl_fd("exit\n", 1);
+			ft_putendl_fd("exit", 1);
 			exit(0);
 		}
 		shell->commands = ft_split(line, ';');
@@ -85,10 +92,10 @@ static void		minishell(t_shell *shell)
 
 int				main(int argc, char **argv, char **envp)
 {
+	t_shell	*shell;
+
 	(void)argc;
 	(void)argv;
-	t_shell	*shell;
-	
 	shell = ft_calloc(sizeof(t_shell), sizeof(shell));
 	shell->env = envp;
 	minishell(shell);

@@ -1,58 +1,46 @@
-#include "get_next_line_bonus.h"
+#include <stdlib.h>
+#include <unistd.h>
 
-static int	ft_remain(char **remain_str, char **line)
+char	*add_char(char *line, char buffer)
 {
-	if (*line)
+	char	*output;
+	int		l;
+
+	l = 0;
+	while (line && line[l])
+		l++;
+	if (!(output = malloc((l + 2) * sizeof(char))))
+		return (NULL);
+	l = 0;
+	while (line && line[l])
 	{
-		if (ft_analyse(*line))
-		{
-			ft_free_memory(remain_str);
-			*remain_str = ft_cut_line("", line);
-			return (1);
-		}
+		output[l] = line[l];
+		l++;
 	}
-	else
-		*line = ft_realloc_content("", "");
-	ft_free_memory(remain_str);	
-	return (0);
+	output[l] = buffer;
+	output[l + 1] = '\0';
+	free(line);
+	return (output);
 }
 
-static	int	ft_keep_reading(ssize_t rd_status, char *buffer, 
-		char **remain_str, char **line)
+int		get_next_line(char **line)
 {
-	char *aux_free;
+	int		output;
+	char	buffer;
 
-	buffer[rd_status] = '\0';
-	if (ft_analyse(buffer))
+	if (!(*line = malloc(sizeof(char))))
+		return (-1);
+	**line = '\0';
+	buffer = 0;
+	output = 1;
+	while (output)
 	{
-		ft_free_memory(remain_str);
-		*remain_str = ft_cut_line(buffer, line);
-		ft_free_memory(&buffer);
-		return (1);
+		if ((output = read(0, &buffer, 1)) == -1)
+			return (-1);
+		if (buffer == '\n')
+			break ;
+		if (!(*line = add_char(*line, buffer)))
+			return (-1);
 	}
-	aux_free = *line;
-	*line = ft_realloc_content(*line, buffer);
-	ft_free_memory(&aux_free);
-	return (0);
-}
-
-int	get_next_line(int fd, char **line)
-{
-	ssize_t		rd_status;
-	char		*buffer;
-	static char 	*remain_str[4096];
-
-	if (!line)
-		return (-1);
-	*line = ft_realloc_content(remain_str[fd], "");
-	rd_status = 0;
-	if(!(buffer = malloc((BUFFER_SIZE + 1) * sizeof(char))))
-		return (-1);
-	while ((rd_status = read(fd, buffer, BUFFER_SIZE)) > 0)
-		if (ft_keep_reading(rd_status, buffer, &remain_str[fd], line))
-			return (1);
-	ft_free_memory(&buffer);
-	if (rd_status < 0)
-		return (-1);
-	return (ft_remain(&remain_str[fd], line));
+	return (output);
 }

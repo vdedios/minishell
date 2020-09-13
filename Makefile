@@ -7,7 +7,6 @@ LFLAGS=-I includes/
 
 SRC_FILES =		main.c \
 				get_next_line.c \
-				get_next_line_utils.c \
 				parser.c \
 				search.c \
 				ft_env.c \
@@ -15,8 +14,10 @@ SRC_FILES =		main.c \
 				ft_echo.c \
 				ft_pwd.c \
 				ft_unset.c \
+				ft_export.c \
 				ft_exit.c \
-				signals.c
+				signals.c \
+				utils.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
