@@ -39,6 +39,7 @@ SRC	=	 ft_atoi.c 			\
 			 ft_strrchr.c 		\
 			 ft_strncmp.c 		\
 			 ft_strmapi.c 		\
+			 ft_strcmp.c 		\
 			 ft_strnstr.c
 
 BONUS	 =	 ft_lstadd_front_bonus.c 	\

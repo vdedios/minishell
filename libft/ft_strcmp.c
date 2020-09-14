@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   strcmp.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 12:13:13 by vde-dios         ###   ########.fr       */
+/*   Created: 2020/09/14 12:36:59 by vde-dios          #+#    #+#             */
+/*   Updated: 2020/09/14 12:37:38 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 
-int		ft_exit(char **args)
+/*
+** Compare if s1 is a exact copy of s2
+*/
+
+#include "libft.h"
+
+size_t	ft_strcmp(char *s1, char *s2)
 {
-	int value;
-
-	if (!args[0])
-		value = 0;
-	else
-		value = ft_atoi(args[0]);
-	exit(value);
-	//exit devuelve algo?
+	while (*s2)
+	{
+		if (*s1 != *s2)
+			return (0);
+		s1++;
+		s2++;
+	}
+	if (*s1 != *s2)
+		return (0);
+	return (1);
 }

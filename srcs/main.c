@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 11:23:02 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/14 12:42:19 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static int		run_command(t_shell *shell)
 	char	**paths;
 	char	*bin;
 
+	//bin = NULL;
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
@@ -38,24 +39,28 @@ static int		run_command(t_shell *shell)
 		exit(0);
 	}
 	wait(&shell->stat_loc);
+	//liberar memoria
+	//free(bin)
+	//free(path)
 	return (1);
 }
 
 static int		check_builtin(t_shell *shell)
 {
-	if (!ft_strncmp(*shell->args, "echo", ft_strlen("echo")))
+	if (!ft_strcmp(*shell->args, "echo"))
 		return (ft_echo(shell->args + 1));
-	else if (!ft_strncmp(*shell->args, "cd", ft_strlen("cd")))
+	else if (!ft_strcmp(*shell->args, "cd"))
 		return (ft_cd(shell->args + 1, shell->env));
-	else if (!ft_strncmp(*shell->args, "pwd", ft_strlen("pwd")))
+	else if (!ft_strcmp(*shell->args, "pwd"))
 		return (ft_pwd());
-	else if (!ft_strncmp(*shell->args, "export", ft_strlen("export")))
+	else if (!ft_strcmp(*shell->args, "export"))
+		//Cambiar y pasar solo shell
 		return (ft_export(shell->args + 1, shell));
-	else if (!ft_strncmp(*shell->args, "unset", ft_strlen("unset")))
+	else if (!ft_strcmp(*shell->args, "unset"))
 		return (ft_unset(shell->args[1], shell->env));
-	else if (!ft_strncmp(*shell->args, "env", ft_strlen("env")))
+	else if (!ft_strcmp(*shell->args, "env"))
 		return (ft_env(shell->args + 1, shell->env));
-	else if (!ft_strncmp(*shell->args, "exit", ft_strlen("exit")))
+	else if (!ft_strcmp(*shell->args, "exit"))
 		return (ft_exit(shell->args + 1));
 	return (0);
 }
@@ -97,13 +102,11 @@ static void		minishell(t_shell *shell)
 
 int				main(int argc, char **argv, char **envp)
 {
-	t_shell	*shell;
+	t_shell	shell;
 
 	(void)argc;
 	(void)argv;
-	shell = ft_calloc(sizeof(t_shell), sizeof(shell));
-	shell->env = envp;
-	minishell(shell);
-	free(shell);
+	shell.env = envp;
+	minishell(&shell);
 	return (0);
 }

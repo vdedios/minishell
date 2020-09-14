@@ -34,21 +34,3 @@ char	**ft_strdup_matrix(char **envp)
 	tmp_envp[i] = NULL;
 	return (tmp_envp);
 }
-
-/*
-** Compare if s1 is a exact copy of s2
-*/
-
-size_t	ft_strcmp(char *s1, char *s2)
-{
-	while (*s2)
-	{
-		if (*s1 != *s2)
-			return (0);
-		s1++;
-		s2++;
-	}
-	if (*s1 != *s2)
-		return (0);
-	return (1);
-}
