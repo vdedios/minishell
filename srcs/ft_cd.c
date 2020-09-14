@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/13 19:58:44 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/14 10:07:51 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	set_path(char *path, const char *key, char **env)
 {
 	size_t len;
 	size_t it;
-	
+
 	len = ft_strlen(key) + 1;
 	it = 0;
 	while (env[it])
@@ -56,11 +56,12 @@ static void	change_dir(char *path, char **env)
 	}
 }
 
-int		ft_cd(char **args, char **env)
+int			ft_cd(char **args, char **env)
 {
 	char	*path;
 
-	if (!args[0] || !ft_strncmp(args[0], "--", 3) || !ft_strncmp(args[0], "~", 2))
+	if (!args[0] || !ft_strncmp(args[0], "--", 3) ||
+		!ft_strncmp(args[0], "~", 2))
 		path = get_env(env, "HOME");
 	else if (!ft_strncmp(args[0], "-", 2))
 		path = get_env(env, "OLDPWD");

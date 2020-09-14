@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/13 18:59:53 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/14 10:06:15 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int		run_command(t_shell *shell)
 		ft_putstr_fd("\n", 1);
 		exit(0);
 	}
-	wait(NULL);
+	wait(&shell->stat_loc);
 	return (1);
 }
 
@@ -99,5 +99,6 @@ int				main(int argc, char **argv, char **envp)
 	shell = ft_calloc(sizeof(t_shell), sizeof(shell));
 	shell->env = envp;
 	minishell(shell);
+	free(shell);
 	return (0);
 }

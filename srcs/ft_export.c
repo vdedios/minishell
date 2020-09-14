@@ -83,8 +83,8 @@ int		ft_export(char **command, t_shell *shell)
 			var = ft_strdup(*command);
 			while (shell->env[i] && !first_strnstr(shell->env[i], *command, ft_strlen(shell->env[i])))
 				i++;
-			if (shell->env[i - 2])
-				shell->env[i - 2] = var;
+			if (shell->env[i])
+				shell->env[i] = var;
 			else
 				shell->env = add_new_env(var, shell->env);
 		}
