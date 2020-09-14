@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 10:06:15 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/14 11:23:02 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@ static int		run_command(t_shell *shell)
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
-	bin = ft_strjoin("/", shell->args[0]);
-	path = ft_strjoin(path, bin);
+	if (path)
+	{
+		bin = ft_strjoin("/", shell->args[0]);
+		path = ft_strjoin(path, bin);
+	}
+	else
+		path = shell->args[0];
 	if (fork() == 0)
 	{
 		execve(path, shell->args, shell->env);
