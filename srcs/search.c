@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 12:10:37 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/14 13:15:03 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ char	*search_binary(char *binary, char **paths)
 		if (lstat(paths[it], &s) != -1 && (s.st_mode & S_IFDIR))
 		{
 			if (!(pdir = opendir(paths[it])))
-				return (NULL);
 			//Si no existe el path, se termina?
+				return (NULL);
 			while ((direntp = readdir(pdir)))
 			{
-				if (!ft_strncmp(direntp->d_name, binary, ft_strlen(binary) + 1))
+				if (ft_strcmp(direntp->d_name, binary))
 				{
 					closedir(pdir);
 					return (paths[it]);

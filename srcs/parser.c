@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:18:25 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/13 19:06:10 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/14 13:56:19 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,6 @@ char	**get_args(char *input)
 		return (NULL);
 	args = ft_split(input, ' ');
 	return (args);
-}
-
-char	*first_strnstr(const char *haystack, const char *needle, size_t len)
-{
-	size_t i;
-
-	i = 0;
-	while (i < len && needle[i])
-	{
-		if (haystack[i] != needle[i])
-			return (0);
-		i++;
-	}
-	return ((char *)haystack);
 }
 
 char	*post_string_expand(char *command)
@@ -86,7 +72,7 @@ void	expand_var(t_shell *shell)
 				&& !last_proc_status(expnd.env, shell, j))
 		{
 			set_expansion_boundaries(&expnd.env, &expnd.post);
-			while (shell->env[i] && !first_strnstr(shell->env[i], expnd.env, ft_strlen(shell->env[i])))
+			while (shell->env[i] && ft_strncmp(shell->env[i], expnd.env, ft_strlen(expnd.env)))
 				i++;
 			if (shell->env[i])
 				shell->args[j] = ft_strjoin(expnd.pre, shell->env[i] + ft_strlen(expnd.env) + 1);

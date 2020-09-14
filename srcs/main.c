@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 12:42:19 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/14 13:17:19 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static int		run_command(t_shell *shell)
 	if (fork() == 0)
 	{
 		execve(path, shell->args, shell->env);
+		//funcion de gestion de error generica
 		ft_putstr_fd("minishell: command not found ", 1);
 		ft_putstr_fd(bin, 1);
 		ft_putstr_fd("\n", 1);
@@ -42,26 +43,28 @@ static int		run_command(t_shell *shell)
 	//liberar memoria
 	//free(bin)
 	//free(path)
+	//free(paths)
+	//free(value)
 	return (1);
 }
 
 static int		check_builtin(t_shell *shell)
 {
-	if (!ft_strcmp(*shell->args, "echo"))
+	if (ft_strcmp(*shell->args, "exit"))
+		ft_exit(shell->args + 1);
+	else if (ft_strcmp(*shell->args, "echo"))
 		return (ft_echo(shell->args + 1));
-	else if (!ft_strcmp(*shell->args, "cd"))
+	else if (ft_strcmp(*shell->args, "cd"))
 		return (ft_cd(shell->args + 1, shell->env));
-	else if (!ft_strcmp(*shell->args, "pwd"))
+	else if (ft_strcmp(*shell->args, "pwd"))
 		return (ft_pwd());
-	else if (!ft_strcmp(*shell->args, "export"))
+	else if (ft_strcmp(*shell->args, "export"))
 		//Cambiar y pasar solo shell
 		return (ft_export(shell->args + 1, shell));
-	else if (!ft_strcmp(*shell->args, "unset"))
+	else if (ft_strcmp(*shell->args, "unset"))
 		return (ft_unset(shell->args[1], shell->env));
-	else if (!ft_strcmp(*shell->args, "env"))
+	else if (ft_strcmp(*shell->args, "env"))
 		return (ft_env(shell->args + 1, shell->env));
-	else if (!ft_strcmp(*shell->args, "exit"))
-		return (ft_exit(shell->args + 1));
 	return (0);
 }
 
@@ -84,6 +87,7 @@ static void		minishell(t_shell *shell)
 {
 	char	*line;
 
+	//Revisar como funciona wait con callbacks
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	while (1)

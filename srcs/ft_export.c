@@ -72,16 +72,18 @@ int		ft_export(char **command, t_shell *shell)
 {
 	int  i;
 	char *var;
+	char *tmp;
 
 	if (!*command)
 		print_sorted_env(shell);
 	while (*command)
 	{
 		i = 0;
-		if ((ft_strchr(*command, '=')))
+		if ((tmp = ft_strchr(*command, '=')))
 		{
 			var = ft_strdup(*command);
-			while (shell->env[i] && !first_strnstr(shell->env[i], *command, ft_strlen(shell->env[i])))
+			*tmp = '\0';
+			while (shell->env[i] && ft_strncmp(shell->env[i], *command, ft_strlen(*command)))
 				i++;
 			if (shell->env[i])
 				shell->env[i] = var;

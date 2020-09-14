@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 12:26:02 by vde-dios          #+#    #+#             */
-/*   Updated: 2019/11/18 12:30:02 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/14 13:49:00 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,21 @@
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t	i;
-	size_t	j;
-	char	*found;
+	int i;
+	int j;
 
 	i = 0;
-	j = 0;
-	found = (char*)haystack;
-	if (*(needle) == '\0' || haystack == needle)
-		return ((char*)haystack);
-	while (found[j] && j < len)
+	while (haystack[i] != '\0' && i < (int)len)
 	{
-		while (found[j + i] == needle[i])
-		{
-			if (!needle[i])
-				break ;
-			i++;
-		}
-		if (i == ft_strlen(needle) && (i + j) < len)
-			return (&found[j]);
-		i = 0;
-		j++;
+		j = 0;
+		while (needle[j] && haystack[i + j] == needle[j] && (i + j) < (int)len)
+			j++;
+		if (!needle[j])
+			return ((char *)&haystack[i]);
+		j = 0;
+		i++;
 	}
-	return (0);
+	if (!needle[0])
+		return ((char *)haystack);
+	return (NULL);
 }

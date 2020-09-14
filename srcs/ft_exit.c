@@ -6,13 +6,13 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 12:13:13 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/14 12:45:49 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		ft_exit(char **args)
+void		ft_exit(char **args)
 {
 	int value;
 
@@ -21,5 +21,4 @@ int		ft_exit(char **args)
 	else
 		value = ft_atoi(args[0]);
 	exit(value);
-	//exit devuelve algo?
 }
