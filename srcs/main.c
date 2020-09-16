@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 13:17:19 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/16 20:03:23 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,26 @@ static int		run_command(t_shell *shell)
 	char	*value;
 	char	**paths;
 	char	*bin;
+	pid_t	pid;
 
-	//bin = NULL;
+	bin = shell->args[0];
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell->args[0], paths);
+	path = search_binary(bin, paths);
 	if (path)
 	{
-		bin = ft_strjoin("/", shell->args[0]);
+		path = ft_strjoin(path, "/");
 		path = ft_strjoin(path, bin);
 	}
 	else
-		path = shell->args[0];
-	if (fork() == 0)
+		path = bin;
+	pid = fork();
+	signal(SIGINT, signal_handler_children);
+	signal(SIGQUIT, signal_handlerd_children);
+	if (pid == 0)
 	{
 		execve(path, shell->args, shell->env);
-		//funcion de gestion de error generica
-		ft_putstr_fd("minishell: command not found ", 1);
-		ft_putstr_fd(bin, 1);
-		ft_putstr_fd("\n", 1);
-		exit(0);
+		print_errors(" command not found ", bin);
 	}
 	wait(&shell->stat_loc);
 	//liberar memoria
@@ -88,8 +88,8 @@ static void		minishell(t_shell *shell)
 	char	*line;
 
 	//Revisar como funciona wait con callbacks
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, signal_handler);
+	signal(SIGINT, signal_handler_parent);
+	signal(SIGQUIT, signal_handlerd_parent);
 	while (1)
 	{
 		ft_putstr_fd("$:\\>", 1);

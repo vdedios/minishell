@@ -31,11 +31,15 @@ int		ft_echo(char **args);
 int		ft_pwd();
 int		ft_unset(char *var, char **env);
 void	ft_exit(char **exit);
-void	signal_handler(int signal);
+void	signal_handler_parent(int signal);
+void	signal_handlerd_parent(int signal);
+void	signal_handlerd_children(int signal);
+void	signal_handler_children(int signal);
 int 	ft_export(char **command, t_shell *shell);
 char	**realloc_one(char **envp);
 char	**ft_strdup_matrix(char **envp);
 size_t	ft_strcmp(char *s1, char *s2);
 int		get_next_line(char **line);
+void	print_errors(char *msg, char *bin);
 
 #endif

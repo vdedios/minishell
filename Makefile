@@ -17,6 +17,7 @@ SRC_FILES =		main.c \
 				ft_export.c \
 				ft_exit.c \
 				signals.c \
+				errors.c \
 				utils.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
