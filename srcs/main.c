@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/16 20:03:23 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/17 11:21:00 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static int		run_command(t_shell *shell)
 	char	*value;
 	char	**paths;
 	char	*bin;
-	pid_t	pid;
 
 	bin = shell->args[0];
 	value = get_env(shell->env, "PATH");
@@ -31,15 +30,15 @@ static int		run_command(t_shell *shell)
 	}
 	else
 		path = bin;
-	pid = fork();
-	signal(SIGINT, signal_handler_children);
-	signal(SIGQUIT, signal_handlerd_children);
-	if (pid == 0)
+	if (fork() == 0)
 	{
 		execve(path, shell->args, shell->env);
 		print_errors(" command not found ", bin);
 	}
+	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
+	if (shell->stat_loc)
+		ft_putstr_fd("\n", 1);
 	//liberar memoria
 	//free(bin)
 	//free(path)
@@ -88,10 +87,10 @@ static void		minishell(t_shell *shell)
 	char	*line;
 
 	//Revisar como funciona wait con callbacks
-	signal(SIGINT, signal_handler_parent);
-	signal(SIGQUIT, signal_handlerd_parent);
+	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
+		signal(SIGINT, signal_handler_running);
 		ft_putstr_fd("$:\\>", 1);
 		if (get_next_line(&line) == 0)
 		{

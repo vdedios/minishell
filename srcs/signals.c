@@ -6,35 +6,22 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:17:38 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/16 20:05:28 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/17 11:21:00 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	signal_handler_parent(int sig)
+void	signal_handler_running(int sig)
 {
 	if (sig == SIGINT)
-	{
 		ft_putstr_fd("\n$:\\>", 1);
-		signal(sig, signal_handler_parent);
-	}
+	signal(SIGINT, signal_handler_running);
+	signal(SIGQUIT, signal_handler_running);
 }
 
-void	signal_handlerd_parent(int sig)
+void	signal_handler_waiting(int sig)
 {
-	if (sig == SIGQUIT)
-		signal(SIGINT, signal_handlerd_parent);
-}
-
-void	signal_handlerd_children(int sig)
-{
-	if (sig == SIGQUIT)
-		signal(SIGINT, signal_handlerd_children);
-}
-
-void	signal_handler_children(int sig)
-{
-	if (sig == SIGINT)
-		signal(sig, signal_handler_children);
+	(void)sig;
+	signal(SIGINT, signal_handler_waiting);
 }
