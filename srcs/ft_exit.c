@@ -6,19 +6,21 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 12:45:49 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/18 12:33:56 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void		ft_exit(char **args)
+void		ft_exit(t_shell *shell)
 {
 	int value;
 
-	if (!args[0])
+	if (!shell->args[1])
 		value = 0;
 	else
-		value = ft_atoi(args[0]);
+		value = ft_atoi(shell->args[1]);
+	system("leaks minishell");
+	clean_shell(shell);
 	exit(value);
 }

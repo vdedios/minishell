@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 08:35:40 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/18 12:57:53 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char	*search_binary(char *binary, char **paths)
 				}
 				direntp++;
 			}
+			closedir(pdir);
 		}
 	}
 	return (NULL);

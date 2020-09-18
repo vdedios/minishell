@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 10:34:59 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/18 12:57:26 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,22 @@ static int		run_command(t_shell *shell)
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
 	if (path)
-		path = abs_bin_path(path, shell->args[0]);
+		path = absolute_bin_path(path, shell->args[0]);
 	else
 		path = ft_strdup(shell->args[0]);
 	if (fork() == 0)
 	{
 		execve(path, shell->args, shell->env);
 		print_errors(" command not found ", shell->args[0]);
+		free(path);
+		free(paths);
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
 	if (shell->stat_loc)
 		ft_putstr_fd("\n", 1);
 	free(path);
+	clean_matrix(paths);
 	free(paths);
 	return (1);
 }
@@ -42,7 +45,7 @@ static int		run_command(t_shell *shell)
 static int		check_builtin(t_shell *shell)
 {
 	if (ft_strcmp(*shell->args, "exit"))
-		ft_exit(shell->args + 1);
+		ft_exit(shell);
 	else if (ft_strcmp(*shell->args, "echo"))
 		return (ft_echo(shell->args + 1));
 	else if (ft_strcmp(*shell->args, "cd"))

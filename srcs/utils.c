@@ -35,7 +35,7 @@ char	**ft_strdup_matrix(char **envp)
 	return (tmp_envp);
 }
 
-char	*abs_bin_path(char *path, char *bin)
+char	*absolute_bin_path(char *path, char *bin)
 {
 	char *tmp;
 
