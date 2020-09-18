@@ -34,3 +34,13 @@ char	**ft_strdup_matrix(char **envp)
 	tmp_envp[i] = NULL;
 	return (tmp_envp);
 }
+
+char	*abs_bin_path(char *path, char *bin)
+{
+	char *tmp;
+
+	tmp = ft_strjoin(path, "/");
+	path = ft_strjoin(tmp, bin);
+	free(tmp);
+	return (path);
+}

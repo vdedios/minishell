@@ -41,5 +41,6 @@ size_t	ft_strcmp(char *s1, char *s2);
 int		get_next_line(char **line);
 void	print_errors(char *msg, char *bin);
 void	clean_shell(t_shell *shell);
+char	*abs_bin_path(char *path, char *bin);
 
 #endif
