@@ -18,6 +18,7 @@ typedef struct	s_shell{
 	char		**commands;
 	char		**args;
 	char		**env;
+	int			is_env_malloc;
 	int			stat_loc;
 }				t_shell;
 
@@ -33,11 +34,12 @@ int		ft_unset(char *var, char **env);
 void	ft_exit(char **exit);
 void	signal_handler_waiting(int signal);
 void	signal_handler_running(int signal);
-int 	ft_export(char **command, t_shell *shell);
-char	**realloc_one(char **envp);
+int 	ft_export(t_shell *shell);
+char	**realloc_matrix(char **envp, int additional);
 char	**ft_strdup_matrix(char **envp);
 size_t	ft_strcmp(char *s1, char *s2);
 int		get_next_line(char **line);
 void	print_errors(char *msg, char *bin);
+void	clean_shell(t_shell *shell);
 
 #endif

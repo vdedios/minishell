@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/17 11:21:00 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/18 08:02:58 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ static int		check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "pwd"))
 		return (ft_pwd());
 	else if (ft_strcmp(*shell->args, "export"))
-		//Cambiar y pasar solo shell
-		return (ft_export(shell->args + 1, shell));
+		return (ft_export(shell));
 	else if (ft_strcmp(*shell->args, "unset"))
 		return (ft_unset(shell->args[1], shell->env));
 	else if (ft_strcmp(*shell->args, "env"))
@@ -100,6 +99,7 @@ static void		minishell(t_shell *shell)
 		shell->commands = ft_split(line, ';');
 		free(line);
 		run_commands(shell);
+		clean_shell(shell);
 	}
 }
 
@@ -110,6 +110,9 @@ int				main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	shell.env = envp;
+	shell.is_env_malloc = 0;
+	shell.commands = NULL;
+	shell.args = NULL;
 	minishell(&shell);
 	return (0);
 }

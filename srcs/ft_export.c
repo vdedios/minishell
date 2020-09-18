@@ -1,20 +1,27 @@
 #include "minishell.h"
 
-char	**add_new_env(char *variable, char **envp)
+char	**add_env(char *variable, t_shell *shell, int n)
 {
 	char	**tmp_envp;
 	int		i;
 
 	i = 0;
-	tmp_envp = realloc_one(envp);
-	while (*envp)
+	if (shell->env[n])
+		tmp_envp = realloc_matrix(shell->env, 0);
+	else
 	{
-		tmp_envp[i] = *envp;
-		envp++;
+		tmp_envp = realloc_matrix(shell->env, 1);
+		tmp_envp[n + 1] = NULL;
+	}
+	while (*shell->env)
+	{
+		tmp_envp[i] = *shell->env;
+		shell->env++;
 		i++;
 	}
-	tmp_envp[i] = variable;
-	tmp_envp[i + 1] = NULL;
+	tmp_envp[n] = variable;
+	if (shell->is_env_malloc)
+		free(shell->env);
 	return (tmp_envp);
 }
 
@@ -68,29 +75,30 @@ void	print_sorted_env(t_shell *shell)
 	free(tmp_envp);
 }
 
-int		ft_export(char **command, t_shell *shell)
+int		ft_export(t_shell *shell)
 {
 	int  i;
+	int  j;
 	char *var;
 	char *tmp;
 
-	if (!*command)
+	j = 1;
+	if (!shell->args[j])
 		print_sorted_env(shell);
-	while (*command)
+	while (shell->args[j])
 	{
 		i = 0;
-		if ((tmp = ft_strchr(*command, '=')))
+		if ((tmp = ft_strchr(shell->args[j], '=')))
 		{
-			var = ft_strdup(*command);
+			var = ft_strdup(shell->args[j]);
 			*tmp = '\0';
-			while (shell->env[i] && ft_strncmp(shell->env[i], *command, ft_strlen(*command)))
+			while (shell->env[i] && ft_strncmp(shell->env[i], shell->args[j],
+						ft_strlen(shell->args[j])))
 				i++;
-			if (shell->env[i])
-				shell->env[i] = var;
-			else
-				shell->env = add_new_env(var, shell->env);
+			shell->env = add_env(var, shell, i);
+			shell->is_env_malloc = 1;
 		}
-		command++;
+		j++;
 	}
 	return (1);
 }

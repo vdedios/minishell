@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	**realloc_one(char **envp)
+char	**realloc_matrix(char **envp, int additional)
 {
 	char	**tmp_envp;
 	int		l;
@@ -8,7 +8,7 @@ char	**realloc_one(char **envp)
 	l = 0;
 	while (envp[l])
 		l++;
-	if (!(tmp_envp = malloc((l + 2) * sizeof(char *))))
+	if (!(tmp_envp = malloc((l + additional + 1) * sizeof(char *))))
 		return (NULL);
 	return (tmp_envp);
 }
