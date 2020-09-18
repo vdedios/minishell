@@ -6,28 +6,38 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/14 10:07:51 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/18 12:20:59 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	set_path(char *path, const char *key, char **env)
+static void	set_path(char *path, const char *key, t_shell *shell)
 {
-	size_t len;
-	size_t it;
+	size_t	len;
+	size_t	it;
+	char	*tmp_value;
+	char	**tmp;
 
 	len = ft_strlen(key) + 1;
 	it = 0;
-	while (env[it])
+	while (shell->env[it])
 	{
-		if (ft_strnstr(env[it], key, len))
-			env[it] = ft_strjoin(key, path);
+		if (ft_strnstr(shell->env[it], key, len))
+		{
+			tmp_value = ft_strjoin(key, path);
+			tmp = add_env(tmp_value, shell->env, it);
+			if (shell->is_env_malloc)
+				clean_matrix(shell->env);
+			shell->env = tmp;
+			shell->is_env_malloc = 1;
+		}
 		it++;
 	}
+	free(path);
 }
 
-static void	change_dir(char *path, char **env)
+static void	change_dir(char *path, t_shell *shell)
 {
 	char		*oldcwd;
 	char		*cwd;
@@ -39,8 +49,8 @@ static void	change_dir(char *path, char **env)
 	if (chdir(path) == 0)
 	{
 		getcwd(cwd, 1024);
-		set_path(cwd, "PWD=", env);
-		set_path(oldcwd, "OLDPWD=", env);
+		set_path(cwd, "PWD=", shell);
+		set_path(oldcwd, "OLDPWD=", shell);
 	}
 	else
 	{
@@ -56,26 +66,26 @@ static void	change_dir(char *path, char **env)
 	}
 }
 
-int			ft_cd(char **args, char **env)
+int			ft_cd(t_shell *shell)
 {
 	char	*path;
 
-	if (!args[0] || !ft_strncmp(args[0], "--", 3) ||
-		!ft_strncmp(args[0], "~", 2))
-		path = get_env(env, "HOME");
-	else if (!ft_strncmp(args[0], "-", 2))
-		path = get_env(env, "OLDPWD");
-	else if (args[1])
+	if (!shell->args[1] || !ft_strncmp(shell->args[1], "--", 3) ||
+		!ft_strncmp(shell->args[1], "~", 2))
+		path = get_env(shell->env, "HOME");
+	else if (!ft_strncmp(shell->args[1], "-", 2))
+		path = get_env(shell->env, "OLDPWD");
+	else if (shell->args[2])
 	{
 		path = NULL;
-		if (args[2])
+		if (shell->args[3])
 		{
 			ft_putendl_fd("cd: too many arguments", 1);
 			return (1);
 		}
 	}
 	else
-		path = args[0];
-	change_dir(path, env);
+		path = shell->args[1];
+	change_dir(path, shell);
 	return (1);
 }

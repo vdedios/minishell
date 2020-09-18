@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:03:29 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 10:03:34 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/18 09:21:27 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 int		ft_echo(char **args)
 {
-	char	*end;
+	int		end;
 	size_t	len;
 	size_t	it;
 
-	end = ft_strdup("\n");
 	it = 0;
+	end = 1;
 	if (*args && (*args)[it++] == '-' && (*args++)[it] == 'n')
-		end = NULL;
+		end = 0;
 	while (*args)
 	{
 		len = ft_strlen(*args);
@@ -30,9 +30,6 @@ int		ft_echo(char **args)
 			write(1, " ", 1);
 	}
 	if (end)
-	{
-		write(1, end, 1);
-		free(end);
-	}
+		write(1, "\n", 1);
 	return (1);
 }

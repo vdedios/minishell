@@ -25,9 +25,9 @@ typedef struct	s_shell{
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
-void	expand_var(t_shell *shell);
+void	expansion(t_shell *shell);
 int		ft_env(char **args, char **env);
-int		ft_cd(char **arg, char **env);
+int		ft_cd(t_shell *shell);
 int		ft_echo(char **args);
 int		ft_pwd();
 int		ft_unset(char *var, char **env);
@@ -42,5 +42,7 @@ int		get_next_line(char **line);
 void	print_errors(char *msg, char *bin);
 void	clean_shell(t_shell *shell);
 char	*abs_bin_path(char *path, char *bin);
+void	clean_matrix(char **matrix);
+char	**add_env(char *variable, char **env, int n);
 
 #endif

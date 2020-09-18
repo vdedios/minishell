@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 08:33:25 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/18 10:34:59 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int		check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "echo"))
 		return (ft_echo(shell->args + 1));
 	else if (ft_strcmp(*shell->args, "cd"))
-		return (ft_cd(shell->args + 1, shell->env));
+		return (ft_cd(shell));
 	else if (ft_strcmp(*shell->args, "pwd"))
 		return (ft_pwd());
 	else if (ft_strcmp(*shell->args, "export"))
@@ -66,7 +66,7 @@ static void		run_commands(t_shell *shell)
 	while (shell->commands[it])
 	{
 		shell->args = get_args(shell->commands[it]);
-		expand_var(shell);
+		expansion(shell);
 		if (!check_builtin(shell))
 			run_command(shell);
 		it++;
