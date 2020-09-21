@@ -1,14 +1,5 @@
 #include "minishell.h"
 
-/*
-typedef struct	s_shell{
-	char		**commands;
-	char		**args;
-	char		**env;
-	int			stat_loc;
-}				t_she
-*/
-
 void	clean_matrix(char **matrix)
 {
 	if (matrix)

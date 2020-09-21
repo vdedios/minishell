@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-size_t	is_bigger(char *s1, char *s2)
+static size_t	is_bigger(char *s1, char *s2)
 {
 	int ret;
 
@@ -12,7 +12,7 @@ size_t	is_bigger(char *s1, char *s2)
 	return (ret);
 }
 
-char	**sort_alfa(char **envp)
+static char		**sort_alfa(char **envp)
 {
 	char	*tmp;
 	size_t	len;
@@ -41,16 +41,18 @@ char	**sort_alfa(char **envp)
 	return (envp);
 }
 
-void	print_sorted_env(t_shell *shell)
+static size_t	print_sorted_env(t_shell *shell)
 {
 	char **tmp_envp;
 
 	tmp_envp = ft_strdup_matrix(shell->env);
 	ft_env(shell->args + 1, sort_alfa(tmp_envp));
+	clean_matrix(tmp_envp);
 	free(tmp_envp);
+	return (1);
 }
 
-int		ft_export(t_shell *shell)
+int				ft_export(t_shell *shell)
 {
 	int  i;
 	int  j;
@@ -59,24 +61,22 @@ int		ft_export(t_shell *shell)
 	char **tmp_env;
 
 	j = 1;
-	if (!shell->args[j])
-		print_sorted_env(shell);
-	//arreglar "export =valor"
-	while (shell->args[j])
-	{
-		i = 0;
-		if ((tmp = ft_strchr(shell->args[j], '=')))
+	if (shell->args[j] || !print_sorted_env(shell))
+		while (shell->args[j])
 		{
-			value = ft_strdup(shell->args[j]);
-			*tmp = '\0';
-			while (shell->env[i] && ft_strncmp(shell->env[i], shell->args[j],
-						ft_strlen(shell->args[j])))
-				i++;
-			tmp_env = add_env(&value, shell->env, i);
-			clean_env(shell);
-			shell->env = tmp_env;
+			i = 0;
+			if ((tmp = ft_strchr(shell->args[j], '=')) && *tmp != *shell->args[j])
+			{
+				value = ft_strdup(shell->args[j]);
+				*tmp = '\0';
+				while (shell->env[i] && ft_strncmp(shell->env[i], shell->args[j],
+							ft_strlen(shell->args[j])))
+					i++;
+				tmp_env = add_env(&value, shell->env, i);
+				clean_env(shell);
+				shell->env = tmp_env;
+			}
+			j++;
 		}
-		j++;
-	}
 	return (1);
 }

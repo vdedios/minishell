@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/21 10:13:18 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/21 10:58:15 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int		run_command(t_shell *shell)
 {
-	char	*path;
 	char	*value;
+	char	*path;
 	char	**paths;
 
 	value = get_env(shell->env, "PATH");
@@ -29,9 +29,6 @@ static int		run_command(t_shell *shell)
 	{
 		execve(path, shell->args, shell->env);
 		print_errors(" command not found ", shell->args[0]);
-		//Revisar hijos liberación
-		free(path);
-		free(paths);
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);

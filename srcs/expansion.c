@@ -6,13 +6,13 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2020/09/18 09:17:18 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/21 10:30:47 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*post_string_expand(char *command)
+static char		*post_string_expand(char *command)
 {
 	//Si no hay llave de cierre?
 	while (*command && *command != '}')
@@ -22,7 +22,7 @@ char	*post_string_expand(char *command)
 	return (command);
 }
 
-void	set_expansion_boundaries(char **command, char **post)
+static void		set_expansion_boundaries(char **command, char **post)
 {
 	**command = '\0';
 	*command = *command + 1;
@@ -33,7 +33,7 @@ void	set_expansion_boundaries(char **command, char **post)
 	}
 }
 
-size_t	last_proc_status(char *env, t_shell *shell, int j)
+static size_t	last_proc_status(char *env, t_shell *shell, int j)
 {
 	if (*(env + 1) == '?' && *(env + 2) == '\0')
 	{
@@ -43,7 +43,7 @@ size_t	last_proc_status(char *env, t_shell *shell, int j)
 	return (0);
 }
 
-void	expand_var(t_shell *shell, t_expand expnd, int i, int j)
+static void		expand_var(t_shell *shell, t_expand expnd, int i, int j)
 {
 	char *tmp;
 
@@ -68,7 +68,8 @@ void	expand_var(t_shell *shell, t_expand expnd, int i, int j)
 ** In case var expansion is in the middle of a string we consider:
 ** [pre]${VAR}[post]
 */
-void	expansion(t_shell *shell)
+
+void			expansion(t_shell *shell)
 {
 	int			i;
 	int			j;
