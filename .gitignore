@@ -49,6 +49,7 @@ sites
 *.swp
 *.swo
 *.swn
+*.vim
 
 # Prerequisites
 *.d

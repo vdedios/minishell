@@ -1,30 +1,5 @@
 #include "minishell.h"
 
-char	**add_env(char *variable, char **env, int n)
-{
-	char	**tmp_envp;
-	int		i;
-
-	i = 0;
-	if (env[n])
-		tmp_envp = realloc_matrix(env, 0);
-	else
-		tmp_envp = realloc_matrix(env, 1);
-	tmp_envp[n] = variable;
-	while (*env)
-	{
-		if (i != n)
-			tmp_envp[i] = ft_strdup(*env);
-		env++;
-		i++;
-	}
-	if (env[n])
-		tmp_envp[i] = NULL;
-	else
-		tmp_envp[n + 1] = NULL;
-	return (tmp_envp);
-}
-
 size_t	is_bigger(char *s1, char *s2)
 {
 	int ret;
@@ -97,11 +72,9 @@ int		ft_export(t_shell *shell)
 			while (shell->env[i] && ft_strncmp(shell->env[i], shell->args[j],
 						ft_strlen(shell->args[j])))
 				i++;
-			tmp_env = add_env(value, shell->env, i);
-			if (shell->is_env_malloc)
-				clean_matrix(shell->env);
+			tmp_env = add_env(&value, shell->env, i);
+			clean_env(shell);
 			shell->env = tmp_env;
-			shell->is_env_malloc = 1;
 		}
 		j++;
 	}

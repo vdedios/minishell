@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 12:33:56 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/21 10:10:44 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void		ft_exit(t_shell *shell)
 		value = 0;
 	else
 		value = ft_atoi(shell->args[1]);
-	system("leaks minishell");
 	clean_shell(shell);
 	exit(value);
 }

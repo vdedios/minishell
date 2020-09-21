@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 12:20:59 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/21 10:18:08 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 {
 	size_t	len;
 	size_t	it;
-	char	*tmp_value;
+	char	*variable;
 	char	**tmp;
 
 	len = ft_strlen(key) + 1;
@@ -25,12 +25,10 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 	{
 		if (ft_strnstr(shell->env[it], key, len))
 		{
-			tmp_value = ft_strjoin(key, path);
-			tmp = add_env(tmp_value, shell->env, it);
-			if (shell->is_env_malloc)
-				clean_matrix(shell->env);
+			variable = ft_strjoin(key, path);
+			tmp = add_env(&variable, shell->env, it);
+			clean_env(shell);
 			shell->env = tmp;
-			shell->is_env_malloc = 1;
 		}
 		it++;
 	}

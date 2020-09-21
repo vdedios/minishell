@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 12:57:26 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/21 10:13:18 by vde-dios         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static int		run_command(t_shell *shell)
 	{
 		execve(path, shell->args, shell->env);
 		print_errors(" command not found ", shell->args[0]);
+		//Revisar hijos liberación
 		free(path);
 		free(paths);
 	}
@@ -83,17 +84,20 @@ static void		minishell(t_shell *shell)
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
+		line = NULL;
 		signal(SIGINT, signal_handler_running);
 		ft_putstr_fd("$:\\>", 1);
 		if (get_next_line(&line) == 0)
 		{
 			ft_putendl_fd("exit", 1);
+			clean_shell(shell);
+			free(line);
 			exit(0);
 		}
 		shell->commands = ft_split(line, ';');
 		free(line);
 		run_commands(shell);
-		clean_shell(shell);
+		clean_commands(shell);
 	}
 }
 
@@ -103,8 +107,7 @@ int				main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	shell.env = envp;
-	shell.is_env_malloc = 0;
+	shell.env = ft_strdup_matrix(envp);
 	shell.commands = NULL;
 	shell.args = NULL;
 	minishell(&shell);
