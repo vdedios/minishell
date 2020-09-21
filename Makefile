@@ -49,6 +49,7 @@ clean:
 fclean: 		clean
 				@make -C $(LIB_DIR) fclean
 				@$(RM) $(NAME)
+				@$(RM) $(NAME).dSYM
 
 re: 			fclean all
 
