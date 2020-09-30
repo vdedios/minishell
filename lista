@@ -1,0 +1,16 @@
+total 120
+drwxr-xr-x  14 kirbo  staff    448 Sep 30 18:28 .
+drwxr-xr-x   9 kirbo  staff    288 Sep 29 23:05 ..
+-rw-r--r--@  1 kirbo  staff   6148 Sep 29 23:11 .DS_Store
+drwxr-xr-x  14 kirbo  staff    448 Sep 30 18:28 .git
+-rw-r--r--   1 kirbo  staff    799 Sep 21 11:22 .gitignore
+-rw-r--r--   1 kirbo  staff   1080 Aug 29 13:21 LICENSE
+-rw-r--r--   1 kirbo  staff    983 Sep 23 23:33 Makefile
+-rw-r--r--   1 kirbo  staff     11 Aug 29 13:21 README.md
+drwxr-xr-x   4 kirbo  staff    128 Sep 23 23:35 includes
+drwxr-xr-x  85 kirbo  staff   2720 Sep 29 10:41 libft
+-rw-r--r--   1 kirbo  staff      0 Sep 30 18:28 lista
+-rwxr-xr-x   1 kirbo  staff  33944 Sep 30 18:28 minishell
+drwxr-xr-x  19 kirbo  staff    608 Sep 30 18:28 objs
+drwxr-xr-x  19 kirbo  staff    608 Sep 30 18:28 srcs
+$:\>exit

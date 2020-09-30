@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/21 10:58:15 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/09/29 23:00:35 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ static void		run_commands(t_shell *shell)
 	while (shell->commands[it])
 	{
 		shell->args = get_args(shell->commands[it]);
+		find_redirections(shell);
 		expansion(shell);
 		if (!check_builtin(shell))
 			run_command(shell);

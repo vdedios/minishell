@@ -20,7 +20,8 @@ SRC_FILES =		main.c \
 				errors.c \
 				clean.c \
 				expansion.c \
-				utils.c
+				utils.c \
+				redirections.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
