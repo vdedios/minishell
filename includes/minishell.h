@@ -56,7 +56,7 @@ char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
 int		get_next_line(char **line);
-void	find_redirections(t_shell *shell);
+int		find_redirections(t_shell *shell);
 
 /*
 ** Parsing functions
