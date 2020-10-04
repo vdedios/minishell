@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/29 23:00:35 by migferna         ###   ########.fr       */
+/*   Updated: 2020/10/04 20:16:15 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int		run_command(t_shell *shell)
 	char	*value;
 	char	*path;
 	char	**paths;
-
+	
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
@@ -62,15 +62,20 @@ static int		check_builtin(t_shell *shell)
 static void		run_commands(t_shell *shell)
 {
 	size_t	it;
+	int		saved_stdout;
+	int		fd;
 
+	saved_stdout = dup(1);
 	it = 0;
 	while (shell->commands[it])
 	{
 		shell->args = get_args(shell->commands[it]);
-		find_redirections(shell);
+		fd = find_redirections(shell);
 		expansion(shell);
 		if (!check_builtin(shell))
 			run_command(shell);
+		dup2(saved_stdout, 1);
+		close(fd);
 		it++;
 	}
 }
