@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/10/04 20:16:15 by migferna         ###   ########.fr       */
+/*   Updated: 2020/10/10 22:36:27 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,11 @@ static void		run_commands(t_shell *shell)
 {
 	size_t	it;
 	int		saved_stdout;
+	int		saved_stdin;
 	int		fd;
 
 	saved_stdout = dup(1);
+	saved_stdin = dup(0);
 	it = 0;
 	while (shell->commands[it])
 	{
@@ -75,6 +77,7 @@ static void		run_commands(t_shell *shell)
 		if (!check_builtin(shell))
 			run_command(shell);
 		dup2(saved_stdout, 1);
+		dup2(saved_stdin, 0);
 		close(fd);
 		it++;
 	}
