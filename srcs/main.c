@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/10/10 22:36:27 by migferna         ###   ########.fr       */
+/*   Updated: 2020/10/11 16:08:54 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int		run_command(t_shell *shell)
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
-	if (shell->stat_loc)
+	if (shell->stat_loc == 1)
 		ft_putstr_fd("\n", 1);
 	free(path);
 	clean_matrix(paths);
