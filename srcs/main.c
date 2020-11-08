@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/10/11 16:08:54 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/08 15:20:02 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static int		run_command(t_shell *shell)
 	char	*value;
 	char	*path;
 	char	**paths;
+	pid_t	pid;
 	
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
@@ -25,7 +26,8 @@ static int		run_command(t_shell *shell)
 		path = absolute_bin_path(path, shell->args[0]);
 	else
 		path = ft_strdup(shell->args[0]);
-	if (fork() == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		execve(path, shell->args, shell->env);
 		print_errors(" command not found ", shell->args[0]);
@@ -66,6 +68,8 @@ static void		run_commands(t_shell *shell)
 	int		saved_stdin;
 	int		fd;
 
+	(void)run_command;
+	(void)check_builtin;
 	saved_stdout = dup(1);
 	saved_stdin = dup(0);
 	it = 0;
@@ -83,10 +87,15 @@ static void		run_commands(t_shell *shell)
 	}
 }
 
-static void		minishell(t_shell *shell)
+static void		minishell(char *line, t_shell *shell)
 {
-	char	*line;
+	shell->commands = ft_split(line, ';');
+	run_commands(shell);
+	clean_commands(shell);
+}
 
+static void		read_input(char *line, t_shell *shell)
+{
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
@@ -100,22 +109,27 @@ static void		minishell(t_shell *shell)
 			free(line);
 			exit(0);
 		}
-		shell->commands = ft_split(line, ';');
+		minishell(line, shell);
 		free(line);
-		run_commands(shell);
-		clean_commands(shell);
 	}
 }
 
 int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
-
-	(void)argc;
-	(void)argv;
+	char *line;
+	
+	line = NULL;
 	shell.env = ft_strdup_matrix(envp);
-	shell.commands = NULL;
 	shell.args = NULL;
-	minishell(&shell);
+	shell.commands = NULL;
+	if (argc == 3 && ft_strcmp(argv[1], "-c"))
+	{
+		line = ft_strdup(argv[2]);
+		minishell(line, &shell);
+		free(line);
+	}
+	else
+		read_input(line, &shell);
 	return (0);
 }

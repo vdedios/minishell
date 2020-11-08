@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:03:29 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/29 13:13:13 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/08 14:55:18 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,24 +55,30 @@ static char	*clean(char *str, char *blacklist)
 int		ft_echo(char **args)
 {
 	int		end;
-	size_t	len;
-	size_t	it;
 	char	*tmp;
+	size_t	it;
 
 	it = 0;
 	end = 1;
-	if (*args && (*args)[it++] == '-' && (*args++)[it] == 'n')
-		end = 0;
-	while (*args)
+	while (args[it])
+	{
+		if (ft_strncmp(args[it], "-n", 2) == 0)
+		{
+			end = 0;
+			it++;
+		}
+		else
+			break ;
+	}
+	while (args[it])
 	{
 		tmp = clean(*args, "\\");
-		len = ft_strlen(tmp);
-		write(1, tmp, len);
-		args++;
-		if (*args)
+		ft_putstr_fd(args[it], 1);
+		if (args[it+1])
 			write(1, " ", 1);
+		free(tmp);
+		it++;
 	}
-	free(tmp);
 	if (end)
 		write(1, "\n", 1);
 	return (1);
