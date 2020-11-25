@@ -6,19 +6,19 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/08 15:20:02 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/25 22:50:58 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int		run_command(t_shell *shell)
+int		run_command(t_shell *shell)
 {
 	char	*value;
 	char	*path;
 	char	**paths;
 	pid_t	pid;
-	
+
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
@@ -34,7 +34,8 @@ static int		run_command(t_shell *shell)
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
-	if (shell->stat_loc == 1)
+	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	free(path);
 	clean_matrix(paths);
@@ -42,7 +43,7 @@ static int		run_command(t_shell *shell)
 	return (1);
 }
 
-static int		check_builtin(t_shell *shell)
+int		check_builtin(t_shell *shell)
 {
 	if (ft_strcmp(*shell->args, "exit"))
 		ft_exit(shell);
@@ -61,45 +62,50 @@ static int		check_builtin(t_shell *shell)
 	return (0);
 }
 
-static void		run_commands(t_shell *shell)
+static void		handle_commands(t_shell *shell)
 {
-	size_t	it;
-	int		saved_stdout;
-	int		saved_stdin;
+	int		fd_out;
+	int		fd_in;
 	int		fd;
 
-	(void)run_command;
-	(void)check_builtin;
-	saved_stdout = dup(1);
-	saved_stdin = dup(0);
-	it = 0;
-	while (shell->commands[it])
+	fd_out = dup(1);
+	fd_in = dup(0);
+	if (*(shell->commands + 1))
+		find_pipes(shell);
+	else
 	{
-		shell->args = get_args(shell->commands[it]);
-		fd = find_redirections(shell);
+		shell->args = get_args(*shell->commands);
 		expansion(shell);
+		fd = find_redirections(shell);
 		if (!check_builtin(shell))
 			run_command(shell);
-		dup2(saved_stdout, 1);
-		dup2(saved_stdin, 0);
-		close(fd);
-		it++;
+		dup2(fd_out, 1);
+		dup2(fd_in, 0);
 	}
 }
 
 static void		minishell(char *line, t_shell *shell)
 {
-	shell->commands = ft_split(line, ';');
-	run_commands(shell);
-	clean_commands(shell);
+	size_t	it;
+
+	//(void)run_commands;
+	it = 0;
+	shell->instructions = ft_split(line, ';');
+	while (shell->instructions[it])
+	{
+		shell->commands = ft_split(shell->instructions[it], '|');
+		handle_commands(shell);
+		it++;
+	}
+	//clean_commands(shell);
 }
 
 static void		read_input(char *line, t_shell *shell)
 {
 	signal(SIGQUIT, signal_handler_running);
+	signal(SIGTERM, signal_handler_running);
 	while (1)
 	{
-		line = NULL;
 		signal(SIGINT, signal_handler_running);
 		ft_putstr_fd("$:\\>", 1);
 		if (get_next_line(&line) == 0)
@@ -117,12 +123,12 @@ static void		read_input(char *line, t_shell *shell)
 int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
-	char *line;
-	
+	char	*line;
+
+	shell.stat_loc = 0;
 	line = NULL;
 	shell.env = ft_strdup_matrix(envp);
-	shell.args = NULL;
-	shell.commands = NULL;
+	shell.instructions = NULL;
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);

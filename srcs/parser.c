@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:18:25 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 09:04:08 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/11/09 12:08:36 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,7 @@ char	**get_args(char *input)
 	if (!input)
 		return (NULL);
 	args = ft_split(input, ' ');
+	if (!args)
+		return (NULL);
 	return (args);
 }

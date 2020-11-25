@@ -20,6 +20,7 @@ typedef struct	s_expand{
 }				t_expand;
 
 typedef struct	s_shell{
+	char		**instructions;
 	char		**commands;
 	char		**args;
 	char		**env;
@@ -57,6 +58,9 @@ char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell);
+void	find_pipes(t_shell *shell);
+int		check_builtin(t_shell *shell);
+int		run_command(t_shell *shell);
 
 /*
 ** Parsing functions
