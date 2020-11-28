@@ -7,9 +7,13 @@ static	int	redirections_append(t_shell *shell, size_t it)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
-	fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644);
+	if ((fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
+	{
+		shell->stat_loc = 1;
+		print_errors(shell, " No such file or directory", shell->args[it + 1]);
+	}
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
 	dup2(fd, 1);
@@ -23,9 +27,13 @@ static int	redirections_output(t_shell *shell, size_t it)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
-	fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if ((fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
+	{
+		shell->stat_loc = 1;
+		print_errors(shell, " No such file or directory", shell->args[it + 1]);
+	}
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
 	dup2(fd, 1);
@@ -39,9 +47,13 @@ static int	redirections_input(t_shell *shell, size_t it)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
-	fd = open(shell->args[it + 1], O_RDONLY, 0644);
+	if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
+	{
+		shell->stat_loc = 1;
+		print_errors(shell, " No such file or directory", shell->args[it + 1]);
+	}
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
 	dup2(fd, 0);
