@@ -129,6 +129,7 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 	char	*line;
+	char *tmp;
 
 	shell.stat_loc = 0;
 	line = NULL;
@@ -137,6 +138,9 @@ int				main(int argc, char **argv, char **envp)
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
+		tmp = parse_quotes(line);
+		free(line);
+		line = tmp;
 		minishell(line, &shell);
 		free(line);
 	}
