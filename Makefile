@@ -21,6 +21,8 @@ SRC_FILES =		main.c \
 				clean.c \
 				expansion.c \
 				utils.c \
+				quotes.c \
+				quotes_utils.c \
 				redirections.c \
 				pipes.c
 			

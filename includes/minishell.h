@@ -67,7 +67,10 @@ int		run_command(t_shell *shell);
 */
 
 void	expansion(t_shell *shell);
-
+char	*parse_quotes(char *str);
+short	is_special_char(char c);
+short	is_space(char c);
+int		n_special_chars(char *str, int opening, int closing, char quote);
 /*
 ** Builtin functions
 */

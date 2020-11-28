@@ -102,6 +102,8 @@ static void		minishell(char *line, t_shell *shell)
 
 static void		read_input(char *line, t_shell *shell)
 {
+	char *tmp;
+
 	signal(SIGQUIT, signal_handler_running);
 	signal(SIGTERM, signal_handler_running);
 	while (1)
@@ -115,6 +117,9 @@ static void		read_input(char *line, t_shell *shell)
 			free(line);
 			exit(0);
 		}
+		tmp = parse_quotes(line);
+		free(line);
+		line = tmp;
 		minishell(line, shell);
 		free(line);
 	}
