@@ -4,6 +4,11 @@ static	int	redirections_append(t_shell *shell, size_t it)
 {
 	int fd;
 	
+	if (!(shell->args[it + 1]))
+	{
+		shell->stat_loc = 2;
+		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+	}
 	fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644);
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
@@ -14,7 +19,12 @@ static	int	redirections_append(t_shell *shell, size_t it)
 static int	redirections_output(t_shell *shell, size_t it)
 {	
 	int fd;
-	
+
+	if (!(shell->args[it + 1]))
+	{
+		shell->stat_loc = 2;
+		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+	}
 	fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
@@ -25,7 +35,12 @@ static int	redirections_output(t_shell *shell, size_t it)
 static int	redirections_input(t_shell *shell, size_t it)
 {
 	int fd;
-	
+
+	if (!(shell->args[it + 1]))
+	{
+		shell->stat_loc = 2;
+		print_errors(shell, "syntax error near unexpected token `newline'", "minishell: ");
+	}
 	fd = open(shell->args[it + 1], O_RDONLY, 0644);
 	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);

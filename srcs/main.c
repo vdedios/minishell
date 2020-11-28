@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/25 22:50:58 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/28 09:50:24 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		run_command(t_shell *shell)
 	if (pid == 0)
 	{
 		execve(path, shell->args, shell->env);
-		print_errors(" command not found ", shell->args[0]);
+		print_errors(shell, " command not found ", shell->args[0]);
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
@@ -77,7 +77,7 @@ static void		handle_commands(t_shell *shell)
 		shell->args = get_args(*shell->commands);
 		expansion(shell);
 		fd = find_redirections(shell);
-		if (!check_builtin(shell))
+		if (shell->args[0] && !(check_builtin(shell)))
 			run_command(shell);
 		dup2(fd_out, 1);
 		dup2(fd_in, 0);

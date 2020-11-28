@@ -42,7 +42,7 @@ void	clean_shell(t_shell *shell);
 ** Error functions
 */
 
-void	print_errors(char *msg, char *bin);
+void	print_errors(t_shell *shell, char *msg, char *bin);
 
 
 /*
