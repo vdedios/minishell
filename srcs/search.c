@@ -6,11 +6,13 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/18 12:57:53 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/11/29 10:12:26 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 char	*search_binary(char *binary, char **paths)
 {
@@ -37,6 +39,8 @@ char	*search_binary(char *binary, char **paths)
 			}
 			closedir(pdir);
 		}
+		//else
+		//	print_errors(shell, "Hola", "eeeee");
 	}
 	return (NULL);
 }
