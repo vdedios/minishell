@@ -6,11 +6,22 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/29 12:58:35 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/29 17:54:39 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	to_lower(char *input)
+{
+	size_t it;
+
+	it = -1;
+	while (input[++it])
+	{
+		input[it] = ft_tolower(input[it]);
+	}
+}
 
 int		run_command(t_shell *shell)
 {
@@ -22,6 +33,7 @@ int		run_command(t_shell *shell)
 
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
+	to_lower(shell->args[0]);
 	path = search_binary(shell->args[0], paths);
 	if (path)
 		path = absolute_bin_path(path, shell->args[0]);
@@ -96,6 +108,7 @@ static void		handle_commands(t_shell *shell)
 		fd = find_redirections(shell);
 		if (shell->args[0] && !(check_builtin(shell)))
 			run_command(shell);
+		close(fd);
 		dup2(fd_out, 1);
 		dup2(fd_in, 0);
 	}
@@ -105,12 +118,25 @@ static void		minishell(char *line, t_shell *shell)
 {
 	size_t	it;
 
-	//(void)run_commands;
 	it = 0;
 	shell->instructions = ft_split(line, ';');
+	if (!(shell->instructions[0]))
+	{
+		shell->stat_loc = 2;
+		print_errors(shell, "syntax error near unexpected token `;'", NULL);
+	}
 	while (shell->instructions[it])
 	{
+		shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
 		shell->commands = ft_split(shell->instructions[it], '|');
+		if (ft_strchr(shell->instructions[it], '|'))
+		{
+			if (!(shell->commands[0]) || (shell->commands[0] && (!shell->commands[1])))
+			{
+				shell->stat_loc = 2;
+				print_errors(shell, "syntax error near unexpected token `|'", NULL);
+			}
+		}
 		handle_commands(shell);
 		it++;
 	}
