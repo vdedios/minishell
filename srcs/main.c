@@ -6,22 +6,11 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/29 17:54:39 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/29 20:08:34 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	to_lower(char *input)
-{
-	size_t it;
-
-	it = -1;
-	while (input[++it])
-	{
-		input[it] = ft_tolower(input[it]);
-	}
-}
 
 int		run_command(t_shell *shell)
 {
@@ -31,9 +20,9 @@ int		run_command(t_shell *shell)
 	struct	stat s;
 	pid_t	pid;
 
+	//pid = fork();
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
-	to_lower(shell->args[0]);
 	path = search_binary(shell->args[0], paths);
 	if (path)
 		path = absolute_bin_path(path, shell->args[0]);
@@ -52,6 +41,11 @@ int		run_command(t_shell *shell)
 				shell->stat_loc = 126;
 				print_errors(shell, " Permission denied", shell->args[0]);
 			}
+		}
+		else
+		{
+			shell->stat_loc = 127;
+			print_errors(shell, " command not found", shell->args[0]);
 		}
 	}
 	pid = fork();
@@ -127,6 +121,7 @@ static void		minishell(char *line, t_shell *shell)
 	}
 	while (shell->instructions[it])
 	{
+		shell->stat_loc = 0;
 		shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
 		shell->commands = ft_split(shell->instructions[it], '|');
 		if (ft_strchr(shell->instructions[it], '|'))
