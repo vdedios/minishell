@@ -6,13 +6,22 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/29 10:12:26 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/02 20:34:13 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static	void	to_lower(char *input)
+{
+	size_t	it;
 
+	it = -1;
+	while (input[++it])
+	{
+		input[it] = ft_tolower(input[it]);
+	}
+}
 
 char	*search_binary(char *binary, char **paths)
 {
@@ -22,6 +31,7 @@ char	*search_binary(char *binary, char **paths)
 	DIR				*pdir;
 
 	it = -1;
+	to_lower(binary);
 	while (paths[++it])
 	{
 		if (lstat(paths[it], &s) != -1 && (s.st_mode & S_IFDIR))

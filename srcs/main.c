@@ -6,24 +6,13 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/29 17:54:39 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/02 20:46:13 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	to_lower(char *input)
-{
-	size_t it;
-
-	it = -1;
-	while (input[++it])
-	{
-		input[it] = ft_tolower(input[it]);
-	}
-}
-
-int		run_command(t_shell *shell)
+int		run_command(t_shell *shell, char exited)
 {
 	char	*value;
 	char	*path;
@@ -33,7 +22,6 @@ int		run_command(t_shell *shell)
 
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
-	to_lower(shell->args[0]);
 	path = search_binary(shell->args[0], paths);
 	if (path)
 		path = absolute_bin_path(path, shell->args[0]);
@@ -45,13 +33,19 @@ int		run_command(t_shell *shell)
 			if (s.st_mode & S_IFDIR)
 			{
 				shell->stat_loc = 126;
-				print_errors(shell, " is a directory", shell->args[0]);
+				print_errors(shell, " is a directory", shell->args[0], exited);
 			}
 			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
 			{
 				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", shell->args[0]);
+				print_errors(shell, " Permission denied", shell->args[0], exited);
 			}
+		}
+		else
+		{
+			shell->stat_loc = 127;
+			print_errors(shell, " command not found", shell->binary, exited);
+			return (1);
 		}
 	}
 	pid = fork();
@@ -59,8 +53,9 @@ int		run_command(t_shell *shell)
 	{
 		execve(path, shell->args, shell->env);
 		shell->stat_loc = 127;
-		print_errors(shell, " command not found", shell->args[0]);
+		print_errors(shell, " command not found", shell->args[0], exited);
 	}
+
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
@@ -91,12 +86,13 @@ int		check_builtin(t_shell *shell)
 	return (0);
 }
 
-static void		handle_commands(t_shell *shell)
+static void		handle_commands(t_shell *shell, char exited)
 {
 	int		fd_out;
 	int		fd_in;
 	int		fd;
 
+	fd = -2;
 	fd_out = dup(1);
 	fd_in = dup(0);
 	if (*(shell->commands + 1))
@@ -104,10 +100,12 @@ static void		handle_commands(t_shell *shell)
 	else
 	{
 		shell->args = get_args(*shell->commands);
+		shell->binary = ft_strdup(shell->args[0]);
 		expansion(shell);
-		fd = find_redirections(shell);
-		if (shell->args[0] && !(check_builtin(shell)))
-			run_command(shell);
+		fd = find_redirections(shell, exited);
+		if (fd != -1)
+			if (shell->args[0] && !(check_builtin(shell)))
+				run_command(shell, exited);
 		close(fd);
 		dup2(fd_out, 1);
 		dup2(fd_in, 0);
@@ -117,13 +115,15 @@ static void		handle_commands(t_shell *shell)
 static void		minishell(char *line, t_shell *shell)
 {
 	size_t	it;
+	char	exited;
 
 	it = 0;
+	exited = 1;
 	shell->instructions = ft_split(line, ';');
 	if (!(shell->instructions[0]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `;'", NULL);
+		print_errors(shell, "syntax error near unexpected token `;'", NULL, exited);
 	}
 	while (shell->instructions[it])
 	{
@@ -134,10 +134,12 @@ static void		minishell(char *line, t_shell *shell)
 			if (!(shell->commands[0]) || (shell->commands[0] && (!shell->commands[1])))
 			{
 				shell->stat_loc = 2;
-				print_errors(shell, "syntax error near unexpected token `|'", NULL);
+				print_errors(shell, "syntax error near unexpected token `|'", NULL, exited);
 			}
 		}
-		handle_commands(shell);
+		if (shell->instructions[it + 1])
+			exited = 0;
+		handle_commands(shell, exited);
 		it++;
 	}
 	//clean_commands(shell);

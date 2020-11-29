@@ -21,6 +21,7 @@ typedef struct	s_expand{
 
 typedef struct	s_shell{
 	char		**instructions;
+	char		*binary;
 	char		**commands;
 	char		**args;
 	char		**env;
