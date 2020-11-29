@@ -97,13 +97,13 @@ char		*parse_quotes(char *str)
 	int		opening;
 	int		closing;
 
-	buff = strdup("");
+	buff = ft_strdup("");
 	while(*str)
 	{
 		if (!(str_in_quotes = remove_quotes(str, &opening, &closing)))
 		{
 			free (buff);
-			return (strdup("error"));
+			return (ft_strdup("error"));
 		}
 		buff = join_parsed_str(str, str_in_quotes, buff, opening);
 		if (str_in_quotes != str)

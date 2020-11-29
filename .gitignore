@@ -104,3 +104,6 @@ Module.symvers
 Mkfile.old
 dkms.confekms.conf
 
+# Test files
+test
+

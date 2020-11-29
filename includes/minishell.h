@@ -13,12 +13,6 @@
 ** Basic structures
 */
 
-typedef struct	s_expand{
-	char		*pre;
-	char		*env;
-	char		*post;
-}				t_expand;
-
 typedef struct	s_shell{
 	char		**instructions;
 	char		**commands;

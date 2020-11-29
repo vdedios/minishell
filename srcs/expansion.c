@@ -12,78 +12,99 @@
 
 #include "minishell.h"
 
-static char		*post_string_expand(char *command)
+static	void	check_residual_escape(char *str)
 {
-	//Si no hay llave de cierre?
-	while (*command && *command != '}')
-		command++;
-	*command = '\0';
-	command++;
-	return (command);
+	if (str[strlen(str) - 1] == '\\')
+		str[strlen(str) - 1] = '\0';
 }
 
-static void		set_expansion_boundaries(char **command, char **post)
+static	char	*append_expanded(char *buff, char *env)
 {
-	**command = '\0';
-	*command = *command + 1;
-	if (**command == '{')
-	{
-		*command = *command + 1;
-		*post = post_string_expand(*command);
-	}
+	char	*tmp;
+
+	if (*env == '\\' && !(*(env + 1)))
+		return (buff);
+	tmp = ft_strjoin(env, buff);
+	free(env);
+	free(buff);
+	return (tmp);
 }
 
-static size_t	last_proc_status(char *env, t_shell *shell, int j)
+static	char	*expand_var(char *env, t_shell *shell)
 {
-	if (*(env + 1) == '?' && *(env + 2) == '\0')
-	{
-		shell->args[j] = ft_itoa(shell->stat_loc);
-		return (1);
-	}
-	return (0);
-}
+	int		i;
+	char	*tmp;
 
-static void		expand_var(t_shell *shell, t_expand expnd, int i, int j)
-{
-	char *tmp;
-
-	set_expansion_boundaries(&expnd.env, &expnd.post);
-	while (shell->env[i] && ft_strncmp(shell->env[i], expnd.env, ft_strlen(expnd.env)))
+	i = 0;
+	check_residual_escape(env);
+	while (shell->env[i] && ft_strncmp(shell->env[i], env, ft_strlen(env)))
 		i++;
 	if (shell->env[i])
-		tmp = ft_strjoin(expnd.pre, shell->env[i] + ft_strlen(expnd.env) + 1);
+		tmp = ft_strdup(shell->env[i]);
 	else
-		tmp = ft_strjoin(expnd.pre, "");
-	if (expnd.post)
+		tmp = ft_strdup("");
+	free(env);
+	return (tmp);
+}
+
+static	char	*escape_expansion(char *str)
+{
+	char	*dollar;
+	char	*tmp;
+
+	check_residual_escape(str);
+	dollar = ft_strdup("$");
+	tmp = ft_strjoin(dollar, str);
+	free(str);
+	free(dollar);
+	return (tmp);
+}
+
+static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_env)
+{
+	int		len;
+	char	*buff;
+
+	len = 0;
+	buff = ft_strdup("");
+	while (env_split[len])
+		len++;
+	len--;
+	while (len >= 0)
 	{
-		shell->args[j] = ft_strjoin(tmp, expnd.post);
-		free(tmp);
+		if (len && env_split[len - 1][ft_strlen(env_split[len - 1]) - 1] == '\\')
+			env_split[len] = escape_expansion(env_split[len]);
+		else if (len || first_is_env)
+			env_split[len] = expand_var(env_split[len], shell);
+		buff = append_expanded(buff, env_split[len]);
+		len--;
 	}
-	else
-		shell->args[j] = tmp;
-	free(expnd.pre);
+	return (buff);
 }
 
 /*
-** In case var expansion is in the middle of a string we consider:
-** [pre]${VAR}[post]
+** Arg is splitted by $. If any escaped $ is found (\$), the split will be as follows:
+** hello$PATH\$PWD -> [hello] [PATH\] [PWD]
+** We must then start with the last split and check if previous split ends in '\' in
+** order to escape the current env split.
 */
 
 void			expansion(t_shell *shell)
 {
-	int			i;
-	int			j;
-	t_expand	expnd;
+	int		i;
+	char	**env_split;
 
-	j = 1;
-	expnd.post = NULL;
-	while (shell->args[j])
+	i = 1;
+	while (shell->args[i])
 	{
-		i = 0;
-		expnd.pre = shell->args[j];
-		if ((expnd.env = ft_strchr(shell->args[j], '$'))
-				&& !last_proc_status(expnd.env, shell, j))
-			expand_var(shell, expnd, i, j);
-		j++;
+		env_split = ft_split(shell->args[i], '$');
+		if (env_split[1] || (*env_split[0] != *shell->args[i]))
+		{
+			free(shell->args[i]);
+			shell->args[i] = parse_expansion(shell, env_split,
+							(short)(*shell->args[i] == '$'));
+		}
+		free(env_split);
+		i++;
 	}
 }

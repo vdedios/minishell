@@ -105,7 +105,6 @@ static void		read_input(char *line, t_shell *shell)
 	char *tmp;
 
 	signal(SIGQUIT, signal_handler_running);
-	signal(SIGTERM, signal_handler_running);
 	while (1)
 	{
 		signal(SIGINT, signal_handler_running);
@@ -129,7 +128,7 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 	char	*line;
-	char *tmp;
+	char	*tmp;
 
 	shell.stat_loc = 0;
 	line = NULL;
