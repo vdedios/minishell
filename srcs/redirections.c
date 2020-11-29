@@ -74,8 +74,6 @@ int	find_redirections(t_shell *shell)
 			fd = redirections_input(shell, it);
 		else if (ft_strcmp(shell->args[it], ">>"))
 			fd = redirections_append(shell, it);
-		//else if (ft_strcmp(shell->arg, "|"))
-		//	redirection_pipe();	
 		else
 			it++;
 	}
