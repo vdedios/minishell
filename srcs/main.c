@@ -120,8 +120,6 @@ static void		minishell(char *line, t_shell *shell)
 
 static void		read_input(char *line, t_shell *shell)
 {
-	char *tmp;
-
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
@@ -134,9 +132,7 @@ static void		read_input(char *line, t_shell *shell)
 			free(line);
 			exit(0);
 		}
-		tmp = parse_quotes(line);
-		free(line);
-		line = tmp;
+		line = parse_input(line);
 		minishell(line, shell);
 		free(line);
 	}
@@ -146,7 +142,6 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 	char	*line;
-	char	*tmp;
 
 	shell.stat_loc = 0;
 	line = NULL;
@@ -155,9 +150,7 @@ int				main(int argc, char **argv, char **envp)
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
-		tmp = parse_quotes(line);
-		free(line);
-		line = tmp;
+		line = parse_input(line);
 		minishell(line, &shell);
 		free(line);
 	}

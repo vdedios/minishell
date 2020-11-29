@@ -1,5 +1,3 @@
-prueba.txt
-
 sites
 *.d
 
@@ -106,4 +104,8 @@ dkms.confekms.conf
 
 # Test files
 test
+prueba.txt
+minishell_test
 
+# System files
+.DS_Store

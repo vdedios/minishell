@@ -33,8 +33,11 @@ static char	*find_closing_quote(char *str, char quote, int opening, int *closing
 	{
 		if (str[i] == quote)
 		{
-			*closing += opening + 1;
-			return (get_string_between_quotes(str, opening, *closing, quote));
+			if ((quote == '\'' || str[i - 1] != '\\'))
+			{
+				*closing += opening + 1;
+				return (get_string_between_quotes(str, opening, *closing, quote));
+			}
 		}
 		*closing += 1;
 		i++;
@@ -56,7 +59,8 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 	*opening = 0;
 	while (str[*opening])
 	{
-		if (str[*opening] == '\'' || str[*opening] == '\"')
+		if ((str[*opening] == '\'' || str[*opening] == '\"')
+				&& str[*opening - 1] != '\\')
 		{
 			quote = str[*opening];
 			return(find_closing_quote(str, quote, *opening, closing));
@@ -74,7 +78,7 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 	char 	*tmp;
 	char 	*tmp2;
 
-	if (opening)
+	if (opening && opening != -1)
 	{
 		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
 			return (NULL);
@@ -109,7 +113,7 @@ char		*parse_quotes(char *str)
 		if (str_in_quotes != str)
 			free(str_in_quotes);
 		if (opening != -1)
-			str += (opening + (closing - opening) + 1);
+			str += (closing + 1);
 		else
 			break;
 	}

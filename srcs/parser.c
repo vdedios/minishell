@@ -23,3 +23,17 @@ char	**get_args(char *input)
 		return (NULL);
 	return (args);
 }
+
+char	*parse_input(char *input)
+{
+	char *tmp;
+	char *tmp2;
+
+	tmp2 = parse_backslash(input, 1);
+	tmp = parse_quotes(tmp2);
+	free (tmp2);
+	tmp2 = parse_backslash(tmp, 0);
+	free(input);
+	free(tmp);
+	return (tmp2);
+}
