@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/29 10:43:25 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/29 12:58:35 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,17 @@ int		run_command(t_shell *shell)
 	else
 	{
 		path = ft_strdup(shell->args[0]);
-		if (lstat(path, &s) != -1)
+		if (stat(path, &s) != -1)
 		{
+			if (s.st_mode & S_IFDIR)
+			{
+				shell->stat_loc = 126;
+				print_errors(shell, " is a directory", shell->args[0]);
+			}
 			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
 			{
 				shell->stat_loc = 126;
 				print_errors(shell, " Permission denied", shell->args[0]);
-			}
-			if (s.st_mode & S_IFDIR)
-			{
-				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", shell->args[0]);
-				print_errors(shell, " is a directory", shell->args[0]);
 			}
 		}
 	}
