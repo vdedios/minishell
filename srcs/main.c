@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/28 09:50:24 by migferna         ###   ########.fr       */
+/*   Updated: 2020/11/29 10:43:25 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int		run_command(t_shell *shell)
 	char	*value;
 	char	*path;
 	char	**paths;
+	struct	stat s;
 	pid_t	pid;
 
 	value = get_env(shell->env, "PATH");
@@ -25,12 +26,29 @@ int		run_command(t_shell *shell)
 	if (path)
 		path = absolute_bin_path(path, shell->args[0]);
 	else
+	{
 		path = ft_strdup(shell->args[0]);
+		if (lstat(path, &s) != -1)
+		{
+			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+			{
+				shell->stat_loc = 126;
+				print_errors(shell, " Permission denied", shell->args[0]);
+			}
+			if (s.st_mode & S_IFDIR)
+			{
+				shell->stat_loc = 126;
+				print_errors(shell, " Permission denied", shell->args[0]);
+				print_errors(shell, " is a directory", shell->args[0]);
+			}
+		}
+	}
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(path, shell->args, shell->env);
-		print_errors(shell, " command not found ", shell->args[0]);
+		shell->stat_loc = 127;
+		print_errors(shell, " command not found", shell->args[0]);
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
