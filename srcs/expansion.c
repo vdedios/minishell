@@ -47,6 +47,12 @@ static	char	*expand_var(char *env, t_shell *shell)
 	return (tmp);
 }
 
+static	char	*last_proc_status(t_shell *shell, char *env)
+{
+	free(env);
+	return (ft_itoa(shell->stat_loc));
+}
+
 static	char	*escape_expansion(char *str)
 {
 	char	*dollar;
@@ -74,6 +80,8 @@ static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_en
 	{
 		if (len && env_split[len - 1][ft_strlen(env_split[len - 1]) - 1] == '\\')
 			env_split[len] = escape_expansion(env_split[len]);
+		else if (env_split[len][0] == '?' && !env_split[len][1])
+			env_split[len] = last_proc_status(shell, env_split[len]);
 		else if (len || first_is_env)
 			env_split[len] = expand_var(env_split[len], shell);
 		buff = append_expanded(buff, env_split[len]);
