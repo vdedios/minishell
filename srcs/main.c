@@ -20,6 +20,7 @@ int		run_command(t_shell *shell, char exited)
 	struct	stat s;
 	pid_t	pid;
 
+	//pid = fork();
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell->args[0], paths);
@@ -127,6 +128,7 @@ static void		minishell(char *line, t_shell *shell)
 	}
 	while (shell->instructions[it])
 	{
+		shell->stat_loc = 0;
 		shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
 		shell->commands = ft_split(shell->instructions[it], '|');
 		if (ft_strchr(shell->instructions[it], '|'))
