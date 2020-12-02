@@ -43,7 +43,7 @@ void	clean_shell(t_shell *shell);
 ** Error functions
 */
 
-void	print_errors(t_shell *shell, char *msg, char *bin);
+void	print_errors(t_shell *shell, char *msg, char *bin, char exited);
 
 
 /*
@@ -58,10 +58,10 @@ char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
 char	*search_binary(char *binary, char **paths);
 int		get_next_line(char **line);
-int		find_redirections(t_shell *shell);
+int		find_redirections(t_shell *shell, char exited);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
-int		run_command(t_shell *shell);
+int		run_command(t_shell *shell, char exited);
 
 /*
 ** Parsing functions

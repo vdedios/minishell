@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/02 20:46:13 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/02 21:53:31 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ int		run_command(t_shell *shell, char exited)
 			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
 			{
 				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", shell->args[0], exited);
+				print_errors(shell, " Permission denied", shell->binary, exited);
 			}
+			
+			if (s.st_mode & S_ISUID || s.st_mode & S_ISGID)
+				return (1);
 		}
 		else
 		{
