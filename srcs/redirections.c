@@ -4,19 +4,23 @@ static	int	redirections_append(t_shell *shell, size_t it, char exited)
 {
 	int fd;
 	
+	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
 		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
 	}
-	if ((fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
-	{
-		shell->stat_loc = 1;
-		print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
-	}
 	else
-		dup2(fd, 1);
-	ft_unset(shell->args[it], shell->args);
+	{
+		if ((fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
+		{
+			shell->stat_loc = 1;
+			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+		}
+		else
+			dup2(fd, 1);
+		ft_unset(shell->args[it], shell->args);
+	}
 	ft_unset(shell->args[it], shell->args);
 	return (fd);
 }
@@ -25,19 +29,23 @@ static int	redirections_output(t_shell *shell, size_t it, char exited)
 {	
 	int fd;
 
+	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
 		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
 	}
-	if ((fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
-	{
-		shell->stat_loc = 1;
-		print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
-	}
 	else
-		dup2(fd, 1);
-	ft_unset(shell->args[it], shell->args);
+	{
+		if ((fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
+		{
+			shell->stat_loc = 1;
+			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+		}
+		else
+			dup2(fd, 1);
+		ft_unset(shell->args[it], shell->args);
+	}
 	ft_unset(shell->args[it], shell->args);
 	return (fd);
 }
@@ -53,25 +61,28 @@ static int	redirections_input(t_shell *shell, size_t it, char exited)
 		shell->stat_loc = 2;
 		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
 	}
-	if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
+	else
 	{
-		if (stat(shell->args[it + 1], &s) != -1)
+		if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
 		{
-			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+			if (stat(shell->args[it + 1], &s) != -1)
+			{
+				if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+				{
+					shell->stat_loc = 1;
+					print_errors(shell, " Permission denied", shell->args[it + 1], exited);
+				}
+			}
+			else
 			{
 				shell->stat_loc = 1;
-				print_errors(shell, " Permission denied", shell->args[it + 1], exited);
+				print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
 			}
 		}
 		else
-		{
-			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
-		}
+			dup2(fd, 0);
+		ft_unset(shell->args[it], shell->args);
 	}
-	else
-		dup2(fd, 0);
-	ft_unset(shell->args[it], shell->args);
 	ft_unset(shell->args[it], shell->args);
 	return (fd);
 }
