@@ -45,7 +45,9 @@ static int	redirections_output(t_shell *shell, size_t it, char exited)
 static int	redirections_input(t_shell *shell, size_t it, char exited)
 {
 	int fd;
+	struct stat	s;
 
+	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
@@ -53,8 +55,19 @@ static int	redirections_input(t_shell *shell, size_t it, char exited)
 	}
 	if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
 	{
-		shell->stat_loc = 1;
-		print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+		if (stat(shell->args[it + 1], &s) != -1)
+		{
+			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+			{
+				shell->stat_loc = 1;
+				print_errors(shell, " Permission denied", shell->args[it + 1], exited);
+			}
+		}
+		else
+		{
+			shell->stat_loc = 1;
+			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+		}
 	}
 	else
 		dup2(fd, 0);

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/02 21:53:31 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/06 16:07:33 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,41 +20,42 @@ int		run_command(t_shell *shell, char exited)
 	struct	stat s;
 	pid_t	pid;
 
-	//pid = fork();
 	value = get_env(shell->env, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell->args[0], paths);
-	if (path)
-		path = absolute_bin_path(path, shell->args[0]);
-	else
-	{
-		path = ft_strdup(shell->args[0]);
-		if (stat(path, &s) != -1)
-		{
-			if (s.st_mode & S_IFDIR)
-			{
-				shell->stat_loc = 126;
-				print_errors(shell, " is a directory", shell->args[0], exited);
-			}
-			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
-			{
-				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", shell->binary, exited);
-			}
-			
-			if (s.st_mode & S_ISUID || s.st_mode & S_ISGID)
-				return (1);
-		}
-		else
-		{
-			shell->stat_loc = 127;
-			print_errors(shell, " command not found", shell->binary, exited);
-			return (1);
-		}
-	}
+	path = search_binary(shell, paths, exited);
 	pid = fork();
 	if (pid == 0)
 	{
+		if (path)
+			path = absolute_bin_path(path, shell->args[0]);
+		else
+		{
+			path = ft_strdup(shell->args[0]);
+			if (stat(path, &s) != -1)
+			{
+				if (s.st_mode & S_IFDIR)
+				{
+					shell->stat_loc = 126;
+					print_errors(shell, " is a directory", shell->args[0], exited);
+					exit(shell->stat_loc);
+				}
+				else if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+				{
+					shell->stat_loc = 126;
+					print_errors(shell, " Permission denied", shell->binary, exited);
+					exit(shell->stat_loc);
+				}
+			
+				if (s.st_mode & S_ISUID || s.st_mode & S_ISGID)
+					exit (shell->stat_loc);
+			}
+			else
+			{
+				shell->stat_loc = 127;
+				print_errors(shell, " command not found", shell->binary, exited);
+				exit(shell->stat_loc);
+			}
+		}
 		execve(path, shell->args, shell->env);
 		shell->stat_loc = 127;
 		print_errors(shell, " command not found", shell->args[0], exited);
@@ -65,7 +66,7 @@ int		run_command(t_shell *shell, char exited)
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
-	free(path);
+	//free(path);
 	clean_matrix(paths);
 	free(paths);
 	return (1);
@@ -122,7 +123,7 @@ static void		minishell(char *line, t_shell *shell)
 	char	exited;
 
 	it = 0;
-	exited = 1;
+	exited = 0;
 	shell->instructions = ft_split(line, ';');
 	if (!(shell->instructions[0]))
 	{
@@ -145,6 +146,7 @@ static void		minishell(char *line, t_shell *shell)
 		if (shell->instructions[it + 1])
 			exited = 0;
 		handle_commands(shell, exited);
+		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
 	//clean_commands(shell);
@@ -187,5 +189,5 @@ int				main(int argc, char **argv, char **envp)
 	}
 	else
 		read_input(line, &shell);
-	return (0);
+	return (shell.stat_loc);
 }

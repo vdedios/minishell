@@ -26,6 +26,7 @@ typedef struct	s_shell{
 	char		**args;
 	char		**env;
 	int			stat_loc;
+	int			previous_stat;
 }				t_shell;
 
 
@@ -56,7 +57,7 @@ char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
-char	*search_binary(char *binary, char **paths);
+char	*search_binary(t_shell *shell, char **paths, char exited);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell, char exited);
 void	find_pipes(t_shell *shell);

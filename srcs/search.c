@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/02 20:34:13 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/05 17:21:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,36 @@ static	void	to_lower(char *input)
 	}
 }
 
-char	*search_binary(char *binary, char **paths)
+char	*search_binary(t_shell *shell, char **paths, char exited)
 {
+	(void)exited;
 	size_t			it;
 	struct stat		s;
 	struct dirent	*direntp;
 	DIR				*pdir;
 
 	it = -1;
-	to_lower(binary);
+	to_lower(shell->args[0]);
 	while (paths[++it])
 	{
-		if (lstat(paths[it], &s) != -1 && (s.st_mode & S_IFDIR))
+		if (stat(paths[it], &s) != -1)
 		{
-			if (!(pdir = opendir(paths[it])))
-				return (NULL);
-			while ((direntp = readdir(pdir)))
+
+			if(s.st_mode & S_IFDIR)
 			{
-				if (ft_strcmp(direntp->d_name, binary))
+				if (!(pdir = opendir(paths[it])))
+					return (NULL);
+				while ((direntp = readdir(pdir)))
 				{
-					closedir(pdir);
-					return (paths[it]);
+					if (ft_strcmp(direntp->d_name, shell->args[0]))
+					{
+						closedir(pdir);
+						return (paths[it]);
+					}
+					direntp++;
 				}
-				direntp++;
+				closedir(pdir);
 			}
-			closedir(pdir);
 		}
 		//else
 		//	print_errors(shell, "Hola", "eeeee");

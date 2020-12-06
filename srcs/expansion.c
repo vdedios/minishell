@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2020/09/21 10:30:47 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/12/06 16:07:48 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static size_t	last_proc_status(char *env, t_shell *shell, int j)
 {
 	if (*(env + 1) == '?' && *(env + 2) == '\0')
 	{
-		shell->args[j] = ft_itoa(shell->stat_loc);
+		shell->args[j] = ft_itoa(shell->previous_stat);
 		return (1);
 	}
 	return (0);
