@@ -21,9 +21,7 @@ jobs:
         repository: 42Paris/norminette
         path: norminette
 
-    - uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
-      with:
-        ruby-version: 2.6
+    - uses: ruby/setup-ruby@v1.57.0
 
     - name: Install Norminette
       run: bundle
