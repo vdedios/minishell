@@ -63,6 +63,7 @@ int		find_redirections(t_shell *shell, char exited);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell, char exited);
+void	check_permissions(t_shell *shell, char *path, char exited);
 
 /*
 ** Parsing functions

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/06 16:07:33 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/07 14:38:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int		run_command(t_shell *shell, char exited)
 	char	*value;
 	char	*path;
 	char	**paths;
-	struct	stat s;
 	pid_t	pid;
 
 	value = get_env(shell->env, "PATH");
@@ -30,35 +29,12 @@ int		run_command(t_shell *shell, char exited)
 			path = absolute_bin_path(path, shell->args[0]);
 		else
 		{
-			path = ft_strdup(shell->args[0]);
-			if (stat(path, &s) != -1)
-			{
-				if (s.st_mode & S_IFDIR)
-				{
-					shell->stat_loc = 126;
-					print_errors(shell, " is a directory", shell->args[0], exited);
-					exit(shell->stat_loc);
-				}
-				else if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
-				{
-					shell->stat_loc = 126;
-					print_errors(shell, " Permission denied", shell->binary, exited);
-					exit(shell->stat_loc);
-				}
-			
-				if (s.st_mode & S_ISUID || s.st_mode & S_ISGID)
-					exit (shell->stat_loc);
-			}
-			else
-			{
-				shell->stat_loc = 127;
-				print_errors(shell, " command not found", shell->binary, exited);
-				exit(shell->stat_loc);
-			}
+			path = ft_strdup(shell->binary);
+			check_permissions(shell, path, exited);
 		}
 		execve(path, shell->args, shell->env);
 		shell->stat_loc = 127;
-		print_errors(shell, " command not found", shell->args[0], exited);
+		//print_errors(shell, " command not found", shell->args[0], exited);
 	}
 
 	signal(SIGINT, signal_handler_waiting);
@@ -66,7 +42,6 @@ int		run_command(t_shell *shell, char exited)
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
-	//free(path);
 	clean_matrix(paths);
 	free(paths);
 	return (1);
@@ -105,8 +80,8 @@ static void		handle_commands(t_shell *shell, char exited)
 	else
 	{
 		shell->args = get_args(*shell->commands);
-		shell->binary = ft_strdup(shell->args[0]);
 		expansion(shell);
+		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);
 		if (fd != -1)
 			if (shell->args[0] && !(check_builtin(shell)))

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/05 17:21:42 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/07 13:19:38 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ char	*search_binary(t_shell *shell, char **paths, char exited)
 	{
 		if (stat(paths[it], &s) != -1)
 		{
-
 			if(s.st_mode & S_IFDIR)
 			{
 				if (!(pdir = opendir(paths[it])))
@@ -54,8 +53,6 @@ char	*search_binary(t_shell *shell, char **paths, char exited)
 				closedir(pdir);
 			}
 		}
-		//else
-		//	print_errors(shell, "Hola", "eeeee");
 	}
 	return (NULL);
 }
