@@ -1,0 +1,29 @@
+name: Minishell
+
+on:
+  push:
+    branches: [ master, migferna, vdedios]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Make
+      run: make
+
+    - name: Download Norminette
+      uses: actions/checkout@v2
+      with:
+        repository: 42Paris/norminette
+        path: norminette
+
+    - uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+      with:
+        ruby-version: 2.6
+
+    - name: Install Norminette
+      run: bundle
