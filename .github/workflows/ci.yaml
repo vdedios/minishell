@@ -25,5 +25,5 @@ jobs:
         repository: cacharle/minishell_test
 
     - name: Run test
-      working-directory: ./minishell
+      working-directory: ./minishell_test
       run: ./run
