@@ -11,6 +11,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+      
+    - uses: ruby/setup-ruby@v1.57.0
+      with:
+        ruby-version: 2.6
 
     - name: Make
       run: make
@@ -21,9 +25,6 @@ jobs:
         repository: 42Paris/norminette
         path: norminette
 
-    - uses: ruby/setup-ruby@v1.57.0
-      with:
-        ruby-version: 2.6
-
     - name: Install Norminette
+      working-directory: ./norminette
       run: bundle
