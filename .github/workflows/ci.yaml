@@ -28,3 +28,7 @@ jobs:
     - name: Install Norminette
       working-directory: ./norminette
       run: bundle
+      
+    - name: Norminette
+      working-directory: ./norminette
+      run: norminette.rb .
