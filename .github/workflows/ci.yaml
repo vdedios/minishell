@@ -22,6 +22,8 @@ jobs:
         path: norminette
 
     - uses: ruby/setup-ruby@v1.57.0
+      with:
+        ruby-version: defautl 
 
     - name: Install Norminette
       run: bundle
