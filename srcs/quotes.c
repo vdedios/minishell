@@ -13,7 +13,7 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 		return (NULL);
 	while (i < closing)
 	{
-		if (quote != '\"' && is_special_char(str[i]))
+		if (quote == '\'' && is_special_char(str[i]))
 			buff[j++] = '\\';
 		else if (is_space(str[i]))
 			buff[j++] = '\\';
@@ -33,7 +33,7 @@ static char	*find_closing_quote(char *str, char quote, int opening, int *closing
 	{
 		if (str[i] == quote)
 		{
-			if ((quote == '\'' || str[i - 1] != '\\'))
+			if ((quote == '\'' || check_prev_backslashes(str, i)))
 			{
 				*closing += opening + 1;
 				return (get_string_between_quotes(str, opening, *closing, quote));
@@ -60,7 +60,7 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 	while (str[*opening])
 	{
 		if ((str[*opening] == '\'' || str[*opening] == '\"')
-				&& str[*opening - 1] != '\\')
+			&& check_prev_backslashes(str, *opening))
 		{
 			quote = str[*opening];
 			return(find_closing_quote(str, quote, *opening, closing));

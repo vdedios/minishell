@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+static char	*update_last_arg(char **args)
+{
+	int		len;
+
+	len = 0;
+	while (args[len])
+		len++;
+	if (len > 1)
+		return (ft_strjoin("_=", args[len - 1]));
+	return (ft_strdup("_="));
+}
+
+
 int		run_command(t_shell *shell)
 {
 	char	*value;
@@ -60,29 +73,34 @@ int		run_command(t_shell *shell)
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
-	free(path);
+	ft_export(shell, update_last_arg(shell->args));
 	clean_matrix(paths);
+	free(path);
 	free(paths);
 	return (1);
 }
 
 int		check_builtin(t_shell *shell)
 {
+	int ret;
+
+	ret = 0;
 	if (ft_strcmp(*shell->args, "exit"))
 		ft_exit(shell);
 	else if (ft_strcmp(*shell->args, "echo"))
-		return (ft_echo(shell->args + 1));
+		ret = ft_echo(shell->args + 1);
 	else if (ft_strcmp(*shell->args, "cd"))
-		return (ft_cd(shell));
+		ret = ft_cd(shell);
 	else if (ft_strcmp(*shell->args, "pwd"))
-		return (ft_pwd());
+		ret = ft_pwd();
 	else if (ft_strcmp(*shell->args, "export"))
-		return (ft_export(shell));
+		ret = ft_export(shell, NULL);
 	else if (ft_strcmp(*shell->args, "unset"))
-		return (ft_unset(shell->args[1], shell->env));
+		ret = ft_unset(shell->args[1], shell->env);
 	else if (ft_strcmp(*shell->args, "env"))
-		return (ft_env(shell->args + 1, shell->env));
-	return (0);
+		ret = ft_env(shell->args + 1, shell->env);
+	ft_export(shell, update_last_arg(shell->args));
+	return (ret);
 }
 
 static void		handle_commands(t_shell *shell)
@@ -155,6 +173,7 @@ static void		read_input(char *line, t_shell *shell)
 		line = parse_input(line);
 		minishell(line, shell);
 		free(line);
+		line = NULL;
 	}
 }
 

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static	void	check_residual_escape(char *str)
+static	void	delete_residual_backslash(char *str)
 {
 	if (str[strlen(str) - 1] == '\\')
 		str[strlen(str) - 1] = '\0';
@@ -36,11 +36,11 @@ static	char	*expand_var(char *env, t_shell *shell)
 	char	*tmp;
 
 	i = 0;
-	check_residual_escape(env);
+	delete_residual_backslash(env);
 	while (shell->env[i] && ft_strncmp(shell->env[i], env, ft_strlen(env)))
 		i++;
 	if (shell->env[i])
-		tmp = ft_strdup(shell->env[i]);
+		tmp = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		tmp = ft_strdup("");
 	free(env);
@@ -58,7 +58,7 @@ static	char	*escape_expansion(char *str)
 	char	*dollar;
 	char	*tmp;
 
-	check_residual_escape(str);
+	delete_residual_backslash(str);
 	dollar = ft_strdup("$");
 	tmp = ft_strjoin(dollar, str);
 	free(str);
@@ -90,6 +90,27 @@ static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_en
 	return (buff);
 }
 
+static	short	is_single_dollar(char *str)
+{
+	if (ft_strlen(str) == 1 && *str == '$')
+		return (1);
+	else if (ft_strlen(str) == 2 && *str == '\\' && *(str + 1) == '$')
+		return (1);
+	return (0);
+}
+
+static	char	*get_single_dollar(char *str)
+{
+	if (ft_strlen(str) == 1 && *str == '$')
+		return (str);
+	else if (ft_strlen(str) == 2 && *str == '\\' && *(str + 1) == '$')
+	{
+		free(str);
+		return (ft_strdup("$"));
+	}
+	return (NULL);
+}
+
 /*
 ** Arg is splitted by $. If any escaped $ is found (\$), the split will be as follows:
 ** hello$PATH\$PWD -> [hello] [PATH\] [PWD]
@@ -105,14 +126,19 @@ void			expansion(t_shell *shell)
 	i = 1;
 	while (shell->args[i])
 	{
-		env_split = ft_split(shell->args[i], '$');
-		if (env_split[1] || (*env_split[0] != *shell->args[i]))
+		if (is_single_dollar(shell->args[i]))
+			shell->args[i] = get_single_dollar(shell->args[i]);
+		else
 		{
-			free(shell->args[i]);
-			shell->args[i] = parse_expansion(shell, env_split,
-							(short)(*shell->args[i] == '$'));
+			env_split = ft_split(shell->args[i], '$');
+			if (env_split[1] || (*env_split[0] != *shell->args[i]))
+			{
+				free(shell->args[i]);
+				shell->args[i] = parse_expansion(shell, env_split,
+								(short)(*shell->args[i] == '$'));
+			}
+			free(env_split);
 		}
-		free(env_split);
 		i++;
 	}
 }

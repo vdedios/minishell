@@ -63,10 +63,11 @@ int		run_command(t_shell *shell);
 
 void	expansion(t_shell *shell);
 char	*parse_quotes(char *str);
-char	*parse_backslash(char *str, short previous);
+char	*parse_backslash(char *str);
 char	*parse_input(char *input);
 short	is_special_char(char c);
 short	is_space(char c);
+short	check_prev_backslashes(char *str, int i);
 int		n_special_chars(char *str, int opening, int closing, char quote);
 /*
 ** Builtin functions
@@ -78,7 +79,7 @@ int		ft_echo(char **args);
 int		ft_pwd();
 int		ft_unset(char *var, char **env);
 void	ft_exit(t_shell *shell);
-int 	ft_export(t_shell *shell);
+int 	ft_export(t_shell *shell, char *last_arg);
 
 /*
 ** Signal functions

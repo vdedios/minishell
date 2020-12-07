@@ -2,14 +2,7 @@
 
 static short	check_special_char(char c)
 {
-	if (c == '\''|| c == '\"')
-		return (1);
-	return (0);
-}
-
-static short	check_special_char_pre(char c)
-{
-	if (c == '\\')
+	if (c == '\'' || c == '\"' || c == '\\')
 		return (1);
 	return (0);
 }
@@ -23,10 +16,7 @@ static char		*remove_backslash(char *buff, char *backslash)
 
 	len = ft_strlen(buff);
 	len_left = ft_strlen(backslash);
-	if (*(backslash + 1) == '\\' && *(backslash + 2))
-		backslash += 2;
-	else
-		backslash++;
+	backslash++;
 	if (!(tmp = malloc((len - len_left + 1) * sizeof(char))))
 		return (NULL);
 	ft_strlcpy(tmp, buff, len - len_left + 1);
@@ -36,7 +26,21 @@ static char		*remove_backslash(char *buff, char *backslash)
 	return (tmp2);
 }
 
-char			*parse_backslash(char *str, short previous)
+static short	end_open_backslashes(char *str)
+{
+	int n;
+
+	n = 0;
+	while (*str)
+	{
+		if (*str != '\\')
+			return (0);
+		str++;
+		n++;
+	}
+	return (n % 2);
+}
+char			*parse_backslash(char *str)
 {
 	char	*buff;
 	char	*backslash;
@@ -46,17 +50,16 @@ char			*parse_backslash(char *str, short previous)
 	{
 		if (!(backslash = ft_strchr(str, '\\')))
 			break;
-		if (previous)
+		if (end_open_backslashes(backslash))
 		{
-			if (check_special_char_pre(*(backslash + 1)))
-				buff = remove_backslash(buff, backslash);
+			free(buff);
+			return(ft_strdup("error"));
 		}
-		else
-		{
-			if (check_special_char(*(backslash + 1)))
-				buff = remove_backslash(buff, backslash);
-		}
+		if (check_special_char(*(backslash + 1)))
+			buff = remove_backslash(buff, backslash);
 		str = backslash + 1;
+		if (*str == '\\')
+			str++;
 	}
 	return (buff);
 }

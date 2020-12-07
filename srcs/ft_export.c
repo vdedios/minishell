@@ -52,31 +52,43 @@ static size_t	print_sorted_env(t_shell *shell)
 	return (1);
 }
 
-int				ft_export(t_shell *shell)
+static	void	export_values(t_shell *shell, char *last_arg, int j)
 {
-	int  i;
-	int  j;
-	char *value;
-	char *tmp;
-	char **tmp_env;
+	int  	i;
+	char 	*value;
+	char	*tmp;
+	char 	**tmp_env;
+
+	i = 0;
+	if (last_arg)
+		value = last_arg;
+	else
+		value = ft_strdup(shell->args[j]);
+	tmp = ft_strchr(value, '=');
+	while (shell->env[i] && ft_strncmp(shell->env[i], value,
+				ft_strlen(value) - ft_strlen(tmp)))
+		i++;
+	tmp_env = add_env(&value, shell->env, i);
+	clean_env(shell);
+	shell->env = tmp_env;
+}
+
+int				ft_export(t_shell *shell, char *last_arg)
+{
+	char	*tmp;
+	int  	j;
 
 	j = 1;
-	if (shell->args[j] || !print_sorted_env(shell))
+	if (last_arg)
+		export_values(shell, last_arg, 0);
+	else if (shell->args[j] || !print_sorted_env(shell))
+	{
 		while (shell->args[j])
 		{
-			i = 0;
 			if ((tmp = ft_strchr(shell->args[j], '=')) && *tmp != *shell->args[j])
-			{
-				value = ft_strdup(shell->args[j]);
-				*tmp = '\0';
-				while (shell->env[i] && ft_strncmp(shell->env[i], shell->args[j],
-							ft_strlen(shell->args[j])))
-					i++;
-				tmp_env = add_env(&value, shell->env, i);
-				clean_env(shell);
-				shell->env = tmp_env;
-			}
+				export_values(shell, last_arg, j);
 			j++;
 		}
+	}
 	return (1);
 }
