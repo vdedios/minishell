@@ -63,12 +63,13 @@ int		run_command(t_shell *shell);
 
 void	expansion(t_shell *shell);
 char	*parse_quotes(char *str);
-char	*parse_backslash(char *str);
+char	*parse_backslash(char *str, char key);
 char	*parse_input(char *input);
 short	is_special_char(char c);
 short	is_space(char c);
 short	check_prev_backslashes(char *str, int i);
 int		n_special_chars(char *str, int opening, int closing, char quote);
+char	**ft_split_args(char *input);
 /*
 ** Builtin functions
 */

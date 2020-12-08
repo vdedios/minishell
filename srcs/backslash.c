@@ -1,8 +1,10 @@
 #include "minishell.h"
 
-static short	check_special_char(char c)
+static short	check_special_char(char c, char key)
 {
-	if (c == '\'' || c == '\"' || c == '\\')
+	if (!key && (c == '\'' || c == '\"' || c == '\\'))
+		return (1);
+	else if (key && c == ' ')
 		return (1);
 	return (0);
 }
@@ -40,7 +42,14 @@ static short	end_open_backslashes(char *str)
 	}
 	return (n % 2);
 }
-char			*parse_backslash(char *str)
+
+/*
+** key equals to 1 when function is called to delete residual backslashes
+** from command split. It will ignore odd numner of backslash because this
+** has been accounted in previous calls.
+*/
+
+char			*parse_backslash(char *str, char key)
 {
 	char	*buff;
 	char	*backslash;
@@ -50,12 +59,12 @@ char			*parse_backslash(char *str)
 	{
 		if (!(backslash = ft_strchr(str, '\\')))
 			break;
-		if (end_open_backslashes(backslash))
+		if (!key && end_open_backslashes(backslash))
 		{
 			free(buff);
 			return(ft_strdup("error"));
 		}
-		if (check_special_char(*(backslash + 1)))
+		if (check_special_char(*(backslash + 1), key))
 			buff = remove_backslash(buff, backslash);
 		str = backslash + 1;
 		if (*str == '\\')
