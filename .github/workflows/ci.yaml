@@ -11,17 +11,17 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path:  minishell
 
     - name: Make
+      working-directory: minishell
       run: make
 
     - name: Test
       uses: actions/checkout@v2
       with:
         repository: cacharle/minishell_test
-        path: test 
 
     - name: Run test
-      run: |
-        ls
-        ./run
+      run: ./run
