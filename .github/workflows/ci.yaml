@@ -26,4 +26,6 @@ jobs:
 
     - name: Run test
       working-directory: ./minishell_test
-      run: ./run
+      run: |
+        pwd
+        ls
