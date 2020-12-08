@@ -19,7 +19,9 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: cacharle/minishell_test
-        path: ../ 
+        path: test 
 
     - name: Run test
-      run: ./run
+      run: |
+        ls
+        ./run
