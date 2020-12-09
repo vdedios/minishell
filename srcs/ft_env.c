@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:15:33 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 13:40:35 by migferna         ###   ########.fr       */
+/*   Updated: 2020/10/24 19:26:00 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,6 @@ int	ft_env(char **args, char **env)
 	}
 	it = 0;
 	while (env[it])
-		ft_putendl_fd(env[it++], 0);
+		ft_putendl_fd(env[it++], 1);
 	return (1);
 }

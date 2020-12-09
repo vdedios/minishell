@@ -1,5 +1,3 @@
-prueba.txt
-
 sites
 *.d
 
@@ -154,3 +152,10 @@ Module.symvers
 Mkfile.old
 dkms.confekms.conf
 
+# Test files
+test
+prueba.txt
+minishell_test
+
+# System files
+.DS_Store

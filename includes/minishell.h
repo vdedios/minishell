@@ -5,24 +5,24 @@
 # include <errno.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <signal.h>
+# include <fcntl.h>
 # include "libft.h"
 
 /*
 ** Basic structures
 */
 
-typedef struct	s_expand{
-	char		*pre;
-	char		*env;
-	char		*post;
-}				t_expand;
-
 typedef struct	s_shell{
+	char		**instructions;
+	char		*binary;
 	char		**commands;
 	char		**args;
 	char		**env;
 	int			stat_loc;
+	int			previous_stat;
 }				t_shell;
 
 
@@ -40,7 +40,7 @@ void	clean_shell(t_shell *shell);
 ** Error functions
 */
 
-void	print_errors(char *msg, char *bin);
+void	print_errors(t_shell *shell, char *msg, char *bin, char exited);
 
 
 /*
@@ -53,15 +53,27 @@ char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
-char	*search_binary(char *binary, char **paths);
+char	*search_binary(t_shell *shell, char **paths, char exited);
 int		get_next_line(char **line);
+int		find_redirections(t_shell *shell, char exited);
+void	find_pipes(t_shell *shell);
+int		check_builtin(t_shell *shell);
+int		run_command(t_shell *shell, char exited);
+void	check_permissions(t_shell *shell, char *path, char exited);
 
 /*
 ** Parsing functions
 */
 
 void	expansion(t_shell *shell);
-
+char	*parse_quotes(char *str);
+char	*parse_backslash(char *str, char key);
+char	*parse_input(char *input);
+short	is_special_char(char c);
+short	is_space(char c);
+short	check_prev_backslashes(char *str, int i);
+int		n_special_chars(char *str, int opening, int closing, char quote);
+char	**ft_split_args(char *input);
 /*
 ** Builtin functions
 */
@@ -72,7 +84,7 @@ int		ft_echo(char **args);
 int		ft_pwd();
 int		ft_unset(char *var, char **env);
 void	ft_exit(t_shell *shell);
-int 	ft_export(t_shell *shell);
+int 	ft_export(t_shell *shell, char *last_arg);
 
 /*
 ** Signal functions

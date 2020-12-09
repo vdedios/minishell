@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 13:52:18 by migferna         ###   ########.fr       */
+/*   Updated: 2020/09/30 18:27:36 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		ft_unset(char *var, char **env)
 			env[it - 1] = env[it];
 			it++;
 		}
-		env[it] = NULL;
+		env[it - 1] = NULL;
 	}
 	return (1);
 }
