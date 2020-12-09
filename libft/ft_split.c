@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 12:57:15 by vde-dios          #+#    #+#             */
-/*   Updated: 2019/11/18 12:59:33 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/12/07 20:12:38 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,8 @@ static size_t		ft_count_words(char const *s, char c)
 static	char		*ft_get_word(char const *s, char c)
 {
 	size_t	j;
-	size_t	k;
 	char	*word;
 
-	k = 0;
 	j = 0;
 	while (s[j] != c && s[j])
 		j++;
