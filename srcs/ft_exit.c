@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	ft_iterate(const char *nptr, long long *num)
+static	void	ft_iterate(const char *nptr, long long *num)
 {
 	while (*nptr >= '0' && *nptr <= '9')
 	{
@@ -63,7 +63,8 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 		num = -1 * num;
 	return ((int)num);
 }
-void	ft_exit(t_shell *shell)
+
+void			ft_exit(t_shell *shell)
 {
 	int 	value;
 	char	*nbr;
