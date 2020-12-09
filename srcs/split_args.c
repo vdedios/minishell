@@ -21,14 +21,20 @@ static	int		count_args(char	*input)
 	return (l);
 }
 
-static void		set_split_delimiter(char *input)
+static char		*set_split_delimiter(char *input)
 {
-	while (*input)
-	{
-		if (*input == ' ' && *(input - 1) != '\\')
-			*input = '\0';
+	int	i;
+
+	i = 0;
+	while (*input == ' ')
 		input++;
+	while (input[i])
+	{
+		if (input[i] == ' ' && input[i - 1] != '\\')
+			input[i] = '\0';
+		i++;
 	}
+	return (input);
 }
 
 static	void	divide_arguments(char	**args, char *input, int len)
@@ -77,7 +83,7 @@ char	**ft_split_args(char *input)
 	if (!(args = malloc((count_args(input) + 2) * sizeof(char *))))
 		return (NULL);
 	len = strlen(input);
-	set_split_delimiter(input);
+	input = set_split_delimiter(input);
 	divide_arguments(args, input, len);
 	delete_residual_backslash(args);
 	return (args);
