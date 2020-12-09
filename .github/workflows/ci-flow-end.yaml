@@ -24,6 +24,6 @@ jobs:
         repository: cacharle/minishell_test
         path: test 
 
-    - name: Run test
+    - name: Run test flow/end
       working-directory: test
-      run: ./run
+      run: ./run flow/end
