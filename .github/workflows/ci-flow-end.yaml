@@ -1,6 +1,8 @@
 name: Minishell
 
-on: [push, pull_request]
+on:
+  push: 
+   branches: [fix/flow_end]
 
 jobs:
   build:
