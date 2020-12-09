@@ -35,13 +35,22 @@ static	void	divide_arguments(char	**args, char *input, int len)
 {
 	int		i;
 	int		j;
+	char	*tmp;
 
 	i = 0;
 	j = 0;
 	while(i < len)
 	{
 		args[j] = strdup(&input[i]);
-		i += strlen(args[j]);
+		if (!ft_strncmp(args[j], "\"\"", 3))
+		{
+			tmp = ft_strdup("");
+			free(args[j]);
+			args[j] = tmp;
+			i += 2;
+		}
+		else
+			i += strlen(args[j]);
 		j++;
 		while (i < len && !input[i])
 			i++;

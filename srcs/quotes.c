@@ -23,12 +23,25 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 	return (buff);
 }
 
+static void	handle_quote_error(char quote)
+{
+	if (quote == '\'')
+		print_errors(NULL, "unexpected EOF while looking for matching `''", NULL, 0);
+	else
+		print_errors(NULL, "unexpected EOF while looking for matching `\"'", NULL, 0);
+}
+
 static char	*find_closing_quote(char *str, char quote, int opening, int *closing)
 {
 	int 	i;
 
 	i = opening + 1;
 	*closing = 0;
+	if (str[i] == quote && i >= 2 && str[i - 2] == ' ')
+	{
+		*closing += opening + 1;
+		return (ft_strdup("\"\" "));
+	}
 	while (str[i])
 	{
 		if (str[i] == quote)
@@ -42,6 +55,7 @@ static char	*find_closing_quote(char *str, char quote, int opening, int *closing
 		*closing += 1;
 		i++;
 	}
+	handle_quote_error(quote);
 	return (NULL);
 }
 
@@ -107,7 +121,8 @@ char		*parse_quotes(char *str)
 		if (!(str_in_quotes = remove_quotes(str, &opening, &closing)))
 		{
 			free (buff);
-			return (ft_strdup("error"));
+			exit(2);
+			//return (ft_strdup("error"));
 		}
 		buff = join_parsed_str(str, str_in_quotes, buff, opening);
 		if (str_in_quotes != str)

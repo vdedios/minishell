@@ -131,12 +131,13 @@ void			expansion(t_shell *shell)
 		else
 		{
 			env_split = ft_split(shell->args[i], '$');
-			if (env_split[1] || (*env_split[0] != *shell->args[i]))
-			{
-				free(shell->args[i]);
-				shell->args[i] = parse_expansion(shell, env_split,
-								(short)(*shell->args[i] == '$'));
-			}
+			if (env_split[0])
+				if (env_split[1] || (*env_split[0] != *shell->args[i]))
+				{
+					free(shell->args[i]);
+					shell->args[i] = parse_expansion(shell, env_split,
+									(short)(*shell->args[i] == '$'));
+				}
 			free(env_split);
 		}
 		i++;
