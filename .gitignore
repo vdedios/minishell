@@ -156,6 +156,8 @@ dkms.confekms.conf
 test
 prueba.txt
 minishell_test
+minishell
 
 # System files
 .DS_Store
+.vscode
