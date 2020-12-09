@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/28 11:58:47 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/07 12:49:20 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,42 @@ static void	ft_iterate(const char *nptr, long long *num)
 	}
 }
 
-static	int		exit_atoi(const char *nptr)
+static	int		exit_atoi(t_shell *shell, const char *nptr)
 {
 	long long	num;
 	int		sign;
+	char	*msg;
 
 	sign = 0;
 	num = 0;
 	while (*nptr == '\t' || *nptr == '\n' || *nptr == '\v'
 		|| *nptr == '\f' || *nptr == '\r' || *nptr == ' ')
 		nptr++;
+	if ((*nptr >= 'a' && *nptr <= 'z') || (*nptr >= 'A' && *nptr <= 'Z'))
+	{
+		msg = ft_strjoin(shell->binary, ": ");
+		msg = ft_strjoin(msg, shell->args[1]);
+		print_errors(shell, " numeric argument required", msg, 0);
+		return (255);
+	}
 	if (*nptr == '-' || *nptr == '+')
 	{
 		if (*nptr == '-')
 			sign = 1;
 		nptr++;
+	}
+	if (*nptr == '-' || *nptr == '+')
+	{
+		msg = ft_strjoin(shell->binary, ": ");
+		msg = ft_strjoin(msg, shell->args[1]);
+		print_errors(shell, " numeric argument required", msg, 0);
+		free(msg);
+		return (255);
+	}
+	if (shell->args[2])
+	{
+		print_errors(shell, " too many arguments", shell->binary, 0);
+		return (1);
 	}
 	ft_iterate(nptr, &num);
 	if (sign == 1)
@@ -51,7 +72,7 @@ void	ft_exit(t_shell *shell)
 	if (!nbr)
 		value = 0;
 	else
-		value = exit_atoi(nbr);
+		value = exit_atoi(shell, nbr);
 	shell->stat_loc = value;
 	clean_shell(shell);
 	exit(value);

@@ -1,0 +1,33 @@
+name: Minishell
+
+on:
+  push:
+    branches: [ master, migferna, vdedios]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [macos-latest]
+    name: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path:  minishell
+
+    - name: Make
+      working-directory: minishell
+      run: make
+
+    - name: Test
+      uses: actions/checkout@v2
+      with:
+        repository: cacharle/minishell_test
+        path: test 
+
+    - name: Run test
+      working-directory: test
+      run: ./run

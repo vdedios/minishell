@@ -5,6 +5,8 @@
 # include <errno.h>
 # include <dirent.h>
 # include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <fcntl.h>
 # include "libft.h"
@@ -20,6 +22,7 @@ typedef struct	s_shell{
 	char		**args;
 	char		**env;
 	int			stat_loc;
+	int			previous_stat;
 }				t_shell;
 
 
@@ -37,7 +40,7 @@ void	clean_shell(t_shell *shell);
 ** Error functions
 */
 
-void	print_errors(t_shell *shell, char *msg, char *bin);
+void	print_errors(t_shell *shell, char *msg, char *bin, char exited);
 
 
 /*
@@ -50,12 +53,13 @@ char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(char **env, char *arg);
-char	*search_binary(char *binary, char **paths);
+char	*search_binary(t_shell *shell, char **paths, char exited);
 int		get_next_line(char **line);
-int		find_redirections(t_shell *shell);
+int		find_redirections(t_shell *shell, char exited);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
-int		run_command(t_shell *shell);
+int		run_command(t_shell *shell, char exited);
+void	check_permissions(t_shell *shell, char *path, char exited);
 
 /*
 ** Parsing functions

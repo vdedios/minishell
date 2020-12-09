@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:03:29 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/08 14:55:18 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/07 20:08:13 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 static int	find_all_characters(char* str, char c)
 {
-	size_t	len;
 	size_t	cont;	
 
 	cont = 0;
-	len = 0;
 	while (*str)
 	{
 		if (*str == c)

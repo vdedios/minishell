@@ -26,7 +26,8 @@ SRC_FILES =		main.c \
 				quotes_utils.c \
 				split_args.c \
 				redirections.c \
-				pipes.c
+				pipes.c \
+				permissions.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
