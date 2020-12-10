@@ -144,7 +144,7 @@ static void		minishell(char *line, t_shell *shell)
 
 	it = 0;
 	exited = 0;
-	line = ft_strtrim(line, " ");
+	//line = ft_strtrim(line, " ");
 	validator(shell, line, ';');
 	shell->instructions = ft_split(line, ';');
 	if (!(shell->instructions[0]))
@@ -155,7 +155,7 @@ static void		minishell(char *line, t_shell *shell)
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
-		shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
+		//shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
 		validator(shell, shell->instructions[it], '|');
 		shell->commands = ft_split(shell->instructions[it], '|');
 		if (ft_strchr(shell->instructions[it], '|'))
@@ -200,10 +200,14 @@ int				main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 	char	*line;
+	char	curr_pwd[1024];
 
 	shell.stat_loc = 0;
 	line = NULL;
 	shell.env = ft_strdup_matrix(envp);
+	getcwd(curr_pwd, 1024);
+	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
+	ft_export(&shell, ft_strdup("OLDPWD="));
 	shell.instructions = NULL;
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{

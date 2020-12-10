@@ -52,14 +52,13 @@ static void	change_dir(char *path, t_shell *shell)
 	}
 	else
 	{
-		ft_putstr_fd("cd: ", 1);
-		if (lstat(path, &s) != -1)
+		if (stat(path, &s) != -1)
 			if (s.st_mode & S_IFDIR)
-				ft_putstr_fd("permission denied: ", 1);
+				print_errors(shell, "permission denied:", shell->binary, 0);
 			else
-				ft_putstr_fd("not a directory: ", 1);
+				print_errors(shell, "not a directory:", shell->binary, 0);
 		else
-			ft_putstr_fd("no such file or directory: ", 1);
+			print_errors(shell, ft_strjoin(path," : No such file or directory"), shell->binary, 0);
 		ft_putendl_fd(path, 1);
 	}
 }
@@ -68,17 +67,22 @@ int			ft_cd(t_shell *shell)
 {
 	char	*path;
 
+	if (!*shell->args[1])
+	{
+		change_dir(".", shell);
+		return(1);
+	}
 	if (!shell->args[1] || !ft_strncmp(shell->args[1], "--", 3) ||
 		!ft_strncmp(shell->args[1], "~", 2))
 		path = get_env(shell->env, "HOME");
 	else if (!ft_strncmp(shell->args[1], "-", 2))
 		path = get_env(shell->env, "OLDPWD");
-	else if (shell->args[2])
+	else if (shell->args[2] && *shell->args[2])
 	{
 		path = NULL;
 		if (shell->args[3])
 		{
-			ft_putendl_fd("cd: too many arguments", 1);
+			print_errors(shell, "too many arguments", shell->binary, 0);
 			return (1);
 		}
 	}
