@@ -24,7 +24,7 @@ SRC_FILES =		main.c \
 				quotes.c \
 				backslash.c \
 				quotes_utils.c \
-				split_args.c \
+				split_non_escaped.c \
 				redirections.c \
 				pipes.c \
 				permissions.c

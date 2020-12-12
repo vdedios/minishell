@@ -24,19 +24,19 @@ char			**get_args(char *input)
 
 	if (!input)
 		return (NULL);
-	args = ft_split_args(input);
+	args = ft_split_non_escaped(input, ' ');
 	free(input);
 	if (!args)
 		return (NULL);
 	return (args);
 }
 
-char			*parse_input(char *input)
+char			*parse_input(t_shell *shell, char *input)
 {
 	char *tmp;
 	char *tmp2;
 
-	tmp = parse_quotes(input);
+	tmp = parse_quotes(shell, input);
 	tmp2 = parse_backslash(tmp, 0);
 	free (tmp);
 	free(input);

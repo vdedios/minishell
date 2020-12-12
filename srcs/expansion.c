@@ -12,12 +12,6 @@
 
 #include "minishell.h"
 
-static	void	delete_residual_backslash(char *str)
-{
-	if (str[strlen(str) - 1] == '\\')
-		str[strlen(str) - 1] = '\0';
-}
-
 static	char	*append_expanded(char *buff, char *env)
 {
 	char	*tmp;
@@ -30,46 +24,60 @@ static	char	*append_expanded(char *buff, char *env)
 	return (tmp);
 }
 
+static	char	*search_delimiters(char	*env)
+{
+	while (*env)
+	{
+		if (*env == '\\' || *env == ',')
+			return (env);
+		env++;
+	}
+	return (NULL);
+}
+
+static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i)
+{
+	char	*ret;
+	char	*value;
+
+	if (shell->env[i])
+		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
+	else
+		value = ft_strdup("");
+	if (delimiters)
+	{
+		ret = ft_strjoin(value, delimiters);
+		free(value);
+	}
+	else
+		ret = value;
+	free(env);
+	return (ret);
+}
 static	char	*expand_var(char *env, t_shell *shell)
 {
 	int		i;
-	char	*tmp;
+	int		len;
+	char	*delimiters;
 
 	i = 0;
-	delete_residual_backslash(env);
+	delimiters = search_delimiters(env);
+	len = ft_strlen(env) - (delimiters ? ft_strlen(delimiters) : 0);
 	while (shell->env[i])
 	{
-		if (!ft_strncmp(shell->env[i], env, ft_strlen(env))
-			&& shell->env[i][ft_strlen(env)] == '=')
+		if (!ft_strncmp(shell->env[i], env, len)
+			&& shell->env[i][len] == '=')
 			break;
 		else
 			i++;
 	}
-	if (shell->env[i])
-		tmp = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
-	else
-		tmp = ft_strdup("");
-	free(env);
-	return (tmp);
+	return (get_env_value(shell, env, delimiters, i));
 }
 
 static	char	*last_proc_status(t_shell *shell, char *env)
 {
 	free(env);
 	return (ft_itoa(shell->stat_loc));
-}
-
-static	char	*escape_expansion(char *str)
-{
-	char	*dollar;
-	char	*tmp;
-
-	delete_residual_backslash(str);
-	dollar = ft_strdup("$");
-	tmp = ft_strjoin(dollar, str);
-	free(str);
-	free(dollar);
-	return (tmp);
 }
 
 static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_env)
@@ -84,9 +92,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_en
 	len--;
 	while (len >= 0)
 	{
-		if (len && env_split[len - 1][ft_strlen(env_split[len - 1]) - 1] == '\\')
-			env_split[len] = escape_expansion(env_split[len]);
-		else if (env_split[len][0] == '?' && !env_split[len][1])
+		if (env_split[len][0] == '?' && !env_split[len][1])
 			env_split[len] = last_proc_status(shell, env_split[len]);
 		else if (len || first_is_env)
 			env_split[len] = expand_var(env_split[len], shell);
@@ -96,25 +102,41 @@ static	char	*parse_expansion(t_shell *shell, char **env_split, short first_is_en
 	return (buff);
 }
 
-static	short	is_single_dollar(char *str)
+static	int		count_single_dollars(char *str)
 {
-	if (ft_strlen(str) == 1 && *str == '$')
-		return (1);
-	else if (ft_strlen(str) == 2 && *str == '\\' && *(str + 1) == '$')
-		return (1);
-	return (0);
+	int		backslashes;
+	int		i;
+
+	i = 0;
+	backslashes = 0;
+	while (str[i])
+	{
+		if (str[i] == '&' && (!str[i + 1] || str[i + 1] == ' '))
+			backslashes++;
+		i++;
+	}
+	return (backslashes);
 }
 
-static	char	*get_single_dollar(char *str)
+static	char	*check_single_dollars(char *str)
 {
-	if (ft_strlen(str) == 1 && *str == '$')
-		return (str);
-	else if (ft_strlen(str) == 2 && *str == '\\' && *(str + 1) == '$')
+	char	*buff;
+	int		j;
+	int		i;
+
+	i = -1;
+	j = -1;
+	if (!(buff = malloc((ft_strlen(str) + count_single_dollars(str))
+					* sizeof(char *))))
+		return (NULL);
+	while (str[++i])
 	{
-		free(str);
-		return (ft_strdup("$"));
+		if (str[i] == '&' && (!str[i + 1] || str[i + 1] == ' '))
+			buff[++j] = '\\';
+		buff[++j] = str[i];
 	}
-	return (NULL);
+	buff[++j] = '\0';
+	return (buff);
 }
 
 /*
@@ -124,28 +146,21 @@ static	char	*get_single_dollar(char *str)
 ** order to escape the current env split.
 */
 
-void			expansion(t_shell *shell)
+char			*expansion(t_shell *shell, char *str)
 {
-	int		i;
 	char	**env_split;
 
-	i = 1;
-	while (shell->args[i])
+	str = check_single_dollars(str);
+	env_split = ft_split_non_escaped(str, '$');
+	if (env_split[0])
 	{
-		if (is_single_dollar(shell->args[i]))
-			shell->args[i] = get_single_dollar(shell->args[i]);
-		else
+		if (env_split[1] || (*env_split[0] != *str))
 		{
-			env_split = ft_split(shell->args[i], '$');
-			if (env_split[0])
-				if (env_split[1] || (*env_split[0] != *shell->args[i]))
-				{
-					free(shell->args[i]);
-					shell->args[i] = parse_expansion(shell, env_split,
-									(short)(*shell->args[i] == '$'));
-				}
-			free(env_split);
+			free(str);
+			str = parse_expansion(shell, env_split, (short)(*str == '$'));
 		}
-		i++;
 	}
+	free(env_split);
+	return (str);
+	//liberar el resto?
 }

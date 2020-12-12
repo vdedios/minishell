@@ -15,7 +15,7 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 	{
 		if (quote == '\'' && is_special_char(str[i]))
 			buff[j++] = '\\';
-		else if (is_space(str[i]))
+		else if (is_space(str[i]) || str[i] == '|' || str[i] == ';')
 			buff[j++] = '\\';
 		buff[j++] = str[i++];
 	}
@@ -86,17 +86,19 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 }
 
 static char	*join_parsed_str(char *str, char *str_in_quotes,
-							char *buff, int opening)
+							char *buff, int opening, t_shell *shell)
 {
 	char 	*str_pre_quotes;
 	char 	*tmp;
 	char 	*tmp2;
 
+	str_in_quotes = expansion(shell, str_in_quotes);
 	if (opening && opening != -1)
 	{
 		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
 			return (NULL);
 		ft_strlcpy(str_pre_quotes, str, opening + 1);
+		str_pre_quotes = expansion(shell, str_pre_quotes);
 		tmp = ft_strjoin(buff, str_pre_quotes);
 		tmp2 = ft_strjoin(tmp, str_in_quotes);
 		free(str_pre_quotes);
@@ -108,7 +110,7 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 	return (tmp2);
 }
 
-char		*parse_quotes(char *str)
+char		*parse_quotes(t_shell *shell, char *str)
 {
 	char	*str_in_quotes;
 	char	*buff;
@@ -124,7 +126,7 @@ char		*parse_quotes(char *str)
 			exit(2);
 			//return (ft_strdup("error"));
 		}
-		buff = join_parsed_str(str, str_in_quotes, buff, opening);
+		buff = join_parsed_str(str, str_in_quotes, buff, opening, shell);
 		if (str_in_quotes != str)
 			free(str_in_quotes);
 		if (opening != -1)
