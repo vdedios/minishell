@@ -37,8 +37,14 @@ static	char	*expand_var(char *env, t_shell *shell)
 
 	i = 0;
 	delete_residual_backslash(env);
-	while (shell->env[i] && ft_strncmp(shell->env[i], env, ft_strlen(env)))
-		i++;
+	while (shell->env[i])
+	{
+		if (!ft_strncmp(shell->env[i], env, ft_strlen(env))
+			&& shell->env[i][ft_strlen(env)] == '=')
+			break;
+		else
+			i++;
+	}
 	if (shell->env[i])
 		tmp = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
