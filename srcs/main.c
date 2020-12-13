@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/09 18:26:09 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/13 01:16:08 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		run_command(t_shell *shell, char exited)
 	char	**paths;
 	pid_t	pid;
 
-	value = get_env(shell->env, "PATH");
+	value = get_env(shell->env, "PATH", shell, shell->binary);
 	paths = ft_split(value, ':');
 	path = search_binary(shell, paths, exited);
 	pid = fork();
