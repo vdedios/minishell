@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/21 10:18:08 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/12/13 01:04:58 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	change_dir(char *path, t_shell *shell)
 	char		*oldcwd;
 	char		*cwd;
 	struct stat	s;
+	char		*msg;
 
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
@@ -53,30 +54,38 @@ static void	change_dir(char *path, t_shell *shell)
 	else
 	{
 		if (stat(path, &s) != -1)
+		{
 			if (s.st_mode & S_IFDIR)
-				print_errors(shell, "permission denied:", shell->binary, 0);
+			{
+				path = ft_strjoin(" ", path);
+				msg = ft_strjoin(path, ": Permission denied");
+				print_errors(shell, msg, shell->binary, 0);
+			}
 			else
 				print_errors(shell, "not a directory:", shell->binary, 0);
+		}
 		else
-			print_errors(shell, ft_strjoin(path," : No such file or directory"), shell->binary, 0);
-		ft_putendl_fd(path, 1);
+		{
+			path = ft_strjoin(" ", path);
+			msg = ft_strjoin(path, ": No such file or directory");
+			print_errors(shell, msg, shell->binary, 0);
+		}
+		//ft_putendl_fd(path, 1);
 	}
 }
 
 int			ft_cd(t_shell *shell)
 {
 	char	*path;
+	char	*target;
 
-	if (!*shell->args[1])
-	{
-		change_dir(".", shell);
-		return(1);
-	}
-	if (!shell->args[1] || !ft_strncmp(shell->args[1], "--", 3) ||
-		!ft_strncmp(shell->args[1], "~", 2))
-		path = get_env(shell->env, "HOME");
-	else if (!ft_strncmp(shell->args[1], "-", 2))
-		path = get_env(shell->env, "OLDPWD");
+	target = shell->args[1];
+	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
+		path = get_env(shell->env, "HOME", shell->binary);
+	else if (!ft_strncmp(target, ".", 2) || !ft_strncmp(target, "", 1))
+		path = get_env(shell->env, "PWD", shell->binary);
+	else if (!ft_strncmp(target, "-", 2))
+		path = get_env(shell->env, "OLDPWD", shell->binary);
 	else if (shell->args[2] && *shell->args[2])
 	{
 		path = NULL;
@@ -87,7 +96,8 @@ int			ft_cd(t_shell *shell)
 		}
 	}
 	else
-		path = shell->args[1];
+		path = target;
+	if (!path) return (1);
 	change_dir(path, shell);
 	return (1);
 }
