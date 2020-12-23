@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/09 18:26:09 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/22 01:04:37 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		run_command(t_shell *shell, char exited)
 	char	**paths;
 	pid_t	pid;
 
-	value = get_env(shell->env, "PATH");
+	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
 	path = search_binary(shell, paths, exited);
 	pid = fork();
@@ -80,7 +80,7 @@ int		check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell->args[1], shell->env);
 	else if (ft_strcmp(*shell->args, "env"))
-		ret = ft_env(shell->args + 1, shell->env);
+		ret = ft_env(shell, shell->env);
 	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
 }
@@ -205,6 +205,7 @@ int				main(int argc, char **argv, char **envp)
 	line = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	shell.instructions = NULL;
+	handle_shlvl(&shell);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);

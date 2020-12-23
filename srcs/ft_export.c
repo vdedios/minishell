@@ -46,7 +46,7 @@ static size_t	print_sorted_env(t_shell *shell)
 	char **tmp_envp;
 
 	tmp_envp = ft_strdup_matrix(shell->env);
-	ft_env(shell->args + 1, sort_alfa(tmp_envp));
+	ft_env(shell, sort_alfa(tmp_envp));
 	clean_matrix(tmp_envp);
 	free(tmp_envp);
 	return (1);

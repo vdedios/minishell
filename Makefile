@@ -27,7 +27,8 @@ SRC_FILES =		main.c \
 				split_args.c \
 				redirections.c \
 				pipes.c \
-				permissions.c
+				permissions.c \
+				ft_shlvl.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
@@ -50,11 +51,11 @@ $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 				@$(CC) $(LFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:	
-				@make -C $(LIB_DIR) clean
+				@make clean -C $(LIB_DIR)
 				@$(RM) $(OBJ_DIR)
 
 fclean: 		clean
-				@make -C $(LIB_DIR) fclean
+				@make fclean -C $(LIB_DIR)
 				@$(RM) $(NAME)
 				@$(RM) $(NAME).dSYM
 

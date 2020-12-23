@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/07 13:19:38 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/22 00:54:01 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,6 @@ char	*search_binary(t_shell *shell, char **paths, char exited)
 				closedir(pdir);
 			}
 		}
-	}
-	return (NULL);
-}
-
-char	*get_env(char **env, char *arg)
-{
-	size_t it;
-	size_t len;
-
-	len = ft_strlen(arg);
-	it = 0;
-	while (env[it])
-	{
-		if (ft_strncmp(env[it], arg, len) == 0)
-			return (ft_strchr(env[it], '=') + 1);
-		it++;
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/21 10:18:08 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/12/22 01:02:45 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,9 @@ int			ft_cd(t_shell *shell)
 
 	if (!shell->args[1] || !ft_strncmp(shell->args[1], "--", 3) ||
 		!ft_strncmp(shell->args[1], "~", 2))
-		path = get_env(shell->env, "HOME");
+		path = get_env(shell, "HOME");
 	else if (!ft_strncmp(shell->args[1], "-", 2))
-		path = get_env(shell->env, "OLDPWD");
+		path = get_env(shell, "OLDPWD");
 	else if (shell->args[2])
 	{
 		path = NULL;
