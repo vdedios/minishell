@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/13 13:25:31 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/23 22:58:17 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int			ft_cd(t_shell *shell)
 		path = get_env(shell->env, "OLDPWD", shell->binary);
 	else if (shell->args[2] && *shell->args[2])
 	{
-		path = NULL;
+		path = target;
 		if (shell->args[3])
 		{
 			print_errors(shell, "too many arguments", shell->binary, 0);
