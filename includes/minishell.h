@@ -52,7 +52,7 @@ char	*absolute_bin_path(char *path, char *bin);
 char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
-char	*get_env(char **env, char *arg);
+char	*get_env(char **shell, char *arg, char *binary);
 char	*search_binary(t_shell *shell, char **paths, char exited);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell, char exited);
