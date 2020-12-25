@@ -24,7 +24,6 @@ static char	*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-
 int		run_command(t_shell *shell, char exited)
 {
 	char	*value;
@@ -85,15 +84,6 @@ int		check_builtin(t_shell *shell)
 	return (ret);
 }
 
-static	void	delete_residual_backslash(char **args)
-{
-	while (*args)
-	{
-		*args = parse_backslash(*args, 1);
-		args++;
-	}
-}
-
 static void		handle_commands(t_shell *shell, char exited)
 {
 	int		fd_out;
@@ -108,7 +98,6 @@ static void		handle_commands(t_shell *shell, char exited)
 	else
 	{
 		shell->args = get_args(*shell->commands);
-		delete_residual_backslash(shell->args);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);
 		if (fd != -1)
