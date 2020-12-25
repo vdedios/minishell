@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/23 22:58:17 by migferna         ###   ########.fr       */
+/*   Updated: 2020/12/24 11:37:06 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,11 @@ int			ft_cd(t_shell *shell)
 
 	target = shell->args[1];
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
-		path = get_env(shell->env, "HOME", shell->binary);
+		path = get_env(shell, "HOME");
 	else if (!ft_strncmp(target, ".", 2) || !ft_strncmp(target, "", 1))
-		path = get_env(shell->env, "PWD", shell->binary);
+		path = get_env(shell, "PWD");
 	else if (!ft_strncmp(target, "-", 2))
-		path = get_env(shell->env, "OLDPWD", shell->binary);
+		path = get_env(shell, "OLDPWD");
 	else if (shell->args[2] && *shell->args[2])
 	{
 		path = target;

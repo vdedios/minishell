@@ -52,7 +52,7 @@ char	*absolute_bin_path(char *path, char *bin);
 char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
-char	*get_env(char **shell, char *arg, char *binary);
+char	*get_env(t_shell *env, char *arg);
 char	*search_binary(t_shell *shell, char **paths, char exited);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell, char exited);
@@ -60,6 +60,7 @@ void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell, char exited);
 void	check_permissions(t_shell *shell, char *path, char exited);
+void	handle_shlvl(t_shell *shell);
 
 /*
 ** Parsing functions
@@ -78,7 +79,7 @@ char	**ft_split_args(char *input);
 ** Builtin functions
 */
 
-int		ft_env(char **args, char **env);
+int		ft_env(t_shell *shell, char **args);
 int		ft_cd(t_shell *shell);
 int		ft_echo(char **args);
 int		ft_pwd();

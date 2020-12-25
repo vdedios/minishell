@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 12:31:17 by vde-dios          #+#    #+#             */
-/*   Updated: 2019/11/19 13:23:27 by vde-dios         ###   ########.fr       */
+/*   Updated: 2020/12/23 19:13:12 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,38 +17,31 @@
 */
 
 #include "libft.h"
+#include <limits.h>
 
-static void	ft_iterate(const char *nptr, long double *num)
+long int			ft_atoi(const char *str)
 {
-	while (*nptr >= '0' && *nptr <= '9')
-	{
-		*num = (*num) * 10 + *nptr - '0';
-		nptr++;
-	}
-}
+	long double			res;
+	int					sign;
+	unsigned int		i;
 
-int		ft_atoi(const char *nptr)
-{
-	long double	num;
-	int		sign;
-
-	sign = 0;
-	num = 0;
-	while (*nptr == '\t' || *nptr == '\n' || *nptr == '\v'
-		|| *nptr == '\f' || *nptr == '\r' || *nptr == ' ')
-		nptr++;
-	if (*nptr == '-' || *nptr == '+')
+	res = 0;
+	sign = 1;
+	i = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' ||
+			str[i] == '\r' || str[i] == '\v' || str[i] == '\f')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
 	{
-		if (*nptr == '-')
-			sign = 1;
-		nptr++;
+		if (str[i] == '-')
+			sign = -1;
+		i++;
 	}
-	ft_iterate(nptr, &num);
-	if (sign == 1)
-		num = -1 * num;
-	if (num > 2147483647)
-		return (-1);
-	if (num < -2147483648)
-		return (0);
-	return ((int)num);
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + str[i] - '0';
+		i++;
+	}
+	//printf("NUM: %ld", (long int)res * sign);
+	return ((long double)(res * sign));
 }
