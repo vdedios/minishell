@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*update_last_arg(char **args)
+static char		*update_last_arg(char **args)
 {
 	int		len;
 
@@ -24,7 +24,7 @@ static char	*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-int		run_command(t_shell *shell, char exited)
+int				run_command(t_shell *shell, char exited)
 {
 	char	*value;
 	char	*path;
@@ -61,7 +61,7 @@ int		run_command(t_shell *shell, char exited)
 	return (1);
 }
 
-int		check_builtin(t_shell *shell)
+int				check_builtin(t_shell *shell)
 {
 	int ret;
 
@@ -97,6 +97,7 @@ static void		handle_commands(t_shell *shell, char exited)
 		find_pipes(shell);
 	else
 	{
+		*shell->commands = expansion(shell, *shell->commands, 0);
 		shell->args = get_args(*shell->commands);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);
@@ -109,7 +110,7 @@ static void		handle_commands(t_shell *shell, char exited)
 	}
 }
 
-static void validator(t_shell *shell, char *line, char separator)
+static void 	validator(t_shell *shell, char *line, char separator)
 {
     size_t  it;
     size_t  cont;

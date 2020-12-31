@@ -27,7 +27,6 @@ static	void	delete_residual_backslash(char **args)
 	}
 }
 
-
 char			**get_args(char *input)
 {
 	char **args;
@@ -45,11 +44,11 @@ char			**get_args(char *input)
 char			*parse_input(t_shell *shell, char *input)
 {
 	char *tmp;
-	//char *tmp2;
+	char *tmp2;
 
 	tmp = parse_quotes(shell, input);
-	//tmp2 = parse_backslash(tmp, 0);
-	//free (tmp);
+	tmp2 = parse_backslash(tmp, 0);
+	free (tmp);
 	free(input);
-	return (tmp);
+	return (tmp2);
 }

@@ -95,6 +95,7 @@ static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i, c
 		ret = escape_char(ret, ' ');
 	return (ret);
 }
+
 static	char	*expand_var(char *env, t_shell *shell, char escape_env_spaces)
 {
 	int		i;
