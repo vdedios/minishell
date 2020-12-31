@@ -65,7 +65,7 @@ void	check_permissions(t_shell *shell, char *path, char exited);
 ** Parsing functions
 */
 
-char	*expansion(t_shell *shell, char *str, char escape_env_spaces);
+char	*expansion(t_shell *shell, char *str);
 char	*parse_quotes(t_shell *shell, char *str);
 char	*parse_backslash(char *str, short residual);
 char	*parse_input(t_shell *shell, char *input);

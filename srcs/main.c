@@ -97,7 +97,7 @@ static void		handle_commands(t_shell *shell, char exited)
 		find_pipes(shell);
 	else
 	{
-		*shell->commands = expansion(shell, *shell->commands, 0);
+		*shell->commands = expansion(shell, *shell->commands);
 		shell->args = get_args(*shell->commands);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);

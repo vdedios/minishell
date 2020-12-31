@@ -85,10 +85,6 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 	return (str);
 }
 
-//static char *expand_variables(char *str, char *str_in_quotes, t_shell *shell)
-//{
-//}
-
 static char	*join_parsed_str(char *str, char *str_in_quotes,
 							char *buff, int opening, t_shell *shell)
 {
@@ -97,22 +93,11 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 	char 	*tmp2;
 	(void)shell;
 
-	//tmp = parse_backslash(str_in_quotes, 0);
-	//tmp = ft_strdup(str_in_quotes);
-	/*
-	if (str_in_quotes != str)
-		str_in_quotes = expansion(shell, tmp, 1);
-	else
-		str_in_quotes = expansion(shell, tmp, 0);
-	*/
-	//tmp = parse_backslash(str_in_quotes, 0);
 	if (opening && opening != -1)
 	{
 		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
 			return (NULL);
 		ft_strlcpy(str_pre_quotes, str, opening + 1);
-		//tmp = parse_backslash(str_pre_quotes, 0);
-		//str_pre_quotes = expansion(shell, tmp, 0);
 		tmp = ft_strjoin(buff, str_pre_quotes);
 		tmp2 = ft_strjoin(tmp, str_in_quotes);
 		free(str_pre_quotes);

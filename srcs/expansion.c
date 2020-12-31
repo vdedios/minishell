@@ -74,7 +74,7 @@ static	char	*search_delimiters(char	*env)
 	return (NULL);
 }
 
-static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i, char escape_env_spaces)
+static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i)
 {
 	char	*ret;
 	char	*value;
@@ -91,12 +91,10 @@ static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i, c
 	else
 		ret = value;
 	free(env);
-	if (escape_env_spaces)
-		ret = escape_char(ret, ' ');
 	return (ret);
 }
 
-static	char	*expand_var(char *env, t_shell *shell, char escape_env_spaces)
+static	char	*expand_var(char *env, t_shell *shell)
 {
 	int		i;
 	int		len;
@@ -113,7 +111,7 @@ static	char	*expand_var(char *env, t_shell *shell, char escape_env_spaces)
 		else
 			i++;
 	}
-	return (get_env_value(shell, env, delimiters, i, escape_env_spaces));
+	return (get_env_value(shell, env, delimiters, i));
 }
 
 static	char	*last_proc_status(t_shell *shell, char *env)
@@ -123,7 +121,7 @@ static	char	*last_proc_status(t_shell *shell, char *env)
 }
 
 static	char	*parse_expansion(t_shell *shell, char **env_split,
-								short first_is_env, char escape_env_spaces)
+								short first_is_env)
 {
 	int		len;
 	char	*buff;
@@ -138,7 +136,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 		if (env_split[len][0] == '?' && !env_split[len][1])
 			env_split[len] = last_proc_status(shell, env_split[len]);
 		else if (len || first_is_env)
-			env_split[len] = expand_var(env_split[len], shell, escape_env_spaces);
+			env_split[len] = expand_var(env_split[len], shell);
 		buff = append_expanded(buff, env_split[len]);
 		len--;
 	}
@@ -152,7 +150,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 ** order to escape the current env split.
 */
 
-char			*expansion(t_shell *shell, char *str, char escape_env_spaces)
+char			*expansion(t_shell *shell, char *str)
 {
 	char	**env_split;
 
@@ -163,7 +161,7 @@ char			*expansion(t_shell *shell, char *str, char escape_env_spaces)
 		if (env_split[1] || (*env_split[0] != *str))
 		{
 			free(str);
-			str = parse_expansion(shell, env_split, (short)(*str == '$'), escape_env_spaces);
+			str = parse_expansion(shell, env_split, (short)(*str == '$'));
 		}
 	}
 	free(env_split);
