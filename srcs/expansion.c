@@ -67,14 +67,14 @@ static	char	*search_delimiters(char	*env)
 {
 	while (*env)
 	{
-		if (*env == '\\' || *env == ',' || *env == ']')
+		if (*env == '\\' || *env == ',' || *env == ']' || *env == '}')
 			return (env);
 		env++;
 	}
 	return (NULL);
 }
 
-static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i)
+static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 {
 	char	*ret;
 	char	*value;
@@ -83,14 +83,15 @@ static	char	*get_env_value(t_shell *shell, char *env, char *delimiters, int i)
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
-	if (delimiters)
+	if (delimiter)
 	{
-		ret = ft_strjoin(value, delimiters);
+		if (*delimiter == '}')
+			delimiter++;
+		ret = ft_strjoin(value, delimiter);
 		free(value);
 	}
 	else
 		ret = value;
-	free(env);
 	return (ret);
 }
 
@@ -98,11 +99,13 @@ static	char	*expand_var(char *env, t_shell *shell)
 {
 	int		i;
 	int		len;
-	char	*delimiters;
+	char	*delimiter;
 
 	i = 0;
-	delimiters = search_delimiters(env);
-	len = ft_strlen(env) - (delimiters ? ft_strlen(delimiters) : 0);
+	env++;
+	//free(env);
+	delimiter = search_delimiters(env);
+	len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
 	while (shell->env[i])
 	{
 		if (!ft_strncmp(shell->env[i], env, len)
@@ -111,7 +114,7 @@ static	char	*expand_var(char *env, t_shell *shell)
 		else
 			i++;
 	}
-	return (get_env_value(shell, env, delimiters, i));
+	return (get_env_value(shell, delimiter, i));
 }
 
 static	char	*last_proc_status(t_shell *shell, char *env)

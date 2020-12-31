@@ -123,7 +123,6 @@ char		*parse_quotes(t_shell *shell, char *str)
 		{
 			free (buff);
 			exit(2);
-			//return (ft_strdup("error"));
 		}
 	//	buff = expand_variables(str, str_in_quotes, shell);
 		buff = join_parsed_str(str, str_in_quotes, buff, opening, shell);

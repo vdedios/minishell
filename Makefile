@@ -20,6 +20,7 @@ SRC_FILES =		main.c \
 				errors.c \
 				clean.c \
 				expansion.c \
+				embrace_expansion.c \
 				utils.c \
 				quotes.c \
 				backslash.c \
