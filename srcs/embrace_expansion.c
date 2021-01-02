@@ -59,7 +59,7 @@ static char		*set_closing_braces(char *str)
 
 	i = 0;
     is_open_brace = 0;
-	if (!(buff = malloc((ft_strlen(str) + count_chars(str, '{') + 2) * sizeof(char))))
+	if (!(buff = malloc((ft_strlen(str) + count_chars(str, '{') + 3) * sizeof(char))))
 		return (NULL);
 	while(*str)
 	{
