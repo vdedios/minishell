@@ -173,7 +173,7 @@ static void		read_input(char *line, t_shell *shell)
 			free(line);
 			exit(0);
 		}
-		line = parse_input(shell, line);
+		line = parse_input(line);
 		minishell(line, shell);
 		free(line);
 		line = NULL;
@@ -192,11 +192,12 @@ int				main(int argc, char **argv, char **envp)
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
-		line = parse_input(&shell, line);
+		line = parse_input(line);
 		minishell(line, &shell);
 		free(line);
 	}
 	else
 		read_input(line, &shell);
+	//printf("%s\n", embrace_expansion("echo $PWD$PWD"));
 	return (shell.stat_loc);
 }

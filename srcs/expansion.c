@@ -63,6 +63,7 @@ static	char	*append_expanded(char *buff, char *env)
 	return (tmp);
 }
 
+/*
 static	char	*search_delimiters(char	*env)
 {
 	while (*env)
@@ -73,6 +74,7 @@ static	char	*search_delimiters(char	*env)
 	}
 	return (NULL);
 }
+*/
 
 static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 {
@@ -83,10 +85,9 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
-	if (delimiter)
+	if (delimiter && *delimiter)
 	{
-		if (*delimiter == '}')
-			delimiter++;
+		delimiter++;
 		ret = ft_strjoin(value, delimiter);
 		free(value);
 	}
@@ -104,7 +105,8 @@ static	char	*expand_var(char *env, t_shell *shell)
 	i = 0;
 	env++;
 	//free(env);
-	delimiter = search_delimiters(env);
+	//delimiter = search_delimiters(env);
+	delimiter = ft_strchr(env, '}');
 	len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
 	while (shell->env[i])
 	{

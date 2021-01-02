@@ -41,12 +41,12 @@ char			**get_args(char *input)
 	return (args);
 }
 
-char			*parse_input(t_shell *shell, char *input)
+char			*parse_input(char *input)
 {
 	char *tmp;
 	char *tmp2;
 
-	tmp = parse_quotes(shell, input);
+	tmp = parse_quotes(input);
 	tmp2 = parse_backslash(tmp, 0);
 	free (tmp);
 	free(input);
