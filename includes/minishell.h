@@ -61,6 +61,7 @@ int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell, char exited);
 void	check_permissions(t_shell *shell, char *path, char exited);
 void	handle_shlvl(t_shell *shell);
+char	*get_path(t_shell *shell);
 
 /*
 ** Parsing functions

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/22 01:04:37 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/03 00:52:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,41 +24,45 @@ static char	*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-
-int		run_command(t_shell *shell, char exited)
+char	*get_path(t_shell *shell)
 {
 	char	*value;
 	char	*path;
 	char	**paths;
-	pid_t	pid;
 
 	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, exited);
+	path = search_binary(shell, paths, 0);
+	if (path)
+		path = absolute_bin_path(path, shell->args[0]);
+	else
+		path = ft_strdup(shell->binary);
+	check_permissions(shell, path, 0);
+	//clean_matrix(paths);
+	free(paths);
+	return (path);
+}
+
+int		run_command(t_shell *shell, char exited)
+{
+	char	*path;
+	pid_t	pid;
+
+	path = get_path(shell);
 	pid = fork();
 	if (pid == 0)
 	{
-		if (path)
-			path = absolute_bin_path(path, shell->args[0]);
-		else
-		{
-			path = ft_strdup(shell->binary);
-			check_permissions(shell, path, exited);
-		}
 		execve(path, shell->args, shell->env);
 		shell->stat_loc = 127;
-		//print_errors(shell, " command not found", shell->args[0], exited);
+		print_errors(shell, " command not found", shell->args[0], exited);
 	}
-
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	ft_export(shell, update_last_arg(shell->args));
-	clean_matrix(paths);
 	//free(path);
-	free(paths);
 	return (1);
 }
 
