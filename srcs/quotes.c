@@ -94,6 +94,8 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 
 	//Liberar
 	str_in_quotes = embrace_expansion(str_in_quotes);
+	if (opening != -1)
+		str_in_quotes = mantain_expansion_spaces(str_in_quotes);
 	if (opening && opening != -1)
 	{
 		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))

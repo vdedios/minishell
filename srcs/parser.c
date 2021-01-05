@@ -44,11 +44,11 @@ char			**get_args(char *input)
 char			*parse_input(char *input)
 {
 	char *tmp;
-	char *tmp2;
+	char *buff;
 
 	tmp = parse_quotes(input);
-	tmp2 = parse_backslash(tmp, 0);
+	buff = parse_backslash(tmp, 0);
 	free (tmp);
 	free(input);
-	return (tmp2);
+	return (buff);
 }

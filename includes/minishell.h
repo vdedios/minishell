@@ -67,6 +67,7 @@ void	check_permissions(t_shell *shell, char *path, char exited);
 
 char	*expansion(t_shell *shell, char *str);
 char	*embrace_expansion(char *str);
+char    *mantain_expansion_spaces(char *str);
 char	*parse_quotes(char *str);
 char	*parse_backslash(char *str, short residual);
 char	*parse_input(char *input);

@@ -22,7 +22,7 @@ static	int		count_keys_to_scape(char *str, char key)
 	while (str[i])
 	{
 		if ((key == ' ' && str[i] == ' ') ||
-			(key == '$' && str[i] == '&' && (!str[i + 1] || str[i + 1] == ' ')))
+			(key == '$' && str[i] == '$' && (!str[i + 1] || str[i + 1] == ' ')))
 			backslashes++;
 		i++;
 	}
@@ -42,9 +42,11 @@ static	char	*escape_char(char *str, char key)
 		return (NULL);
 	while (str[++i])
 	{
-		if ((key == ' ' && str[i] == ' ') ||
-			(key == '$' && str[i] == '&' && (!str[i + 1] || str[i + 1] == ' ')))
-			buff[++j] = '\\';
+		if (key == str[i])
+		{
+			if (key != '$' || (key == '$' && (!str[i + 1] || str[i + 1] == ' ')))
+				buff[++j] = '\\';
+		}
 		buff[++j] = str[i];
 	}
 	buff[++j] = '\0';
@@ -62,7 +64,6 @@ static	char	*append_expanded(char *buff, char *env)
 	free(buff);
 	return (tmp);
 }
-
 /*
 static	char	*search_delimiters(char	*env)
 {
@@ -73,6 +74,30 @@ static	char	*search_delimiters(char	*env)
 		env++;
 	}
 	return (NULL);
+}
+
+static	char	*escape_spaces(char *str)
+{
+	char 	*buff;
+	int		i;
+
+	i = 0;
+	if (*str != ' ')
+		return (ft_strdup(str));
+	if (!(buff = malloc((ft_strlen(str) + count_keys_to_scape(str, ' ') + 1)
+						* sizeof(char))))
+		return (NULL);
+	while (*str && *str == ' ')
+	{
+		buff[i++] = '\\';
+		buff[i++] = *str;
+		str++;
+	}
+	//Liberar memoria
+	if (*str)
+		buff = ft_strjoin(buff, str);
+	buff[i] = '\0';
+	return (buff);
 }
 */
 
@@ -85,6 +110,10 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
+	// liberar memoria
+	value = escape_char(value, '\\');
+	if (delimiter && *(delimiter - 1) == ' ')
+		value = escape_char(value, ' ');
 	if (delimiter && *delimiter)
 	{
 		delimiter++;
@@ -108,6 +137,8 @@ static	char	*expand_var(char *env, t_shell *shell)
 	//delimiter = search_delimiters(env);
 	delimiter = ft_strchr(env, '}');
 	len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
+	if (delimiter && *(delimiter - 1) == ' ')
+		len--;
 	while (shell->env[i])
 	{
 		if (!ft_strncmp(shell->env[i], env, len)
@@ -142,6 +173,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 			env_split[len] = last_proc_status(shell, env_split[len]);
 		else if (len || first_is_env)
 			env_split[len] = expand_var(env_split[len], shell);
+		//liberar desde fuera
 		buff = append_expanded(buff, env_split[len]);
 		len--;
 	}
