@@ -21,6 +21,20 @@ static	int		count_args(char	*input, char delimiter)
 	return (l);
 }
 
+static	short	not_escaped(char *str, int i)
+{
+	int		backslash;
+
+	i--;
+	backslash = 0;
+	while (i && str[i] == '\\')
+	{
+		i--;
+		backslash++;
+	}
+	return ((backslash + 1) % 2);
+}
+
 static char		*set_split_delimiter(char *input, char delimiter)
 {
 	int	i;
@@ -32,7 +46,7 @@ static char		*set_split_delimiter(char *input, char delimiter)
 		input++;
 	while (input[i])
 	{
-		if (input[i] == delimiter && input[i - 1] != '\\')
+		if (input[i] == delimiter && not_escaped(input, i))
 			input[i] = '\0';
 		i++;
 	}
