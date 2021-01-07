@@ -42,11 +42,14 @@ static	char	*escape_char(char *str, char key)
 		return (NULL);
 	while (str[++i])
 	{
-		if (key == str[i])
+		if (str[i] == '$' && str[i - 1] != '\\')
 		{
-			if (key != '$' || (key == '$' && (!str[i + 1] || str[i + 1] == ' ')))
-				buff[++j] = '\\';
+			if ((!str[i + 1] || str[i + 1] == ' ')
+				|| str[i + 1] == '\\')
+			buff[++j] = '\\';
 		}
+		else if (key != '$' && str[i] == key)
+			buff[++j] = '\\';
 		buff[++j] = str[i];
 	}
 	buff[++j] = '\0';
@@ -64,42 +67,6 @@ static	char	*append_expanded(char *buff, char *env)
 	free(buff);
 	return (tmp);
 }
-/*
-static	char	*search_delimiters(char	*env)
-{
-	while (*env)
-	{
-		if (*env == '\\' || *env == ',' || *env == ']' || *env == '}')
-			return (env);
-		env++;
-	}
-	return (NULL);
-}
-
-static	char	*escape_spaces(char *str)
-{
-	char 	*buff;
-	int		i;
-
-	i = 0;
-	if (*str != ' ')
-		return (ft_strdup(str));
-	if (!(buff = malloc((ft_strlen(str) + count_keys_to_scape(str, ' ') + 1)
-						* sizeof(char))))
-		return (NULL);
-	while (*str && *str == ' ')
-	{
-		buff[i++] = '\\';
-		buff[i++] = *str;
-		str++;
-	}
-	//Liberar memoria
-	if (*str)
-		buff = ft_strjoin(buff, str);
-	buff[i] = '\0';
-	return (buff);
-}
-*/
 
 static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 {

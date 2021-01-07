@@ -42,9 +42,9 @@ static char		*set_opening_braces(char *str)
 		return (NULL);
 	while(str[j])
 	{
-		if (str[j] &&
-        (j - 1 >= 0 && str[j - 1] == '$') &&
-        ((j - 2 < 0) || ((j - 2 >= 0) && str[j - 2] != '\\')))
+		if ((j - 1 >= 0 && str[j - 1] == '$') &&
+            ((j - 2 < 0) || (str[j - 2] != '\\')) &&
+            (str[j] != '\\'))
 			buff[i++] = '{';
 		buff[i++] = str[j++];
 	}
@@ -78,7 +78,7 @@ static char		*set_closing_braces(char *str)
     return (buff);
 }
 
-char     *mantain_expansion_spaces(char *str)
+char            *mantain_expansion_spaces(char *str)
 {
     int     i;
     short   var_opened;
@@ -108,12 +108,9 @@ char			*embrace_expansion(char *str)
 {
 	char	*buff;
     char    *tmp;
-    //char    *tmp2;
 
 	tmp = set_opening_braces(str);
 	buff = set_closing_braces(tmp);
-    //buff = set_quote_spacing(tmp2);
     free(tmp);
-    //free(tmp2);
 	return (buff);
 }
