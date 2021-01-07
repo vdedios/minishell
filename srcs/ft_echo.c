@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-/*
 static int	find_all_characters(char* str, char c)
 {
 	size_t	cont;	
@@ -50,12 +49,11 @@ static char	*clean(char *str, char *blacklist)
 	}
 	return (tmp);
 }
-*/
 
 int		ft_echo(char **args)
 {
 	int		end;
-	//char	*tmp;
+	char	*tmp;
 	size_t	it;
 
 	it = 0;
@@ -70,14 +68,14 @@ int		ft_echo(char **args)
 		else
 			break ;
 	}
-	while (*args)
+	while (args[it])
 	{
-		//tmp = clean(*args, "\\");
-		ft_putstr_fd(*args, 1);
-		if (*(args + 1))
+		tmp = clean(*args, "\\");
+		ft_putstr_fd(args[it], 1);
+		if (args[it+1])
 			write(1, " ", 1);
-		//free(tmp);
-		args++;
+		free(tmp);
+		it++;
 	}
 	if (end)
 		write(1, "\n", 1);

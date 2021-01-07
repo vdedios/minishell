@@ -136,7 +136,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 	len--;
 	while (len >= 0)
 	{
-		if (env_split[len][0] == '?' && !env_split[len][1])
+		if (env_split[len][1] == '?' && !env_split[len][3])
 			env_split[len] = last_proc_status(shell, env_split[len]);
 		else if (len || first_is_env)
 			env_split[len] = expand_var(env_split[len], shell);

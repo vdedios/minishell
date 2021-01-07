@@ -43,7 +43,7 @@ void	find_pipes(t_shell *shell)
 		}
 		else
 		{
-			wait(&shell->stat_loc);
+			waitpid(pid, &shell->stat_loc, WNOHANG);
 			close(p[1]);
 			fd_in = p[0];
 			it++;
