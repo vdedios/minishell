@@ -20,11 +20,12 @@ SRC_FILES =		main.c \
 				errors.c \
 				clean.c \
 				expansion.c \
+				embrace_expansion.c \
 				utils.c \
 				quotes.c \
 				backslash.c \
 				quotes_utils.c \
-				split_args.c \
+				split_non_escaped.c \
 				redirections.c \
 				pipes.c \
 				permissions.c \

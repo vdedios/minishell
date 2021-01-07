@@ -18,13 +18,23 @@
 ** escaped.
 */
 
+static	void	delete_residual_backslash(char **args)
+{
+	while (*args)
+	{
+		*args = parse_backslash(*args, 1);
+		args++;
+	}
+}
+
 char			**get_args(char *input)
 {
 	char **args;
 
 	if (!input)
 		return (NULL);
-	args = ft_split_args(input);
+	args = ft_split_non_escaped(input, ' ');
+	delete_residual_backslash(args);
 	free(input);
 	if (!args)
 		return (NULL);
@@ -34,11 +44,11 @@ char			**get_args(char *input)
 char			*parse_input(char *input)
 {
 	char *tmp;
-	char *tmp2;
+	char *buff;
 
 	tmp = parse_quotes(input);
-	tmp2 = parse_backslash(tmp, 0);
+	buff = parse_backslash(tmp, 0);
 	free (tmp);
 	free(input);
-	return (tmp2);
+	return (buff);
 }
