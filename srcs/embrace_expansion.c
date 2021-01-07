@@ -25,6 +25,7 @@ static short    is_limit_character(char character)
             character == '$' ||
             character == ' ' ||
             character == '@' ||
+            character == ';' ||
             character == '\0')
         return (1);
     return (0);

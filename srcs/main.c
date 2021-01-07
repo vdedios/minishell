@@ -145,6 +145,11 @@ static void		minishell(char *line, t_shell *shell)
 	exited = 0;
 	validator(shell, line, ';');
 	shell->instructions = ft_split_non_escaped(line, ';');
+	if (!(shell->instructions[0]))
+	{
+		shell->stat_loc = 2;
+		print_errors(shell, "syntax error near unexpected token `;'", NULL, exited);
+	}
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
@@ -152,6 +157,14 @@ static void		minishell(char *line, t_shell *shell)
 			shell->instructions[it]++;
 		validator(shell, shell->instructions[it], '|');
 		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
+		if (ft_strchr(shell->instructions[it], '|'))
+		{
+			if (!(shell->commands[0]) || (shell->commands[0] && (!shell->commands[1])))
+			{
+				shell->stat_loc = 2;
+				print_errors(shell, "syntax error near unexpected token `|'", NULL, exited);
+			}
+		}
 		if (shell->instructions[it + 1])
 			exited = 0;
 		handle_commands(shell, exited);
