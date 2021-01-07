@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static	int		count_args(char	*input)
+static	int		count_args(char	*input, char delimiter)
 {
 	int		i;
 	int		l;
@@ -9,10 +9,10 @@ static	int		count_args(char	*input)
 	i = -1;
 	while(input[++i])
 	{
-		if (input[i] == ' ' && input[i - 1] != '\\')
+		if (input[i] == delimiter && input[i - 1] != '\\')
 		{
 			l++;
-			while (input[i] && input[i] != ' ')
+			while (input[i] && input[i] != delimiter)
 				i++;
 			if (!input[i])
 				break;
@@ -21,16 +21,32 @@ static	int		count_args(char	*input)
 	return (l);
 }
 
-static char		*set_split_delimiter(char *input)
+static	short	not_escaped(char *str, int i)
+{
+	int		backslash;
+
+	i--;
+	backslash = 0;
+	while (i && str[i] == '\\')
+	{
+		i--;
+		backslash++;
+	}
+	return ((backslash + 1) % 2);
+}
+
+static char		*set_split_delimiter(char *input, char delimiter)
 {
 	int	i;
 
 	i = 0;
 	while (*input == ' ')
 		input++;
+	while (*input == delimiter)
+		input++;
 	while (input[i])
 	{
-		if (input[i] == ' ' && input[i - 1] != '\\')
+		if (input[i] == delimiter && not_escaped(input, i))
 			input[i] = '\0';
 		i++;
 	}
@@ -66,25 +82,15 @@ static	void	divide_arguments(char	**args, char *input, int len)
 	args[j] = NULL;
 }
 
-static	void	delete_residual_backslash(char **args)
-{
-	while (*args)
-	{
-		*args = parse_backslash(*args, 1);
-		args++;
-	}
-}
-
-char	**ft_split_args(char *input)
+char	**ft_split_non_escaped(char *input, char delimiter)
 {
 	char	**args;
 	int		len;
 
-	if (!(args = malloc((count_args(input) + 2) * sizeof(char *))))
+	if (!(args = malloc((count_args(input, delimiter) + 2) * sizeof(char *))))
 		return (NULL);
 	len = strlen(input);
-	input = set_split_delimiter(input);
+	input = set_split_delimiter(input, delimiter);
 	divide_arguments(args, input, len);
-	delete_residual_backslash(args);
 	return (args);
 }
