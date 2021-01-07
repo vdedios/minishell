@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 20:20:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/03 00:54:38 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/05 12:12:53 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	find_pipes(t_shell *shell)
 	while (shell->commands[it])
 	{
 		shell->args = get_args(shell->commands[it]);
+		shell->binary = ft_strdup(shell->args[0]);
 		pipe(p);
 		pid = fork();
 		if (pid == -1)

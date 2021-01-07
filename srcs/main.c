@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/03 00:52:42 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/05 19:02:51 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,14 @@ char	*get_path(t_shell *shell)
 	paths = ft_split(value, ':');
 	path = search_binary(shell, paths, 0);
 	if (path)
-		path = absolute_bin_path(path, shell->args[0]);
+		path = absolute_bin_path(path, shell->binary);
 	else
+	{
 		path = ft_strdup(shell->binary);
-	check_permissions(shell, path, 0);
+		//bin = ft_strtrim(bin, "./");
+		//path = ft_strjoin(get_env(shell, "PWD"), "/");
+		//path = ft_strjoin(path, bin);
+	}
 	//clean_matrix(paths);
 	free(paths);
 	return (path);
@@ -48,13 +52,16 @@ int		run_command(t_shell *shell, char exited)
 	char	*path;
 	pid_t	pid;
 
+	(void)exited;
 	path = get_path(shell);
 	pid = fork();
 	if (pid == 0)
 	{
+		check_permissions(shell, path, 0);
 		execve(path, shell->args, shell->env);
-		shell->stat_loc = 127;
-		print_errors(shell, " command not found", shell->args[0], exited);
+		//shell->stat_loc = 126;
+		//print_errors(shell, " Permission denied", shell->args[0], exited);
+		exit(shell->stat_loc);
 	}
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
