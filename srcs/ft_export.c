@@ -68,6 +68,7 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	while (shell->env[i] && ft_strncmp(shell->env[i], value,
 				ft_strlen(value) - ft_strlen(tmp)))
 		i++;
+	value = parse_backslash(value, 2);
 	tmp_env = add_env(&value, shell->env, i);
 	clean_env(shell);
 	shell->env = tmp_env;

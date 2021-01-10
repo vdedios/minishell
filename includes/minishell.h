@@ -67,15 +67,18 @@ char	*get_path(t_shell *shell, int *binary);
 ** Parsing functions
 */
 
-void	expansion(t_shell *shell);
+char	*expansion(t_shell *shell, char *str);
+char	*embrace_expansion(char *str);
+char    *mantain_expansion_spaces(char *str);
 char	*parse_quotes(char *str);
-char	*parse_backslash(char *str, char key);
+char	*parse_backslash(char *str, short residual);
 char	*parse_input(char *input);
 short	is_special_char(char c);
 short	is_space(char c);
 short	check_prev_backslashes(char *str, int i);
 int		n_special_chars(char *str, int opening, int closing, char quote);
-char	**ft_split_args(char *input);
+char	**ft_split_non_escaped(char *input, char delimiter);
+
 /*
 ** Builtin functions
 */
