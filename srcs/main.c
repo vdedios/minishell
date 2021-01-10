@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/05 19:02:51 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/10 16:49:25 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-char	*get_path(t_shell *shell)
+char	*get_path(t_shell *shell, int *binary)
 {
 	char	*value;
 	char	*path;
@@ -32,16 +32,7 @@ char	*get_path(t_shell *shell)
 
 	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, 0);
-	if (path)
-		path = absolute_bin_path(path, shell->binary);
-	else
-	{
-		path = ft_strdup(shell->binary);
-		//bin = ft_strtrim(bin, "./");
-		//path = ft_strjoin(get_env(shell, "PWD"), "/");
-		//path = ft_strjoin(path, bin);
-	}
+	path = search_binary(shell, paths, 0, binary);
 	//clean_matrix(paths);
 	free(paths);
 	return (path);
@@ -51,13 +42,15 @@ int		run_command(t_shell *shell, char exited)
 {
 	char	*path;
 	pid_t	pid;
+	int		binary;
 
 	(void)exited;
-	path = get_path(shell);
+	binary = 0;
+	path = get_path(shell, &binary);
 	pid = fork();
 	if (pid == 0)
 	{
-		check_permissions(shell, path, 0);
+		check_permissions(shell, path, 0, &binary);
 		execve(path, shell->args, shell->env);
 		//shell->stat_loc = 126;
 		//print_errors(shell, " Permission denied", shell->args[0], exited);

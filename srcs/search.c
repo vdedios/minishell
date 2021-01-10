@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/22 00:54:01 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/10 16:38:20 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static	void	to_lower(char *input)
 	}
 }
 
-char	*search_binary(t_shell *shell, char **paths, char exited)
+char	*search_binary(t_shell *shell, char **paths, char exited, int *binary)
 {
 	(void)exited;
 	size_t			it;
@@ -45,14 +45,36 @@ char	*search_binary(t_shell *shell, char **paths, char exited)
 				{
 					if (ft_strcmp(direntp->d_name, shell->args[0]))
 					{
+						*binary = 1;
 						closedir(pdir);
-						return (paths[it]);
+						//return (paths[it]);
+						return (absolute_bin_path(paths[it], shell->binary));
 					}
 					direntp++;
 				}
 				closedir(pdir);
 			}
 		}
+	}
+	if (stat(shell->args[0], &s) != -1)
+	{
+		if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
+		{
+			//printf("Entra\n");
+			if (ft_strncmp(shell->args[0], "/", 1) && ft_strncmp(shell->args[0], "./", 2) && !(shell->args[0][ft_strlen(shell->args[0]) - 1] == '/'))
+			{
+				shell->stat_loc = 127;
+				print_errors(shell, " command not found", shell->binary, exited);
+				exit(shell->stat_loc);
+			}
+		}
+		return (shell->binary);
+	}
+	if (lstat(shell->args[0], &s) != -1 || !ft_strncmp(shell->args[0], "./", 2))
+	{
+		shell->stat_loc = 127;
+		print_errors(shell, " No such file or directory", shell->binary, exited);
+		exit(shell->stat_loc);
 	}
 	return (NULL);
 }
