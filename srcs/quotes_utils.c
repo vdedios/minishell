@@ -18,7 +18,7 @@ short	check_prev_backslashes(char *str, int i)
 
 short	is_special_char(char c)
 {
-	if (c == '$' || c == '\\')
+	if (c == '$' || c == '\\' || c == '|' || c == ';')
 		return (1);
 	return (0);
 }

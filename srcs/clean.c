@@ -1,12 +1,15 @@
 #include "minishell.h"
 
+/*
+** Aqui hay problemas de liberación -> free(*matrix)
+*/
 void	clean_matrix(char **matrix)
 {
 	if (matrix)
 	{
 		while (*matrix)
 		{
-			free(*matrix);
+			//free(*matrix);
 			matrix++;
 		}
 	}

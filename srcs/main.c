@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*update_last_arg(char **args)
+static char		*update_last_arg(char **args)
 {
 	int		len;
 
@@ -66,7 +66,7 @@ int		run_command(t_shell *shell, char exited)
 	return (1);
 }
 
-int		check_builtin(t_shell *shell)
+int				check_builtin(t_shell *shell)
 {
 	int ret;
 
@@ -102,8 +102,8 @@ static void		handle_commands(t_shell *shell, char exited)
 		find_pipes(shell);
 	else
 	{
+		*shell->commands = expansion(shell, *shell->commands);
 		shell->args = get_args(*shell->commands);
-		expansion(shell);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);
 		if (fd != -1)
@@ -115,7 +115,7 @@ static void		handle_commands(t_shell *shell, char exited)
 	}
 }
 
-static void validator(t_shell *shell, char *line, char separator)
+static void 	validator(t_shell *shell, char *line, char separator)
 {
     size_t  it;
     size_t  cont;
@@ -148,30 +148,15 @@ static void		minishell(char *line, t_shell *shell)
 
 	it = 0;
 	exited = 0;
-	//line = ft_strtrim(line, " ");
 	validator(shell, line, ';');
-	shell->instructions = ft_split(line, ';');
-	if (!(shell->instructions[0]))
-	{
-		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `;'", NULL, exited);
-	}
+	shell->instructions = ft_split_non_escaped(line, ';');
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
-		//shell->instructions[it] = ft_strtrim(shell->instructions[it], " ");
 		while (is_space(*shell->instructions[it]))
 			shell->instructions[it]++;
 		validator(shell, shell->instructions[it], '|');
-		shell->commands = ft_split(shell->instructions[it], '|');
-		if (ft_strchr(shell->instructions[it], '|'))
-		{
-			if (!(shell->commands[0]) || (shell->commands[0] && (!shell->commands[1])))
-			{
-				shell->stat_loc = 2;
-				print_errors(shell, "syntax error near unexpected token `|'", NULL, exited);
-			}
-		}
+		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
 		if (shell->instructions[it + 1])
 			exited = 0;
 		handle_commands(shell, exited);
@@ -225,5 +210,6 @@ int				main(int argc, char **argv, char **envp)
 	}
 	else
 		read_input(line, &shell);
+	//printf("%s\n", embrace_expansion("echo $PWD$PWD"));
 	return (shell.stat_loc);
 }
