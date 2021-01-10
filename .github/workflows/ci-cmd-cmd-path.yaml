@@ -1,0 +1,35 @@
+name: Minishell
+
+on:
+  push: 
+   branches: [fix/cmd-cmd-path]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [macos-latest]
+    name: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path:  minishell
+
+    - name: Make
+      working-directory: minishell
+      run: make
+
+    - name: Test
+      uses: actions/checkout@v2
+      with:
+        repository: cacharle/minishell_test
+        path: test 
+
+    - name: Run test cmd/cmd_path
+      working-directory: test
+      run: ./run cmd/cmd_path
+
+    - name: Run test path/path
+      working-directory: test
+      run: ./run path/path
