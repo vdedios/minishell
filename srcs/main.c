@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/25 20:57:00 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/10 16:49:25 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,45 @@ static char		*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-int				run_command(t_shell *shell, char exited)
+char	*get_path(t_shell *shell, int *binary)
 {
 	char	*value;
 	char	*path;
 	char	**paths;
-	pid_t	pid;
 
 	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, exited);
+	path = search_binary(shell, paths, 0, binary);
+	//clean_matrix(paths);
+	free(paths);
+	return (path);
+}
+
+int		run_command(t_shell *shell, char exited)
+{
+	char	*path;
+	pid_t	pid;
+	int		binary;
+
+	(void)exited;
+	binary = 0;
+	path = get_path(shell, &binary);
 	pid = fork();
 	if (pid == 0)
 	{
-		if (path)
-			path = absolute_bin_path(path, shell->args[0]);
-		else
-		{
-			path = ft_strdup(shell->binary);
-			check_permissions(shell, path, exited);
-		}
+		check_permissions(shell, path, 0, &binary);
 		execve(path, shell->args, shell->env);
-		shell->stat_loc = 127;
-		//print_errors(shell, " command not found", shell->args[0], exited);
+		//shell->stat_loc = 126;
+		//print_errors(shell, " Permission denied", shell->args[0], exited);
+		exit(shell->stat_loc);
 	}
-
 	signal(SIGINT, signal_handler_waiting);
 	wait(&shell->stat_loc);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	ft_export(shell, update_last_arg(shell->args));
-	clean_matrix(paths);
 	//free(path);
-	free(paths);
 	return (1);
 }
 

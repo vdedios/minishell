@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/24 11:37:06 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/03 12:50:17 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 	//free(path);
 }
 
-static char	*get_path(t_shell *shell, char *path)
+static char	*get_workdir(t_shell *shell, char *path)
 {
 	size_t 	it;
 	size_t	len;
@@ -60,13 +60,13 @@ static void	change_dir(char *path, t_shell *shell)
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
 	getcwd(oldcwd, 1024);
-	//oldcwd = get_path(shell, "PWD=");
+	//oldcwd = get_workdir(shell, "PWD=");
 	//printf("Sale: %s\n", oldcwd);
 	//set_path(oldcwd, "PWD=", shell);
 	if (chdir(path) == 0)
 	{
 		getcwd(cwd, 1024);
-		set_path(get_path(shell, "PWD="), "OLDPWD=", shell);
+		set_path(get_workdir(shell, "PWD="), "OLDPWD=", shell);
 		set_path(cwd, "PWD=", shell);
 	}
 	else

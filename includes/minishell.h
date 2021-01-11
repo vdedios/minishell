@@ -53,14 +53,15 @@ char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(t_shell *env, char *arg);
-char	*search_binary(t_shell *shell, char **paths, char exited);
+char	*search_binary(t_shell *shell, char **paths, char exited, int *binary);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell, char exited);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell, char exited);
-void	check_permissions(t_shell *shell, char *path, char exited);
+void	check_permissions(t_shell *shell, char *path, char exited, int *binary);
 void	handle_shlvl(t_shell *shell);
+char	*get_path(t_shell *shell, int *binary);
 
 /*
 ** Parsing functions
