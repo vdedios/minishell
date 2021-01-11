@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/10 16:49:25 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/11 23:55:18 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ static void		handle_commands(t_shell *shell, char exited)
 	fd_in = dup(0);
 	if (*(shell->commands + 1))
 		find_pipes(shell);
-	else
+	else if (shell->commands[0])
 	{
-		*shell->commands = expansion(shell, *shell->commands);
+		shell->commands[0] = expansion(shell, shell->commands[0]);
 		shell->args = get_args(*shell->commands);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell, exited);
