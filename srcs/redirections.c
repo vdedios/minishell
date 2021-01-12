@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static	int	redirections_append(t_shell *shell, size_t it, char exited)
+static	int	redirections_append(t_shell *shell, size_t it)
 {
 	int fd;
 	
@@ -8,14 +8,14 @@ static	int	redirections_append(t_shell *shell, size_t it, char exited)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
 		if ((fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
 		{
 			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+			print_errors(shell, " No such file or directory", shell->args[it + 1]);
 		}
 		else
 			dup2(fd, 1);
@@ -25,7 +25,7 @@ static	int	redirections_append(t_shell *shell, size_t it, char exited)
 	return (fd);
 }
 
-static int	redirections_output(t_shell *shell, size_t it, char exited)
+static int	redirections_output(t_shell *shell, size_t it)
 {	
 	int fd;
 
@@ -33,14 +33,14 @@ static int	redirections_output(t_shell *shell, size_t it, char exited)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
 		if ((fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
 		{
 			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+			print_errors(shell, " No such file or directory", shell->args[it + 1]);
 		}
 		else
 			dup2(fd, 1);
@@ -50,7 +50,7 @@ static int	redirections_output(t_shell *shell, size_t it, char exited)
 	return (fd);
 }
 
-static int	redirections_input(t_shell *shell, size_t it, char exited)
+static int	redirections_input(t_shell *shell, size_t it)
 {
 	int fd;
 	struct stat	s;
@@ -59,7 +59,7 @@ static int	redirections_input(t_shell *shell, size_t it, char exited)
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL, exited);
+		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
@@ -70,13 +70,13 @@ static int	redirections_input(t_shell *shell, size_t it, char exited)
 				if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
 				{
 					shell->stat_loc = 1;
-					print_errors(shell, " Permission denied", shell->args[it + 1], exited);
+					print_errors(shell, " Permission denied", shell->args[it + 1]);
 				}
 			}
 			else
 			{
 				shell->stat_loc = 1;
-				print_errors(shell, " No such file or directory", shell->args[it + 1], exited);
+				print_errors(shell, " No such file or directory", shell->args[it + 1]);
 			}
 		}
 		else
@@ -87,7 +87,7 @@ static int	redirections_input(t_shell *shell, size_t it, char exited)
 	return (fd);
 }
 
-int	find_redirections(t_shell *shell, char exited)
+int	find_redirections(t_shell *shell)
 {
 	size_t 	it;
 	int		fd;
@@ -97,11 +97,11 @@ int	find_redirections(t_shell *shell, char exited)
 	while (shell->args[it])
 	{
 		if (ft_strcmp(shell->args[it], ">"))
-			fd = redirections_output(shell, it, exited);
+			fd = redirections_output(shell, it);
 		else if (ft_strcmp(shell->args[it], "<"))
-			fd = redirections_input(shell, it, exited);
+			fd = redirections_input(shell, it);
 		else if (ft_strcmp(shell->args[it], ">>"))
-			fd = redirections_append(shell, it, exited);
+			fd = redirections_append(shell, it);
 		else
 			it++;
 	}

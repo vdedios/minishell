@@ -26,9 +26,9 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 static void	handle_quote_error(char quote)
 {
 	if (quote == '\'')
-		print_errors(NULL, "unexpected EOF while looking for matching `''", NULL, 0);
+		print_errors(NULL, "unexpected EOF while looking for matching `''", NULL);
 	else
-		print_errors(NULL, "unexpected EOF while looking for matching `\"'", NULL, 0);
+		print_errors(NULL, "unexpected EOF while looking for matching `\"'", NULL);
 }
 
 static char	*find_closing_quote(char *str, char quote, int opening, int *closing)

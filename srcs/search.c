@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/10 16:38:20 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 18:59:08 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,8 @@ static	void	to_lower(char *input)
 	}
 }
 
-char	*search_binary(t_shell *shell, char **paths, char exited, int *binary)
+char	*search_binary(t_shell *shell, char **paths, int *binary)
 {
-	(void)exited;
 	size_t			it;
 	struct stat		s;
 	struct dirent	*direntp;
@@ -64,7 +63,7 @@ char	*search_binary(t_shell *shell, char **paths, char exited, int *binary)
 			if (ft_strncmp(shell->args[0], "/", 1) && ft_strncmp(shell->args[0], "./", 2) && !(shell->args[0][ft_strlen(shell->args[0]) - 1] == '/'))
 			{
 				shell->stat_loc = 127;
-				print_errors(shell, " command not found", shell->binary, exited);
+				print_errors(shell, " command not found", shell->binary);
 				exit(shell->stat_loc);
 			}
 		}
@@ -73,7 +72,7 @@ char	*search_binary(t_shell *shell, char **paths, char exited, int *binary)
 	if (lstat(shell->args[0], &s) != -1 || !ft_strncmp(shell->args[0], "./", 2))
 	{
 		shell->stat_loc = 127;
-		print_errors(shell, " No such file or directory", shell->binary, exited);
+		print_errors(shell, " No such file or directory", shell->binary);
 		exit(shell->stat_loc);
 	}
 	return (NULL);

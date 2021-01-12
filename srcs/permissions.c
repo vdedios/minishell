@@ -6,13 +6,13 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:53:16 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/10 16:19:18 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 18:59:48 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	check_permissions(t_shell *shell, char *path, char exited, int *binary)
+void	check_permissions(t_shell *shell, char *path, int *binary)
 {
 	struct stat s;
 
@@ -22,7 +22,7 @@ void	check_permissions(t_shell *shell, char *path, char exited, int *binary)
 		if (s.st_mode & S_IFDIR)
 		{
 			shell->stat_loc = 126;
-			print_errors(shell, " is a directory", shell->binary, exited);
+			print_errors(shell, " is a directory", shell->binary);
 			exit(shell->stat_loc);
 		}
 
@@ -31,7 +31,7 @@ void	check_permissions(t_shell *shell, char *path, char exited, int *binary)
 			if (!(s.st_mode & S_IXUSR))
 			{
 				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", path, exited);
+				print_errors(shell, " Permission denied", path);
 				exit(shell->stat_loc);
 			}
 		}
@@ -41,7 +41,7 @@ void	check_permissions(t_shell *shell, char *path, char exited, int *binary)
 			{
 				//printf("Usuario");
 				shell->stat_loc = 126;
-				print_errors(shell, " Permission denied", path, exited);
+				print_errors(shell, " Permission denied", path);
 				exit(shell->stat_loc);
 			}
 		}
@@ -50,7 +50,7 @@ void	check_permissions(t_shell *shell, char *path, char exited, int *binary)
 	else
 	{
 		shell->stat_loc = 127;
-		print_errors(shell, " command not found", shell->binary, exited);
+		print_errors(shell, " command not found", shell->binary);
 		exit(shell->stat_loc);
 	}
 }

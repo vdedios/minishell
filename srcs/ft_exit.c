@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/07 12:49:20 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 19:18:57 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 	{
 		msg = ft_strjoin(shell->binary, ": ");
 		msg = ft_strjoin(msg, shell->args[1]);
-		print_errors(shell, " numeric argument required", msg, 0);
+		print_errors(shell, " numeric argument required", msg);
 		return (255);
 	}
 	if (*nptr == '-' || *nptr == '+')
@@ -49,13 +49,13 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 	{
 		msg = ft_strjoin(shell->binary, ": ");
 		msg = ft_strjoin(msg, shell->args[1]);
-		print_errors(shell, " numeric argument required", msg, 0);
+		print_errors(shell, " numeric argument required", msg);
 		free(msg);
 		return (255);
 	}
 	if (shell->args[2])
 	{
-		print_errors(shell, " too many arguments", shell->binary, 0);
+		print_errors(shell, " too many arguments", shell->binary);
 		return (1);
 	}
 	ft_iterate(nptr, &num);

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 10:36:17 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/23 20:04:21 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 19:20:58 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	handle_shlvl(t_shell *shell)
 	{
 		msg = ft_strjoin(" shell level (", ft_itoa(lvl));
 		msg = ft_strjoin(msg, ") too high, resetting to 1");
-		print_errors(shell, msg, "warning", 0);
+		print_errors(shell, msg, "warning");
 		lvl = 1;
 	}
 	//else if (lvl >= 2147483648 || lvl < 0)
