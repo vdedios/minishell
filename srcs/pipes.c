@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 20:20:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/10 16:02:07 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 19:20:35 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ void	find_pipes(t_shell *shell)
 			if (shell->commands[it + 1])
 				dup2(p[1], 1);
 			close(p[1]);
-			fd = find_redirections(shell, 0);
+			fd = find_redirections(shell);
 			if (!check_builtin(shell))
 			{
 				path = get_path(shell, &binary);
-				check_permissions(shell, path, 0, &binary);
+				check_permissions(shell, path, &binary);
 				execve(path, shell->args, shell->env);
 			}
 			close(fd);

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/11 23:55:18 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 18:58:04 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,25 @@ char	*get_path(t_shell *shell, int *binary)
 
 	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, 0, binary);
+	path = search_binary(shell, paths, binary);
 	//clean_matrix(paths);
 	free(paths);
 	return (path);
 }
 
-int		run_command(t_shell *shell, char exited)
+int		run_command(t_shell *shell)
 {
 	char	*path;
 	pid_t	pid;
 	int		binary;
 
-	(void)exited;
 	binary = 0;
 	path = get_path(shell, &binary);
 	pid = fork();
 	if (pid == 0)
 	{
-		check_permissions(shell, path, 0, &binary);
+		check_permissions(shell, path, &binary);
 		execve(path, shell->args, shell->env);
-		//shell->stat_loc = 126;
-		//print_errors(shell, " Permission denied", shell->args[0], exited);
 		exit(shell->stat_loc);
 	}
 	signal(SIGINT, signal_handler_waiting);
@@ -89,7 +86,7 @@ int				check_builtin(t_shell *shell)
 	return (ret);
 }
 
-static void		handle_commands(t_shell *shell, char exited)
+static void		handle_commands(t_shell *shell)
 {
 	int		fd_out;
 	int		fd_in;
@@ -105,10 +102,10 @@ static void		handle_commands(t_shell *shell, char exited)
 		shell->commands[0] = expansion(shell, shell->commands[0]);
 		shell->args = get_args(*shell->commands);
 		shell->binary = ft_strdup(shell->args[0]);
-		fd = find_redirections(shell, exited);
+		fd = find_redirections(shell);
 		if (fd != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
-				run_command(shell, exited);
+				run_command(shell);
 		close(fd);
 		dup2(fd_out, 1);
 		dup2(fd_in, 0);
@@ -130,9 +127,9 @@ static void 	validator(t_shell *shell, char *line, char separator)
             if (cont == 0)
             {
 				if (separator == ';')
-                	print_errors(shell, "syntax error near unexpected token `;'", NULL, 0);
+                	print_errors(shell, "syntax error near unexpected token `;'", NULL);
 				else if (separator == '|')
-                	print_errors(shell, "syntax error near unexpected token `|'", NULL, 0);
+                	print_errors(shell, "syntax error near unexpected token `|'", NULL);
                 exit(2);
             }
             else
@@ -144,10 +141,8 @@ static void 	validator(t_shell *shell, char *line, char separator)
 static void		minishell(char *line, t_shell *shell)
 {
 	size_t	it;
-	char	exited;
 
 	it = 0;
-	exited = 0;
 	validator(shell, line, ';');
 	shell->instructions = ft_split_non_escaped(line, ';');
 	while (shell->instructions[it])
@@ -157,9 +152,7 @@ static void		minishell(char *line, t_shell *shell)
 			shell->instructions[it]++;
 		validator(shell, shell->instructions[it], '|');
 		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
-		if (shell->instructions[it + 1])
-			exited = 0;
-		handle_commands(shell, exited);
+		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}

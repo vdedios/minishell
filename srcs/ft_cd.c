@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/03 12:50:17 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/12 19:17:43 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,16 +77,16 @@ static void	change_dir(char *path, t_shell *shell)
 			{
 				path = ft_strjoin(" ", path);
 				msg = ft_strjoin(path, ": Permission denied");
-				print_errors(shell, msg, shell->binary, 0);
+				print_errors(shell, msg, shell->binary);
 			}
 			else
-				print_errors(shell, "not a directory:", shell->binary, 0);
+				print_errors(shell, "not a directory:", shell->binary);
 		}
 		else
 		{
 			path = ft_strjoin(" ", path);
 			msg = ft_strjoin(path, ": No such file or directory");
-			print_errors(shell, msg, shell->binary, 0);
+			print_errors(shell, msg, shell->binary);
 		}
 		//ft_putendl_fd(path, 1);
 	}
@@ -109,7 +109,7 @@ int			ft_cd(t_shell *shell)
 		path = target;
 		if (shell->args[3])
 		{
-			print_errors(shell, "too many arguments", shell->binary, 0);
+			print_errors(shell, "too many arguments", shell->binary);
 			return (1);
 		}
 	}
