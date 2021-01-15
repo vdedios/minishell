@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/12 18:59:08 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/14 23:09:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 	DIR				*pdir;
 
 	it = -1;
+	(void)binary;
 	to_lower(shell->args[0]);
 	while (paths[++it])
 	{
@@ -44,9 +45,8 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 				{
 					if (ft_strcmp(direntp->d_name, shell->args[0]))
 					{
-						*binary = 1;
+						if (binary) *binary = 1;
 						closedir(pdir);
-						//return (paths[it]);
 						return (absolute_bin_path(paths[it], shell->binary));
 					}
 					direntp++;

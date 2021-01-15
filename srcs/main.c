@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/12 18:58:04 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/16 00:13:31 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,33 @@ int		run_command(t_shell *shell)
 	return (1);
 }
 
+
+static	char	*to_lower(char *input)
+{
+	size_t	it;
+	char	*output;
+
+	output = calloc(1, ft_strlen(input));
+	it = -1;
+	while (input[++it])
+	{
+		output[it] = ft_tolower(input[it]);
+	}
+	output[it] = '\0';
+	return (output);
+}
+
 int				check_builtin(t_shell *shell)
 {
 	int ret;
 
 	ret = 0;
-	if (ft_strcmp(*shell->args, "exit"))
+	//to_lower(shell->args[0]);
+	if (ft_strcmp(shell->args[0], "exit"))
 		ft_exit(shell);
-	else if (ft_strcmp(*shell->args, "echo"))
+	else if (ft_strcmp(shell->args[0], "echo"))
 		ret = ft_echo(shell->args + 1);
-	else if (ft_strcmp(*shell->args, "cd"))
+	else if (ft_strcmp(shell->args[0], "cd"))
 		ret = ft_cd(shell);
 	else if (ft_strcmp(*shell->args, "pwd"))
 		ret = ft_pwd();
@@ -80,8 +97,8 @@ int				check_builtin(t_shell *shell)
 		ret = ft_export(shell, NULL);
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell->args[1], shell->env);
-	else if (ft_strcmp(*shell->args, "env"))
-		ret = ft_env(shell, shell->env);
+	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
+		ret = ft_env(shell);
 	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
 }
@@ -143,6 +160,7 @@ static void		minishell(char *line, t_shell *shell)
 	size_t	it;
 
 	it = 0;
+	(void)handle_commands;
 	validator(shell, line, ';');
 	shell->instructions = ft_split_non_escaped(line, ';');
 	while (shell->instructions[it])
@@ -191,7 +209,7 @@ int				main(int argc, char **argv, char **envp)
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
-	ft_export(&shell, ft_strdup("OLDPWD="));
+	//ft_export(&shell, ft_strdup("OLDPWD="));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
