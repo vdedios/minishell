@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:15:33 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/16 00:25:52 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/16 00:49:36 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,14 @@ char	*get_env(t_shell *shell, char *arg)
 	return (NULL);
 }
 
-int	ft_env(t_shell *shell)
+int	ft_env(t_shell *shell, char **args)
 {
 	size_t it;
 	char	*path;
 	int		*binary;
 
 	binary = NULL;
+	(void)args;
 	path = get_path(shell, binary);
 	ft_export(shell, ft_strjoin("_=", path));
 	if (shell->args[1])

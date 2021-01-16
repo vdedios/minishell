@@ -83,7 +83,7 @@ char	**ft_split_non_escaped(char *input, char delimiter);
 ** Builtin functions
 */
 
-int		ft_env(t_shell *shell);
+int		ft_env(t_shell *shell, char **args);
 int		ft_cd(t_shell *shell);
 int		ft_echo(char **args);
 int		ft_pwd();
