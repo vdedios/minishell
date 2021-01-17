@@ -21,18 +21,43 @@ static	int		count_args(char	*input, char delimiter)
 	return (l);
 }
 
+static short	is_whitespace(char c)
+{
+	if (c == ' ' || c == '\t')
+		return (1);
+	return (0);
+}
+
 static	short	not_escaped(char *str, int i)
 {
 	int		backslash;
 
 	i--;
 	backslash = 0;
-	while (i && str[i] == '\\')
+	while (i >= 0 && str[i] == '\\')
 	{
 		i--;
 		backslash++;
 	}
+	if (backslash > 1 && str[i] == ' ')
+		backslash = 1;
 	return ((backslash + 1) % 2);
+}
+
+static	char	*set_split_delimiter_whitespace(char *input)
+{
+	int	i;
+
+	i = 0;
+	while (is_whitespace(input[i]))
+		input++;
+	while (input[i])
+	{
+		if (is_whitespace(input[i]) && not_escaped(input, i))
+			input[i] = '\0';
+		i++;
+	}
+	return (input);
 }
 
 static char		*set_split_delimiter(char *input, char delimiter)
@@ -90,7 +115,10 @@ char	**ft_split_non_escaped(char *input, char delimiter)
 	if (!(args = malloc((count_args(input, delimiter) + 2) * sizeof(char *))))
 		return (NULL);
 	len = strlen(input);
-	input = set_split_delimiter(input, delimiter);
+	if (delimiter == ' ')
+		input = set_split_delimiter_whitespace(input);
+	else
+		input = set_split_delimiter(input, delimiter);
 	divide_arguments(args, input, len);
 	return (args);
 }

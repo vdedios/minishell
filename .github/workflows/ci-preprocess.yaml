@@ -1,0 +1,43 @@
+name: Minishell
+
+on:
+  push: 
+   branches: [fix/preprocess-merge]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [macos-latest]
+    name: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path:  minishell
+
+    - name: Make
+      working-directory: minishell
+      run: make
+
+    - name: Test
+      uses: actions/checkout@v2
+      with:
+        repository: cacharle/minishell_test
+        path: test 
+
+    - name: Run test preprocess/interpolation
+      working-directory: test
+      run: ./run preprocess/interpolation
+
+    - name: Run test preprocess/escape
+      working-directory: test
+      run: ./run preprocess/escape
+
+    - name: Run test preprocess/quote
+      working-directory: test
+      run: ./run preprocess/quote
+
+    - name: Run test preprocess/spaces
+      working-directory: test
+      run: ./run preprocess/spaces
