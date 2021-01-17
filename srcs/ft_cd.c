@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/12 19:17:43 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/16 00:34:14 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 	//free(path);
 }
 
-static char	*get_workdir(t_shell *shell, char *path)
+/*static char	*get_workdir(t_shell *shell, char *path)
 {
 	size_t 	it;
 	size_t	len;
@@ -48,7 +48,7 @@ static char	*get_workdir(t_shell *shell, char *path)
 			return (ft_strchr(shell->env[it], '=') + 1);
 	}
 	return (NULL);
-}
+}*/
 
 static void	change_dir(char *path, t_shell *shell)
 {
@@ -66,8 +66,15 @@ static void	change_dir(char *path, t_shell *shell)
 	if (chdir(path) == 0)
 	{
 		getcwd(cwd, 1024);
-		set_path(get_workdir(shell, "PWD="), "OLDPWD=", shell);
+		//set_path(get_workdir(shell, "PWD="), "OLDPWD=", shell);
+		if (get_env(shell, "PWD"))
+			ft_export(shell, ft_strjoin("OLDPWD=", get_env(shell, "PWD")));
+		else
+		{
+			ft_export(shell, ft_strjoin("OLDPWD=", ""));
+		}
 		set_path(cwd, "PWD=", shell);
+		//ft_export(shell, ft_strjoin("OLDPWD=", oldcwd));
 	}
 	else
 	{
@@ -99,7 +106,16 @@ int			ft_cd(t_shell *shell)
 
 	target = shell->args[1];
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
-		path = get_env(shell, "HOME");
+	{
+		if (get_env(shell, "HOME"))
+			path = get_env(shell, "HOME");
+		else
+		{
+			path = NULL;
+			print_errors(shell, " HOME not set", ft_strdup(shell->binary));
+		}
+			
+	}
 	else if (!ft_strncmp(target, ".", 2) || !ft_strncmp(target, "", 1))
 		path = get_env(shell, "PWD");
 	else if (!ft_strncmp(target, "-", 2))
