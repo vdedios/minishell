@@ -27,11 +27,13 @@ static	short	not_escaped(char *str, int i)
 
 	i--;
 	backslash = 0;
-	while (i && str[i] == '\\')
+	while (i >= 0 && str[i] == '\\')
 	{
 		i--;
 		backslash++;
 	}
+	if (backslash > 1 && str[i] == ' ')
+		backslash = 1;
 	return ((backslash + 1) % 2);
 }
 

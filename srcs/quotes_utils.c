@@ -16,6 +16,14 @@ short	check_prev_backslashes(char *str, int i)
 	return ((n + 1) % 2);
 }
 
+short	is_alpha(char c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
+	return (0);
+}
+
+
 short	is_special_char(char c)
 {
 	if (c == '$' || c == '\\' || c == '|' || c == ';')

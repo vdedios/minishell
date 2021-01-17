@@ -13,10 +13,16 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 		return (NULL);
 	while (i < closing)
 	{
-		if (quote == '\'' && is_special_char(str[i]))
+		if (quote == '\'' && (is_special_char(str[i]) || is_alpha(str[i])))
 			buff[j++] = '\\';
-		else if (is_space(str[i]) || str[i] == '|' || str[i] == ';')
-			buff[j++] = '\\';
+		else
+		{
+			if (is_space(str[i])
+				|| str[i] == '|' || str[i] == ';' || str[i] == '\'')
+				buff[j++] = '\\';
+			if (str[i - 1] == '\\' && (str[i] == '|' || is_alpha(str[i])))
+				buff[j++] = '\\';
+		}
 		buff[j++] = str[i++];
 	}
 	buff[j] = '\0';
