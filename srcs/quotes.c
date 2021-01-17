@@ -13,7 +13,8 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 		return (NULL);
 	while (i < closing)
 	{
-		if (quote == '\'' && (is_special_char(str[i]) || is_alpha(str[i])))
+		if (quote == '\'' && (is_special_char(str[i]) ||
+			(str[i - 1] == '\\' && is_alpha(str[i]))))
 			buff[j++] = '\\';
 		else
 		{
