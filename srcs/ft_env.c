@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:15:33 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/10 17:31:11 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/16 00:49:36 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*get_env(t_shell *shell, char *arg)
 	it = 0;
 	while (shell->env[it])
 	{
-		if (ft_strncmp(shell->env[it], arg, len) == 0)
+		if (!ft_strncmp(shell->env[it], arg, len))
 			return (ft_strchr(shell->env[it], '=') + 1);
 		it++;
 	}
@@ -31,16 +31,13 @@ char	*get_env(t_shell *shell, char *arg)
 int	ft_env(t_shell *shell, char **args)
 {
 	size_t it;
-	//char	*path;
-	//char	**paths;
-	//char	*value;
+	char	*path;
+	int		*binary;
 
+	binary = NULL;
 	(void)args;
-	/*value = get_env(shell, "PATH");
-	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, 0);
-	//path = absolute_bin_path(path, shell->binary);
-	ft_export(shell, ft_strjoin("_=", path));*/
+	path = get_path(shell, binary);
+	ft_export(shell, ft_strjoin("_=", path));
 	if (shell->args[1])
 	{
 		ft_putendl_fd("env: too many arguments", 1);
