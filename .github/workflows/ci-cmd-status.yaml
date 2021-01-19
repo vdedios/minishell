@@ -28,4 +28,4 @@ jobs:
 
     - name: Run test cmd/status
       working-directory: test
-      run: ./run cmd_status
+      run: ./run cmd/status
