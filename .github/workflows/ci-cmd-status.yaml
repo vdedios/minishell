@@ -2,7 +2,7 @@ name: Minishell
 
 on:
   push: 
-   branches: [fix/cmd-status]
+   branches: [fix/cmd_status]
 
 jobs:
   build:
