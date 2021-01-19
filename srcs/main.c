@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/16 00:59:10 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/17 19:29:17 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int				check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "export"))
 		ret = ft_export(shell, NULL);
 	else if (ft_strcmp(*shell->args, "unset"))
-		ret = ft_unset(shell->args[1], shell->env);
+		ret = ft_unset(shell);
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
 		ret = ft_env(shell, shell->env);
 	ft_export(shell, update_last_arg(shell->args));

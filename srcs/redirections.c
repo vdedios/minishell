@@ -19,9 +19,9 @@ static	int	redirections_append(t_shell *shell, size_t it)
 		}
 		else
 			dup2(fd, 1);
-		ft_unset(shell->args[it], shell->args);
+		delete_environment(shell, shell->args[it], shell->args);
 	}
-	ft_unset(shell->args[it], shell->args);
+	delete_environment(shell, shell->args[it], shell->args);
 	return (fd);
 }
 
@@ -44,9 +44,9 @@ static int	redirections_output(t_shell *shell, size_t it)
 		}
 		else
 			dup2(fd, 1);
-		ft_unset(shell->args[it], shell->args);
+		delete_environment(shell, shell->args[it], shell->args);
 	}
-	ft_unset(shell->args[it], shell->args);
+	delete_environment(shell, shell->args[it], shell->args);
 	return (fd);
 }
 
@@ -81,9 +81,9 @@ static int	redirections_input(t_shell *shell, size_t it)
 		}
 		else
 			dup2(fd, 0);
-		ft_unset(shell->args[it], shell->args);
+		delete_environment(shell, shell->args[it], shell->args);
 	}
-	ft_unset(shell->args[it], shell->args);
+	delete_environment(shell, shell->args[it], shell->args);
 	return (fd);
 }
 
