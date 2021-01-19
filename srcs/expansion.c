@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2020/12/06 16:07:48 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/19 23:49:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ static	char	*expand_var(char *env, t_shell *shell)
 static	char	*last_proc_status(t_shell *shell, char *env)
 {
 	free(env);
-	return (ft_itoa(shell->stat_loc));
+	return (ft_itoa(shell->previous_stat));
 }
 
 static	char	*parse_expansion(t_shell *shell, char **env_split,
