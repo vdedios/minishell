@@ -30,8 +30,8 @@ char	*get_env(t_shell *shell, char *arg)
 
 int	ft_env(t_shell *shell, char **args)
 {
-	size_t it;
-	(void)args;
+	size_t	it;
+	char	**to_print_env;
 
 	if (shell->args[1])
 	{
@@ -39,7 +39,11 @@ int	ft_env(t_shell *shell, char **args)
 		return (1);
 	}
 	it = 0;
-	while (shell->env[it])
-		ft_putendl_fd(shell->env[it++], 1);
+	if (args)
+		to_print_env = args;
+	else
+		to_print_env = shell->env;
+	while (to_print_env[it])
+		ft_putendl_fd(to_print_env[it++], 1);
 	return (1);
 }

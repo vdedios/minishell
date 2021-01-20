@@ -108,18 +108,39 @@ static  char	**process_envs(char **env)
 static size_t	print_sorted_env(t_shell *shell)
 {
 	char **tmp_envp;
+	char **tmp_envp2;
 
 	tmp_envp = sort_alpha(shell->env);
-	shell->env = process_envs(tmp_envp);
-	ft_env(shell, NULL);
+	tmp_envp2 = process_envs(tmp_envp);
+	ft_env(shell, tmp_envp2);
 	clean_matrix(tmp_envp);
+	/*
 	free(tmp_envp);
+	*/
+	clean_matrix(tmp_envp2);
+	free(tmp_envp2);
+	return (1);
+}
+
+static	int		ft_strncmp_equal(char *str1, char *str2, int len)
+{
+	while (*str1 && *str2 && len)
+	{
+		if (*str1 != *str2)
+			return (1);
+		str1++;
+		str2++;
+		len--;
+	}
+	if (*str1 == *str2)
+		return (0);
 	return (1);
 }
 
 static	void	export_values(t_shell *shell, char *last_arg, int j)
 {
 	int  	i;
+	int  	key_len;
 	char 	*value;
 	char	*tmp;
 	char 	**tmp_env;
@@ -130,8 +151,9 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	else
 		value = ft_strdup(shell->args[j]);
 	tmp = ft_strchr(value, '=');
-	while (shell->env[i] && ft_strncmp(shell->env[i], value,
-				ft_strlen(value) - ft_strlen(tmp)))
+	key_len = ft_strlen(value) - ft_strlen(tmp);
+	while (shell->env[i]
+			&& ft_strncmp_equal(shell->env[i], value, key_len))
 		i++;
 	value = parse_backslash(value, 2);
 	tmp_env = add_env(&value, shell->env, i);
