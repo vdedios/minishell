@@ -12,7 +12,7 @@ static size_t	is_bigger(char *s1, char *s2)
 	return (ret);
 }
 
-static char		**sort_alfa(char **envp)
+static char		**sort_alpha(char **envp)
 {
 	char	*tmp;
 	size_t	len;
@@ -41,12 +41,77 @@ static char		**sort_alfa(char **envp)
 	return (envp);
 }
 
+static short	is_escapable_char(char c) {
+	if (c == '$' || c == '\\' || c == '\"')
+		return (1);
+	return (0);
+}
+
+static int		count_special_chars(char *str)
+{
+	int count;
+
+	count = 0;
+	while(*str)
+	{
+		if (is_escapable_char(*str))
+			count++;
+		str++;
+	}
+	return (count);
+}
+
+static char		*add_quotes_and_backslash(char *str)
+{
+	char	*buff;
+	int		i;
+
+	i = 0;
+	if (!(buff = malloc((ft_strlen(str) + count_special_chars(str) + 3)
+						* sizeof(char))))
+		return (NULL);
+	while(*str)
+	{
+		if (is_escapable_char(*str))
+			buff[i++] = '\\';
+		buff[i++] = *str;
+		if (*str == '=')
+			buff[i++] = '\"';
+		str++;
+	}
+	buff[i++] = '\"';
+	buff[i] = '\0';
+	return (buff);
+}
+
+static  char	**process_envs(char **env)
+{
+	char **tmp_envp;
+	char *tmp;
+	char *tmp2;
+	int	 i;
+
+	i = 0;
+	tmp_envp = ft_strdup_matrix(env);
+	while (tmp_envp[i])
+	{
+		tmp = ft_strjoin("declare -x ", tmp_envp[i]);
+		tmp2 = add_quotes_and_backslash(tmp);
+		free(tmp_envp[i]);
+		free(tmp);
+		tmp_envp[i] = tmp2;
+		i++;
+	}
+	return (tmp_envp);
+}
+
 static size_t	print_sorted_env(t_shell *shell)
 {
 	char **tmp_envp;
 
-	tmp_envp = ft_strdup_matrix(shell->env);
-	ft_env(shell, sort_alfa(tmp_envp));
+	tmp_envp = sort_alpha(shell->env);
+	shell->env = process_envs(tmp_envp);
+	ft_env(shell, NULL);
 	clean_matrix(tmp_envp);
 	free(tmp_envp);
 	return (1);
@@ -82,7 +147,9 @@ int				ft_export(t_shell *shell, char *last_arg)
 	j = 1;
 	if (last_arg)
 		export_values(shell, last_arg, 0);
-	else if (shell->args[j] || !print_sorted_env(shell))
+	else if(!shell->args[j])
+		return(print_sorted_env(shell));
+	else
 	{
 		while (shell->args[j])
 		{

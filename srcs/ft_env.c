@@ -31,13 +31,8 @@ char	*get_env(t_shell *shell, char *arg)
 int	ft_env(t_shell *shell, char **args)
 {
 	size_t it;
-	char	*path;
-	int		*binary;
-
-	binary = NULL;
 	(void)args;
-	path = get_path(shell, binary);
-	ft_export(shell, ft_strjoin("_=", path));
+
 	if (shell->args[1])
 	{
 		ft_putendl_fd("env: too many arguments", 1);
