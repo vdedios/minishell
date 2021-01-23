@@ -79,7 +79,7 @@ short	is_alpha(char c);
 short	check_prev_backslashes(char *str, int i);
 int		n_special_chars(char *str, int opening, int closing, char quote);
 char	**ft_split_non_escaped(char *input, char delimiter);
-
+void	delete_environment(t_shell *shell, char *key, char **env);
 /*
 ** Builtin functions
 */
@@ -88,7 +88,7 @@ int		ft_env(t_shell *shell, char **args);
 int		ft_cd(t_shell *shell);
 int		ft_echo(char **args);
 int		ft_pwd();
-int		ft_unset(char *var, char **env);
+int		ft_unset(t_shell *shell);
 void	ft_exit(t_shell *shell);
 int 	ft_export(t_shell *shell, char *last_arg);
 
