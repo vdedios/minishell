@@ -28,6 +28,25 @@ char	*get_env(t_shell *shell, char *arg)
 	return (NULL);
 }
 
+static	void	sort_like_bash(char **env)
+{
+	size_t	it;
+	char	*aux;
+
+	it = 0;
+	while (env[it])
+	{
+		if (!ft_strncmp(env[it], "PATH=", 5))
+		{
+			aux = env[it];
+			env[it] = env[it + 1];
+			env[it + 1] = aux;
+			it++;
+		}
+		it++;
+	}
+}
+
 int	ft_env(t_shell *shell, char **args)
 {
 	size_t	it;
@@ -39,10 +58,8 @@ int	ft_env(t_shell *shell, char **args)
 		return (1);
 	}
 	it = 0;
-	if (args)
-		to_print_env = args;
-	else
-		to_print_env = shell->env;
+	to_print_env = args;
+	sort_like_bash(to_print_env);
 	while (to_print_env[it])
 		ft_putendl_fd(to_print_env[it++], 1);
 	return (1);
