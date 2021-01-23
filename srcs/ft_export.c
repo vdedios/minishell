@@ -161,6 +161,66 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	shell->env = tmp_env;
 }
 
+static short	is_num(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+
+static short	is_forbidden_char(char *str, int i)
+{
+	if (str[i] == '$' ||
+		str[i] == '&' ||
+		str[i] == '|' ||
+		str[i] == '@' ||
+		str[i] == ';' ||
+		str[i] == '!' ||
+		str[i] == ' ' ||
+		str[i] == '\"' ||
+		str[i] == '\'')
+		return (1);
+	else if(str[i] == '\\' &&
+			(str[i + 1] != '_' && !is_num(str[i + 1])))
+		return (1);
+	return (0);
+}
+
+static short	has_valid_name(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!*str || is_num(*str) || *str == '=')
+		return (0);
+	while (str[i] && str[i] != '=')
+	{
+		if (is_forbidden_char(str, i))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static	short	not_valid_keyname(t_shell *shell, char *var)
+{
+	char	*err_mssg;
+	int		len;
+	int		i;
+
+	i = 0;
+	len = ft_strlen(var);
+	if (!(err_mssg = malloc((len + 28) * sizeof(char))))
+		return (0);
+	ft_strlcpy(err_mssg, " `", 3);
+	ft_strlcpy(err_mssg + 2, var, len + 1);
+	ft_strlcpy(err_mssg + 2 + len, "': not a valid identifier", 26);
+	shell->stat_loc = 1;
+	print_errors(shell, err_mssg, "export");
+	free(err_mssg);
+	return (1);
+}
+
 int				ft_export(t_shell *shell, char *last_arg)
 {
 	char	*tmp;
@@ -168,15 +228,25 @@ int				ft_export(t_shell *shell, char *last_arg)
 
 	j = 1;
 	if (last_arg)
-		export_values(shell, last_arg, 0);
+	{
+		if (has_valid_name(last_arg))
+			export_values(shell, last_arg, 0);
+		else
+			not_valid_keyname(shell, last_arg);
+	}
 	else if(!shell->args[j])
 		return(print_sorted_env(shell));
 	else
 	{
 		while (shell->args[j])
 		{
-			if ((tmp = ft_strchr(shell->args[j], '=')) && *tmp != *shell->args[j])
-				export_values(shell, last_arg, j);
+			if (has_valid_name(shell->args[j]))
+			{
+				if ((tmp = ft_strchr(shell->args[j], '=')) && *tmp != *shell->args[j])
+					export_values(shell, last_arg, j);
+			}
+			else
+				not_valid_keyname(shell, shell->args[j]);
 			j++;
 		}
 	}
