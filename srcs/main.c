@@ -20,7 +20,7 @@ static char		*update_last_arg(char **args)
 	while (args[len])
 		len++;
 	if (len > 1)
-		return (ft_strjoin("_=", args[len - 1]));
+		return (ft_strjoin("_=", args[0]));
 	return (ft_strdup("_="));
 }
 
