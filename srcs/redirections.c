@@ -84,7 +84,49 @@ static int	redirections_input(t_shell *shell, size_t it)
 		delete_environment(shell, shell->args[it], shell->args);
 	}
 	delete_environment(shell, shell->args[it], shell->args);
+	if (it == 0)
+		shell->binary = shell->args[0];
 	return (fd);
+}
+
+static void	validator(t_shell *shell, char *str)
+{
+	size_t 	cont_output;
+	size_t	cont_input;
+	char	*msg;
+
+	msg = NULL;
+	cont_output = 0;
+	cont_input = 0;
+	while (*str)
+	{
+		if (*str == '>' )
+			cont_output++;
+		else if (*str == '<')
+			cont_input++;
+		else if (*str != ' ')
+		{
+			cont_output = 0;
+			cont_input = 0;
+		}
+		str++;
+	}
+	if (cont_output > 2)
+	{
+		if (cont_output < 4)
+			msg = ft_strjoin("syntax error near unexpected token `", ">'");
+		else
+			msg = ft_strjoin("syntax error near unexpected token `", ">>'");
+		print_errors(shell, msg, NULL);
+		exit (2);
+	}
+	if (cont_input > 2)
+	{
+		msg = ft_strjoin("syntax error near unexpected token `", "<<'");
+		print_errors(shell, msg, NULL);
+		exit (2);
+	}
+
 }
 
 int	find_redirections(t_shell *shell)
@@ -96,6 +138,7 @@ int	find_redirections(t_shell *shell)
 	fd = -5;
 	while (shell->args[it])
 	{
+		validator(shell, shell->args[it]);
 		if (ft_strcmp(shell->args[it], ">"))
 			fd = redirections_output(shell, it);
 		else if (ft_strcmp(shell->args[it], "<"))
@@ -103,6 +146,7 @@ int	find_redirections(t_shell *shell)
 		else if (ft_strcmp(shell->args[it], ">>"))
 			fd = redirections_append(shell, it);
 		else
+
 			it++;
 	}
 	return (fd);
