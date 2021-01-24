@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-static char		*update_last_arg(char **args)
+static char 	*update_last_arg(char **args)
 {
-	int		len;
+	int len;
 
 	len = 0;
 	while (args[len])
@@ -24,11 +24,11 @@ static char		*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-char			*get_path(t_shell *shell, int *binary)
+char 			*get_path(t_shell *shell, int *binary)
 {
-	char	*value;
-	char	*path;
-	char	**paths;
+	char *value;
+	char *path;
+	char **paths;
 
 	value = get_env(shell, "PATH");
 	paths = ft_split(value, ':');
@@ -38,11 +38,11 @@ char			*get_path(t_shell *shell, int *binary)
 	return (path);
 }
 
-int				run_command(t_shell *shell)
+int 			run_command(t_shell *shell)
 {
-	char	*path;
-	pid_t	pid;
-	int		binary;
+	char *path;
+	pid_t pid;
+	int binary;
 
 	binary = 0;
 	path = get_path(shell, &binary);
@@ -63,10 +63,10 @@ int				run_command(t_shell *shell)
 	return (1);
 }
 
-static	char	*to_lower(char *input)
+static char 	*to_lower(char *input)
 {
-	size_t	it;
-	char	*output;
+	size_t it;
+	char *output;
 
 	output = calloc(1, ft_strlen(input));
 	it = -1;
@@ -78,7 +78,7 @@ static	char	*to_lower(char *input)
 	return (output);
 }
 
-int				check_builtin(t_shell *shell)
+int 			check_builtin(t_shell *shell)
 {
 	int ret;
 
@@ -104,11 +104,11 @@ int				check_builtin(t_shell *shell)
 	return (ret);
 }
 
-static void		handle_commands(t_shell *shell)
+static void 	handle_commands(t_shell *shell)
 {
-	int		fd_out;
-	int		fd_in;
-	int		fd;
+	int fd_out;
+	int fd_in;
+	int fd;
 
 	fd = -2;
 	fd_out = dup(1);
@@ -130,46 +130,68 @@ static void		handle_commands(t_shell *shell)
 	}
 }
 
-static void 	validator(t_shell *shell, char *line, char separator)
+static short 	prior_to_token(char *line, int it, char token)
 {
-    size_t  it;
-    size_t  cont;
-    cont = 0;
-    it = -1;
-    while (line[++it])
-    {
-        if (line[it] != ' ' && line[it] != separator)
-            cont++;
-        else if (line[it] == separator)
-        {
-            if (cont == 0)
-            {
-				if (separator == ';')
-                	print_errors(shell, "syntax error near unexpected token `;'", NULL);
-				else if (separator == '|')
-                	print_errors(shell, "syntax error near unexpected token `|'", NULL);
-                exit(2);
-            }
-            else
-                cont = 0;
-        }
-    }
+	int aux_it;
+
+	aux_it = it;
+	while (aux_it > 0 && line[aux_it] == ' ')
+		aux_it--;
+	if (token == '>' || token == '<')
+		return (aux_it > 0 && aux_it != it &&
+				(line[aux_it] == '>' ||
+				line[aux_it] == '<'));
+	else 
+		return (aux_it == - 1 ||
+				line[aux_it] == ';' ||
+				line[aux_it] == '>' ||
+				line[aux_it] == '<' ||
+				line[aux_it] == '|');
+	return (0);
 }
 
-static void		minishell(char *line, t_shell *shell)
+static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
-	size_t	it;
+	if (prior_to_token(line, it - 1, line[it]))
+	{
+		if (separator == ';')
+			print_errors(shell, "syntax error near unexpected token `;'", NULL);
+		else if (separator == '|')
+			print_errors(shell, "syntax error near unexpected token `|'", NULL);
+		else if (separator == '>')
+			print_errors(shell, "syntax error near unexpected token `>'", NULL);
+		else if (separator == '<')
+			print_errors(shell, "syntax error near unexpected token `<'", NULL);
+		exit(2);
+	}
+}
+
+static void 	validate_input(t_shell *shell, char *line)
+{
+	int it;
+
+	it = -1;
+	while (line[++it])
+		if (line[it] == '|' ||
+			line[it] == '<' ||
+			line[it] == '>' ||
+			line[it] == ';')
+			validator(shell, line, line[it], it);
+}
+
+static void 	minishell(char *line, t_shell *shell)
+{
+	size_t it;
 
 	it = 0;
 	(void)handle_commands;
-	validator(shell, line, ';');
+	validate_input(shell, line);
 	shell->instructions = ft_split_non_escaped(line, ';');
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
 		while (is_space(*shell->instructions[it]))
 			shell->instructions[it]++;
-		validator(shell, shell->instructions[it], '|');
 		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
@@ -178,7 +200,7 @@ static void		minishell(char *line, t_shell *shell)
 	//clean_commands(shell);
 }
 
-static void		read_input(char *line, t_shell *shell)
+static void 	read_input(char *line, t_shell *shell)
 {
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
@@ -199,18 +221,17 @@ static void		read_input(char *line, t_shell *shell)
 	}
 }
 
-int				main(int argc, char **argv, char **envp)
+int 			main(int argc, char **argv, char **envp)
 {
-	t_shell	shell;
-	char	*line;
-	char	curr_pwd[1024];
+	t_shell shell;
+	char *line;
+	char curr_pwd[1024];
 
 	shell.stat_loc = 0;
 	line = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
-	//ft_export(&shell, ft_strdup("OLDPWD="));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
@@ -222,6 +243,5 @@ int				main(int argc, char **argv, char **envp)
 	}
 	else
 		read_input(line, &shell);
-	//printf("%s\n", embrace_expansion("echo $PWD$PWD"));
 	return (shell.stat_loc);
 }
