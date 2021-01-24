@@ -24,7 +24,7 @@ static char		*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
-char	*get_path(t_shell *shell, int *binary)
+char			*get_path(t_shell *shell, int *binary)
 {
 	char	*value;
 	char	*path;
@@ -38,7 +38,7 @@ char	*get_path(t_shell *shell, int *binary)
 	return (path);
 }
 
-int		run_command(t_shell *shell)
+int				run_command(t_shell *shell)
 {
 	char	*path;
 	pid_t	pid;
@@ -62,7 +62,6 @@ int		run_command(t_shell *shell)
 	//free(path);
 	return (1);
 }
-
 
 static	char	*to_lower(char *input)
 {
@@ -98,8 +97,10 @@ int				check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell);
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
+	{
+		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
 		ret = ft_env(shell, shell->env);
-	ft_export(shell, update_last_arg(shell->args));
+	}
 	return (ret);
 }
 
