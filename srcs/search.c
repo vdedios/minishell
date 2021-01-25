@@ -29,38 +29,46 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 	struct stat		s;
 	struct dirent	*direntp;
 	DIR				*pdir;
+	char			*bin_name;
 
 	it = -1;
-	(void)binary;
-	to_lower(shell->args[0]);
+	//hay que liberarlo, se pasa a lower solo para buscarlo
+	bin_name = strdup(shell->args[0]);
+	to_lower(bin_name);
+	//Si no hay path, busca en dir actual
+	if (!paths || !paths[0])
+	{
+		print_errors(shell, " No such file or directory", shell->binary);
+		exit(127);
+	}
 	while (paths[++it])
 	{
-		if (stat(paths[it], &s) != -1)
+		if (stat(paths[it], &s) != -1 &&
+			s.st_mode & S_IFDIR)
 		{
-			if(s.st_mode & S_IFDIR)
+			if (!(pdir = opendir(paths[it])))
+				return (NULL);
+			while ((direntp = readdir(pdir)))
 			{
-				if (!(pdir = opendir(paths[it])))
-					return (NULL);
-				while ((direntp = readdir(pdir)))
+				if (ft_strcmp(direntp->d_name, bin_name))
 				{
-					if (ft_strcmp(direntp->d_name, shell->args[0]))
-					{
-						if (binary) *binary = 1;
-						closedir(pdir);
-						return (absolute_bin_path(paths[it], shell->binary));
-					}
-					direntp++;
+					if (binary)
+						*binary = 1;
+					closedir(pdir);
+					return (absolute_bin_path(paths[it], shell->binary));
 				}
-				closedir(pdir);
+				direntp++;
 			}
+			closedir(pdir);
 		}
 	}
-	if (stat(shell->args[0], &s) != -1)
+	if (stat(bin_name, &s) != -1)
 	{
 		if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
 		{
-			//printf("Entra\n");
-			if (ft_strncmp(shell->args[0], "/", 1) && ft_strncmp(shell->args[0], "./", 2) && !(shell->args[0][ft_strlen(shell->args[0]) - 1] == '/'))
+			if (ft_strncmp(shell->args[0], "/", 1) &&
+				ft_strncmp(shell->args[0], "./", 2) &&
+				!(shell->args[0][ft_strlen(bin_name) - 1] == '/'))
 			{
 				shell->stat_loc = 127;
 				print_errors(shell, " command not found", shell->binary);
@@ -69,7 +77,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 		}
 		return (shell->binary);
 	}
-	if (lstat(shell->args[0], &s) != -1 || !ft_strncmp(shell->args[0], "./", 2))
+	if (lstat(bin_name, &s) != -1 || !ft_strncmp(bin_name, "./", 2))
 	{
 		shell->stat_loc = 127;
 		print_errors(shell, " No such file or directory", shell->binary);
