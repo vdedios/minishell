@@ -54,6 +54,7 @@ char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(t_shell *env, char *arg);
 char	*search_binary(t_shell *shell, char **paths, int *binary);
+char	*search_binary_in_pwd(t_shell *shell);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell);
 void	find_pipes(t_shell *shell);

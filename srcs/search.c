@@ -23,6 +23,38 @@ static	void	to_lower(char *input)
 	}
 }
 
+char	*search_binary_in_pwd(t_shell *shell)
+{
+	char			cwd[1024];
+	struct stat		s;
+	struct dirent	*direntp;
+	DIR				*pdir;
+
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		if (stat(cwd, &s) != -1 &&
+			s.st_mode & S_IFDIR)
+		{
+			if (!(pdir = opendir(cwd)))
+				return (NULL);
+			while ((direntp = readdir(pdir)))
+			{
+				if (ft_strcmp(direntp->d_name, shell->args[0]))
+				{
+					closedir(pdir);
+					return (absolute_bin_path(cwd, shell->binary));
+				}
+				direntp++;
+			}
+			closedir(pdir);
+		}
+		shell->stat_loc = 127;
+		print_errors(shell, " No such file or directory", shell->binary);
+		exit(shell->stat_loc);
+	}
+	return (NULL);
+}
+
 char	*search_binary(t_shell *shell, char **paths, int *binary)
 {
 	size_t			it;
@@ -35,12 +67,6 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 	//hay que liberarlo, se pasa a lower solo para buscarlo
 	bin_name = strdup(shell->args[0]);
 	to_lower(bin_name);
-	//Si no hay path, busca en dir actual
-	if (!paths || !paths[0])
-	{
-		print_errors(shell, " No such file or directory", shell->binary);
-		exit(127);
-	}
 	while (paths[++it])
 	{
 		if (stat(paths[it], &s) != -1 &&
