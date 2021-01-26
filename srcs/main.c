@@ -176,7 +176,7 @@ static short 	prior_to_token(char *line, int it, char token)
 				(line[aux_it] == '>' ||
 				line[aux_it] == '<'));
 	else 
-		return (aux_it == - 1 ||
+		return (aux_it < 1 ||
 				line[aux_it] == ';' ||
 				line[aux_it] == '>' ||
 				line[aux_it] == '<' ||
@@ -192,11 +192,17 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 			print_errors(shell, "syntax error near unexpected token `;'", NULL);
 		else if (separator == '|')
 			print_errors(shell, "syntax error near unexpected token `|'", NULL);
+		else if (separator == '>' && line[it + 1] == '>')
+			print_errors(shell, "syntax error near unexpected token `>>'", NULL);
 		else if (separator == '>')
 			print_errors(shell, "syntax error near unexpected token `>'", NULL);
+		else if (separator == '<' && line[it + 1] == '<')
+			print_errors(shell, "syntax error near unexpected token `<<'", NULL);
 		else if (separator == '<')
 			print_errors(shell, "syntax error near unexpected token `<'", NULL);
 		exit(2);
+		// Arreglarlo para que no salga de la ejecucion principal
+		//shell->stat_loc = 2;
 	}
 }
 
@@ -211,6 +217,8 @@ static void 	validate_input(t_shell *shell, char *line)
 			line[it] == '>' ||
 			line[it] == ';')
 			validator(shell, line, line[it], it);
+		if (line[it + 1] == '<' || line[it + 1] == '>')
+			it++;
 }
 
 static void 	minishell(char *line, t_shell *shell)
@@ -268,7 +276,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
-	ft_export(&shell, ft_strdup("_=/bin/bash"));
+	//ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
