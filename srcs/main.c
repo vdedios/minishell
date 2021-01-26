@@ -21,7 +21,7 @@ static char 	*update_last_arg(char **args)
 		len++;
 	if (len > 1)
 		return (ft_strjoin("_=", args[len - 1]));
-	return (ft_strdup("_="));
+	return (ft_strjoin("_=", args[0]));
 }
 
 static	char	*append_pwd(char *value)
@@ -78,6 +78,7 @@ int 			run_command(t_shell *shell)
 
 	binary = 0;
 	path = get_path(shell, &binary);
+	//shell->args[0] = shell->binary;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -131,8 +132,9 @@ int 			check_builtin(t_shell *shell)
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
 	{
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
-		ret = ft_env(shell, shell->env);
+		return (ft_env(shell, shell->env));
 	}
+	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
 }
 
@@ -266,6 +268,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
+	ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
