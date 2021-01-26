@@ -24,17 +24,49 @@ static char 	*update_last_arg(char **args)
 	return (ft_strdup("_="));
 }
 
+static	char	*append_pwd(char *value)
+{
+	char	cwd[1024];
+	char	*aux;
+
+	aux = value;
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		if (value[0] == ':')
+			return (ft_strjoin(cwd, value));
+		if (value[ft_strlen(value) - 1] == ':')
+			return (ft_strjoin(value, cwd));
+		while (*aux)
+		{
+			if (!(aux = ft_strchr(aux, ':')))
+				break;
+			if (*(aux + 1) == ':')
+				return (ft_strjoin(value, cwd));
+			aux++;
+		}
+	}
+	return (ft_strdup(value));
+}
+
 char 			*get_path(t_shell *shell, int *binary)
 {
 	char *value;
+	char *tmp;
 	char *path;
 	char **paths;
 
 	value = get_env(shell, "PATH");
-	paths = ft_split(value, ':');
-	path = search_binary(shell, paths, binary);
-	//clean_matrix(paths);
-	free(paths);
+	if (!value || ft_strlen(value) == 0)
+		path = search_binary_in_pwd(shell);
+	else
+	{
+		tmp = append_pwd(value);
+		paths = ft_split(tmp, ':');
+		path = search_binary(shell, paths, binary);
+		//clean_matrix(paths);
+		free(paths);
+	}
+	
 	return (path);
 }
 
