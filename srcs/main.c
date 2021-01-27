@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/17 19:29:17 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/27 21:07:30 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,16 +211,77 @@ static void 	validate_input(t_shell *shell, char *line)
 			validator(shell, line, line[it], it);
 }
 
+static char		*inject_spaces(char *line)
+{
+	size_t	it;
+	size_t	cont;
+	//size_t 	len;
+	char	*output;
+
+	it = -1;
+	cont = 0;
+	while (line[++it])
+	{
+		if (line[it] == '>' && line[it - 1] != ' ' && line[it - 1] != '>')
+			cont++;
+		if (line[it] == '>' && line[it + 1] != ' ')
+			cont++;
+		if (line[it] == '<' && line[it - 1] != ' ' && line[it - 1] != '<')
+			cont++;
+		if (line[it] == '<' && line[it + 1] != ' ')
+			cont++;
+	}
+	output = calloc(1, ft_strlen(line) + cont);
+	it = -1;
+	while (line[++it])
+	{
+		//printf("U: %zu-%c\n", it, line[it]);
+		if (line[it] == '>')
+		{
+			ft_strlcat(output, line, ft_strlen(output) + it + 1);
+			if (line[it - 1] != ' ' && line[it - 1] != '>')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			ft_strlcat(output, line + it, ft_strlen(output) + 2);
+			if (line[it + 1] != ' ' && line[it + 1] != '>')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			line = line + it + 1;
+			it = -1;
+		}
+		if (line[it] == '<')
+		{
+			ft_strlcat(output, line, ft_strlen(output) + it + 1);
+			if (line[it - 1] != ' ' && line[it - 1] != '<')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			ft_strlcat(output, line + it, ft_strlen(output) + 2);
+			if (line[it + 1] != ' ' && line[it + 1] != '<')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			line = line + it + 1;
+			it = -1;
+		}
+	}
+	ft_strlcat(output, line, ft_strlen(output) + it + 1);
+	//printf("S: %s", output);
+	return (output);
+}
+
 static void 	minishell(char *line, t_shell *shell)
 {
 	size_t it;
 
 	it = 0;
-	(void)handle_commands;
 	validate_input(shell, line);
-	shell->instructions = ft_split_non_escaped(line, ';');
+	shell->instructions = ft_split_non_escaped(line, ';');	
 	while (shell->instructions[it])
 	{
+		shell->instructions[it] = inject_spaces(shell->instructions[it]);
 		shell->stat_loc = 0;
 		while (is_space(*shell->instructions[it]))
 			shell->instructions[it]++;
