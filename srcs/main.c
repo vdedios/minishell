@@ -21,7 +21,7 @@ static char 	*update_last_arg(char **args)
 		len++;
 	if (len > 1)
 		return (ft_strjoin("_=", args[len - 1]));
-	return (ft_strdup("_="));
+	return (ft_strjoin("_=", args[0]));
 }
 
 static	char	*append_pwd(char *value)
@@ -78,6 +78,7 @@ int 			run_command(t_shell *shell)
 
 	binary = 0;
 	path = get_path(shell, &binary);
+	//shell->args[0] = shell->binary;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -131,8 +132,9 @@ int 			check_builtin(t_shell *shell)
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
 	{
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
-		ret = ft_env(shell, shell->env);
+		return (ft_env(shell, shell->env));
 	}
+	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
 }
 
@@ -174,7 +176,7 @@ static short 	prior_to_token(char *line, int it, char token)
 				(line[aux_it] == '>' ||
 				line[aux_it] == '<'));
 	else 
-		return (aux_it == - 1 ||
+		return (aux_it < 1 ||
 				line[aux_it] == ';' ||
 				line[aux_it] == '>' ||
 				line[aux_it] == '<' ||
@@ -190,11 +192,17 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 			print_errors(shell, "syntax error near unexpected token `;'", NULL);
 		else if (separator == '|')
 			print_errors(shell, "syntax error near unexpected token `|'", NULL);
+		else if (separator == '>' && line[it + 1] == '>')
+			print_errors(shell, "syntax error near unexpected token `>>'", NULL);
 		else if (separator == '>')
 			print_errors(shell, "syntax error near unexpected token `>'", NULL);
+		else if (separator == '<' && line[it + 1] == '<')
+			print_errors(shell, "syntax error near unexpected token `<<'", NULL);
 		else if (separator == '<')
 			print_errors(shell, "syntax error near unexpected token `<'", NULL);
 		exit(2);
+		// Arreglarlo para que no salga de la ejecucion principal
+		//shell->stat_loc = 2;
 	}
 }
 
@@ -209,6 +217,8 @@ static void 	validate_input(t_shell *shell, char *line)
 			line[it] == '>' ||
 			line[it] == ';')
 			validator(shell, line, line[it], it);
+		if (line[it + 1] == '<' || line[it + 1] == '>')
+			it++;
 }
 
 static char		*inject_spaces(char *line)
@@ -327,6 +337,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
+	//ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
