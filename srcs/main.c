@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/17 19:29:17 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/28 20:59:21 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static char 	*update_last_arg(char **args)
 		len++;
 	if (len > 1)
 		return (ft_strjoin("_=", args[len - 1]));
-	return (ft_strdup("_="));
+	return (ft_strjoin("_=", args[0]));
 }
 
 static	char	*append_pwd(char *value)
@@ -78,6 +78,7 @@ int 			run_command(t_shell *shell)
 
 	binary = 0;
 	path = get_path(shell, &binary);
+	//shell->args[0] = shell->binary;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -131,8 +132,9 @@ int 			check_builtin(t_shell *shell)
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
 	{
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
-		ret = ft_env(shell, shell->env);
+		return (ft_env(shell, shell->env));
 	}
+	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
 }
 
@@ -174,7 +176,7 @@ static short 	prior_to_token(char *line, int it, char token)
 				(line[aux_it] == '>' ||
 				line[aux_it] == '<'));
 	else 
-		return (aux_it == - 1 ||
+		return (aux_it < 1 ||
 				line[aux_it] == ';' ||
 				line[aux_it] == '>' ||
 				line[aux_it] == '<' ||
@@ -190,11 +192,17 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 			print_errors(shell, "syntax error near unexpected token `;'", NULL);
 		else if (separator == '|')
 			print_errors(shell, "syntax error near unexpected token `|'", NULL);
+		else if (separator == '>' && line[it + 1] == '>')
+			print_errors(shell, "syntax error near unexpected token `>>'", NULL);
 		else if (separator == '>')
 			print_errors(shell, "syntax error near unexpected token `>'", NULL);
+		else if (separator == '<' && line[it + 1] == '<')
+			print_errors(shell, "syntax error near unexpected token `<<'", NULL);
 		else if (separator == '<')
 			print_errors(shell, "syntax error near unexpected token `<'", NULL);
 		exit(2);
+		// Arreglarlo para que no salga de la ejecucion principal
+		//shell->stat_loc = 2;
 	}
 }
 
@@ -209,6 +217,69 @@ static void 	validate_input(t_shell *shell, char *line)
 			line[it] == '>' ||
 			line[it] == ';')
 			validator(shell, line, line[it], it);
+		if (line[it + 1] == '<' || line[it + 1] == '>')
+			it++;
+}
+
+static char		*inject_spaces(char *line)
+{
+	size_t	it;
+	size_t	cont;
+	//size_t 	len;
+	char	*output;
+
+	it = -1;
+	cont = 0;
+	while (line[++it])
+	{
+		if (line[it] == '>' && line[it - 1] != ' ' && line[it - 1] != '>')
+			cont++;
+		if (line[it] == '>' && line[it + 1] != ' ')
+			cont++;
+		if (line[it] == '<' && line[it - 1] != ' ' && line[it - 1] != '<')
+			cont++;
+		if (line[it] == '<' && line[it + 1] != ' ')
+			cont++;
+	}
+	output = calloc(1, ft_strlen(line) + cont);
+	it = -1;
+	while (line[++it])
+	{
+		//printf("U: %zu-%c\n", it, line[it]);
+		if (line[it] == '>')
+		{
+			ft_strlcat(output, line, ft_strlen(output) + it + 1);
+			if (line[it - 1] != ' ' && line[it - 1] != '>')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			ft_strlcat(output, line + it, ft_strlen(output) + 2);
+			if (line[it + 1] != ' ' && line[it + 1] != '>')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			line = line + it + 1;
+			it = -1;
+		}
+		if (line[it] == '<')
+		{
+			ft_strlcat(output, line, ft_strlen(output) + it + 1);
+			if (line[it - 1] != ' ' && line[it - 1] != '<')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			ft_strlcat(output, line + it, ft_strlen(output) + 2);
+			if (line[it + 1] != ' ' && line[it + 1] != '<')
+			{
+				ft_strlcat(output, " ", ft_strlen(output) + 2);
+			}
+			line = line + it + 1;
+			it = -1;
+		}
+	}
+	ft_strlcat(output, line, ft_strlen(output) + it + 1);
+	//printf("S: %s", output);
+	return (output);
 }
 
 static void 	minishell(char *line, t_shell *shell)
@@ -216,9 +287,9 @@ static void 	minishell(char *line, t_shell *shell)
 	size_t it;
 
 	it = 0;
-	(void)handle_commands;
+	line = inject_spaces(line);
 	validate_input(shell, line);
-	shell->instructions = ft_split_non_escaped(line, ';');
+	shell->instructions = ft_split_non_escaped(line, ';');	
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
@@ -266,6 +337,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
+	//ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
