@@ -12,11 +12,20 @@
 
 #include "minishell.h"
 
+static	void	numeric_arg_req(t_shell *shell)
+{
+	char		*msg;
+
+	msg = ft_strjoin(shell->binary, ": ");
+	msg = ft_strjoin(msg, shell->args[1]);
+	print_errors(shell, " numeric argument required", msg);
+	exit (255);
+}
+
 static	int		exit_atoi(t_shell *shell, const char *nptr)
 {
-	long long	num;
-	int		sign;
-	char	*msg;
+	uintmax_t	num;
+	int			sign;
 
 	num = 0;
 	sign = 0;
@@ -33,29 +42,17 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 		nptr++;
 	while (*nptr)
 	{
-		if ((!ft_isdigit(*nptr) && *nptr != ' ' && *nptr != '\t') || ft_strlen(nptr) >= 19)
-		{
-			msg = ft_strjoin(shell->binary, ": ");
-			msg = ft_strjoin(msg, shell->args[1]);
-			print_errors(shell, " numeric argument required", msg);
-			exit (255);
-		}
+		if ((!ft_isdigit(*nptr) && *nptr != ' ' && *nptr != '\t')
+		|| ft_strlen(nptr) > 19)
+			numeric_arg_req(shell);
 		if (*nptr >= '0' && *nptr <= '9')
 			num = num * 10 + *nptr - '0';
 		nptr++;
 	}
-
+	if ((!sign && num > INTMAX_MAX) || (sign && num > (uintmax_t)(-INTMAX_MIN)))
+		numeric_arg_req(shell);
 	if (sign == 1)
 		num = -1 * num;
-	/*if ((*nptr >= 'a' && *nptr <= 'z') || (*nptr >= 'A' && *nptr <= 'Z'))
-	{
-		msg = ft_strjoin(shell->binary, ": ");
-		msg = ft_strjoin(msg, shell->args[1]);
-		print_errors(shell, " numeric argument required", msg);
-		return (255);
-	}*/
-	//if (sign == 1)
-	//	num = -1 * num;
 	return ((int)num);
 }
 
