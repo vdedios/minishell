@@ -242,7 +242,7 @@ static char		*inject_spaces(char *line)
 			cont++;
 	}
 	output = calloc(1, ft_strlen(line) + cont + 1);
-	while (*line == ' ' || *line == '\t')
+	while (*line == ' ')
 	{
 		line++;
 	}

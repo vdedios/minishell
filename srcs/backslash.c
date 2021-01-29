@@ -5,7 +5,7 @@ static short	check_special_char(char c, short parse_mode)
 	if (parse_mode == 0 && (c == '\'' || c == '\"'))
 		return (1);
 	else if (parse_mode == 1
-			&& (c == ' ' || c == '|' || c == ';' ||
+			&& (c == ' ' || c == '\t' || c == '|' || c == ';' ||
 			c == '$' || c == '\\' || is_alpha(c) ||
 			c == '&'))
 		return (1);
