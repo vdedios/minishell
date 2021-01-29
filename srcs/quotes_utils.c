@@ -33,7 +33,7 @@ short	is_special_char(char c)
 
 short	is_space(char c)
 {
-	if (c == ' ')
+	if (c == ' ' || c == '\t')
 		return (1);
 	return (0);
 }
