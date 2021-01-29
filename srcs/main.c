@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/28 20:59:21 by migferna         ###   ########.fr       */
+/*   Updated: 2021/01/29 17:01:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,11 @@ static char		*inject_spaces(char *line)
 		if (line[it] == '<' && line[it + 1] != ' ')
 			cont++;
 	}
-	output = calloc(1, ft_strlen(line) + cont);
+	output = calloc(1, ft_strlen(line) + cont + 1);
+	while (*line == ' ' || *line == '\t')
+	{
+		line++;
+	}
 	it = -1;
 	while (line[++it])
 	{
@@ -277,7 +281,7 @@ static char		*inject_spaces(char *line)
 			it = -1;
 		}
 	}
-	ft_strlcat(output, line, ft_strlen(output) + it + 1);
+	ft_strlcat(output, line, line - output);
 	//printf("S: %s", output);
 	return (output);
 }
