@@ -58,22 +58,23 @@ static char		*set_closing_braces(char *str)
     short   is_open_brace;
 	char	*buff;
 	int     i;
+    int     k;
 
 	i = 0;
+    k = 0;
     is_open_brace = 0;
 	if (!(buff = malloc((ft_strlen(str) + count_chars(str, '{') + 3) * sizeof(char))))
 		return (NULL);
-	while(*str)
+	while(str[k])
 	{
-		if (*str == '{')
+		if (str[k] == '{' && (k - 1) >= 0 && str[k - 1] == '$')
             is_open_brace = 1;
-		buff[i++] = *str;
+		buff[i++] = str[k++];
         if (is_open_brace && is_limit_character(*(str + 1)))
         {
 			buff[i++] = '}';
             is_open_brace = 0;
         }
-		str++;
 	}
     buff[i] = '\0';
     return (buff);
