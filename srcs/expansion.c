@@ -22,7 +22,9 @@ static	int		count_keys_to_scape(char *str, char key)
 	while (str[i])
 	{
 		if ((key == ' ' && str[i] == ' ') ||
-			(key == '$' && str[i] == '$' && (!str[i + 1] || str[i + 1] == ' ')))
+			(key == '$' && str[i] == '$' &&
+			((!str[i + 1] || str[i + 1] == ' ') ||
+			str[i + 1] == '%')))
 			backslashes++;
 		i++;
 	}
@@ -44,8 +46,10 @@ static	char	*escape_char(char *str, char key)
 	{
 		if (str[i] == '$' && str[i - 1] != '\\')
 		{
-			if ((!str[i + 1] || str[i + 1] == ' ')
-				|| str[i + 1] == '\\')
+			if (!str[i + 1] ||
+				str[i + 1] == ' ' ||
+				str[i + 1] == '\\' ||
+				str[i + 1] == '%')
 			buff[++j] = '\\';
 		}
 		else if (key != '$' && str[i] == key)

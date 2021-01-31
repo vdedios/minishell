@@ -43,9 +43,9 @@ static char		*set_opening_braces(char *str)
 		return (NULL);
 	while(str[j])
 	{
-		if ((j - 1 >= 0 && str[j - 1] == '$') &&
-            ((j - 2 < 0) || (str[j - 2] != '\\')) &&
-            (str[j] != '\\'))
+		if (j - 1 >= 0 && str[j - 1] == '$' &&
+            j - 2 >= 0 && str[j - 2] != '\\' &&
+            str[j] != '\\' && str[j] != '%')
 			buff[i++] = '{';
 		buff[i++] = str[j++];
 	}
