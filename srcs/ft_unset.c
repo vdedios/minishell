@@ -37,14 +37,6 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 		}
 		env[it - 1] = NULL;
 	}
-	else
-	{
-		msg = ft_strjoin(shell->binary, ": `");
-		msg = ft_strjoin(msg, key);
-		msg = ft_strjoin(msg, "'");
-		print_errors(shell, " not a valid identifier", msg);
-		shell->stat_loc = 1;
-	}
 }
 
 static short	is_num(char c)
@@ -56,7 +48,15 @@ static short	is_num(char c)
 
 static short	is_forbidden_char(char *str, int i)
 {
-	if (str[i] == ' ')
+	if (str[i] == ' ' ||
+		str[i] == '\'' ||
+		str[i] == '\"' ||
+		str[i] == '$' ||
+		str[i] == '!' ||
+		str[i] == '|' ||
+		str[i] == ';' ||
+		str[i] == '&' ||
+		str[i] == '@')
 		return (1);
 	else if(str[i] == '\\' &&
 			(str[i + 1] != '_' && !is_num(str[i + 1])))
