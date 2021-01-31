@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static short	check_special_char(char c, short parse_mode)
+static short	is_escapable_char(char c, short parse_mode)
 {
 	if (parse_mode == 0 && (c == '\'' || c == '\"'))
 		return (1);
@@ -11,6 +11,16 @@ static short	check_special_char(char c, short parse_mode)
 		return (1);
 	else if (parse_mode == 2 &&  c == '\\')
 		return (1);
+	return (0);
+}
+
+static short	is_between_delimiters(char *str, char *ref, int parse_mode)
+{
+	if (parse_mode && str != ref)
+		if ((*(str - 1) == '[' && *(str + 1) == ']') ||
+			(*(str - 1) == '{' && *(str + 1) == '}') ||
+			(*(str - 1) == '.' && *(str + 1) == '.'))
+			return (1);
 	return (0);
 }
 
@@ -33,31 +43,14 @@ static char		*remove_backslash(char *buff, char *backslash)
 	return (tmp2);
 }
 
-/*
-static short	end_open_backslashes(char *str)
-{
-	int n;
-
-	n = 0;
-	while (*str)
-	{
-		if (*str != '\\')
-			return (0);
-		str++;
-		n++;
-	}
-	return (n % 2);
-}
-
-** parse_mode determines which chars should be escaped.
-*/
-
 char			*parse_backslash(char *str, short parse_mode)
 {
 	char	*buff;
+	char	*ref;
 	char	*backslash;
 
 	buff = ft_strdup(str);
+	ref = str;
 	if (*str == '\\' && !*(str + 1))
 	{
 		*buff = '\0';
@@ -67,14 +60,8 @@ char			*parse_backslash(char *str, short parse_mode)
 	{
 		if (!(backslash = ft_strchr(str, '\\')))
 			break;
-		/*
-		if (!parse_mode && end_open_backslashes(backslash))
-		{
-			free(buff);
-			return(ft_strdup("error"));
-		}
-		*/
-		if (check_special_char(*(backslash + 1), parse_mode))
+		if (is_escapable_char(*(backslash + 1), parse_mode) ||
+			is_between_delimiters(backslash, ref, parse_mode))
 			buff = remove_backslash(buff, backslash);
 		str = backslash + 1;
 		if (*str == '\\')
