@@ -2,7 +2,7 @@ name: Minishell
 
 on:
   push: 
-   branches: [fix/misc-lastcmd]
+   branches: [fix/misc-lstcmd]
 
 jobs:
   build:
