@@ -28,11 +28,10 @@ static	int		count_args(char	*input, char delimiter)
 		if (is_delimiter(input[i], delimiter) && input[i - 1] != '\\')
 		{
 			l++;
-			while (input[i] && is_delimiter(input[i], delimiter))
+			while (input[i] && !is_delimiter(input[i], delimiter))
 				i++;
 		}
-		else
-			i++;
+		i++;
 	}
 	return (l);
 }
@@ -53,22 +52,6 @@ static	short	not_escaped(char *str, int i)
 	return ((backslash + 1) % 2);
 }
 
-static	char	*set_split_delimiter_whitespace(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (is_whitespace(input[i]))
-		input++;
-	while (input[i])
-	{
-		if (is_whitespace(input[i]) && not_escaped(input, i))
-			input[i] = '\0';
-		i++;
-	}
-	return (input);
-}
-
 static char		*set_split_delimiter(char *input, char delimiter)
 {
 	int	i;
@@ -80,7 +63,7 @@ static char		*set_split_delimiter(char *input, char delimiter)
 		input++;
 	while (input[i])
 	{
-		if (input[i] == delimiter && not_escaped(input, i))
+		if (is_delimiter(input[i], delimiter) && not_escaped(input, i))
 			input[i] = '\0';
 		i++;
 	}
@@ -116,7 +99,7 @@ static	void	divide_arguments(char	**args, char *input, int len)
 	args[j] = NULL;
 }
 
-char	**ft_split_non_escaped(char *input, char delimiter)
+char			**ft_split_non_escaped(char *input, char delimiter)
 {
 	char	**args;
 	int		len;
@@ -124,10 +107,7 @@ char	**ft_split_non_escaped(char *input, char delimiter)
 	if (!(args = malloc((count_args(input, delimiter) + 2) * sizeof(char *))))
 		return (NULL);
 	len = strlen(input);
-	if (delimiter == ' ')
-		input = set_split_delimiter_whitespace(input);
-	else
-		input = set_split_delimiter(input, delimiter);
+	input = set_split_delimiter(input, delimiter);
 	divide_arguments(args, input, len);
 	return (args);
 }
