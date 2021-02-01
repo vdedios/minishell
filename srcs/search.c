@@ -103,7 +103,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 		}
 		return (shell->binary);
 	}
-	if (lstat(bin_name, &s) != -1 || !ft_strncmp(bin_name, "./", 2))
+	if (lstat(bin_name, &s) != -1 || !ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
 	{
 		shell->stat_loc = 127;
 		print_errors(shell, " No such file or directory", shell->binary);
