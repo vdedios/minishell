@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/17 23:19:00 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/01 11:12:51 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 {
 	size_t	it;
 	size_t	len;
-	char	*msg;
 
+	(void)shell;
 	len = ft_strlen(key);
 	it = 0;
 	while (env[it])
@@ -37,14 +37,6 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 		}
 		env[it - 1] = NULL;
 	}
-	else
-	{
-		msg = ft_strjoin(shell->binary, ": `");
-		msg = ft_strjoin(msg, key);
-		msg = ft_strjoin(msg, "'");
-		print_errors(shell, " not a valid identifier", msg);
-		shell->stat_loc = 1;
-	}
 }
 
 static short	is_num(char c)
@@ -56,7 +48,15 @@ static short	is_num(char c)
 
 static short	is_forbidden_char(char *str, int i)
 {
-	if (str[i] == ' ')
+	if (str[i] == ' ' ||
+		str[i] == '\'' ||
+		str[i] == '\"' ||
+		str[i] == '$' ||
+		str[i] == '!' ||
+		str[i] == '|' ||
+		str[i] == ';' ||
+		str[i] == '&' ||
+		str[i] == '@')
 		return (1);
 	else if(str[i] == '\\' &&
 			(str[i + 1] != '_' && !is_num(str[i + 1])))

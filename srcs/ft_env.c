@@ -28,7 +28,6 @@ char	*get_env(t_shell *shell, char *arg)
 	return (NULL);
 }
 
-/*
 static	void	sort_like_bash(char **env)
 {
 	size_t	it;
@@ -47,7 +46,6 @@ static	void	sort_like_bash(char **env)
 		it++;
 	}
 }
-*/
 
 int	ft_env(t_shell *shell, char **args)
 {
@@ -61,8 +59,9 @@ int	ft_env(t_shell *shell, char **args)
 	}
 	it = 0;
 	to_print_env = args;
-	//sort_like_bash(to_print_env);
+	sort_like_bash(to_print_env);
 	while (to_print_env[it])
 		ft_putendl_fd(to_print_env[it++], 1);
+	ft_export(shell, "_=env");
 	return (1);
 }
