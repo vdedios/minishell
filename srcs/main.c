@@ -12,6 +12,14 @@
 
 #include "minishell.h"
 
+static char		*last_arg(char *arg)
+{
+	char *buff;
+	if ((buff = ft_strchr(arg, '=')))
+		*buff = '\0';
+	return (ft_strjoin("_=", arg));
+}
+
 static char 	*update_last_arg(char **args)
 {
 	int len;
@@ -19,9 +27,7 @@ static char 	*update_last_arg(char **args)
 	len = 0;
 	while (args[len])
 		len++;
-	if (len > 1)
-		return (ft_strjoin("_=", args[len - 1]));
-	return (ft_strjoin("_=", args[0]));
+	return (last_arg(args[len - 1]));
 }
 
 static	char	*append_pwd(char *value)
@@ -132,7 +138,7 @@ int 			check_builtin(t_shell *shell)
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
 	{
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
-		return (ft_env(shell, shell->env));
+		return(ft_env(shell, shell->env));
 	}
 	ft_export(shell, update_last_arg(shell->args));
 	return (ret);
