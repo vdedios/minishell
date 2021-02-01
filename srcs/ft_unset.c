@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/17 23:19:00 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/01 11:12:51 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 {
 	size_t	it;
 	size_t	len;
-	char	*msg;
 
+	(void)shell;
 	len = ft_strlen(key);
 	it = 0;
 	while (env[it])
