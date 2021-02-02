@@ -170,6 +170,53 @@ static void 	handle_commands(t_shell *shell)
 	}
 }
 
+static char		*get_var_key(char *line, int it)
+{
+	int		i;
+	int		k;
+	char	*key;
+
+	i = it;
+	k = 0;
+	while (i >= 0 && line[i] != '{')
+		i--;
+	if (!(key = malloc((it - i) * sizeof(char))))
+		return (NULL);
+	i++;
+	while (i < it)
+		key[k++] = line[i++];
+	key[k] = '\0';
+	return (key);
+}
+
+static short	contain_spaces(char *value)
+{
+	while (*value)
+	{
+		if (*value == ' ')
+			return (1);
+		value++;
+	}
+	return (0);
+}
+
+static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
+{
+	char	*key;
+	char	*value;
+
+	if (token == '>')
+		while (line[it++])
+			if (line[it] == '}' && line[it - 1] != ' ')
+			{
+				key = get_var_key(line, it);
+				value = expand_var(key, shell);
+				if (contain_spaces(value))
+					return (ft_strjoin("$", key));
+			}
+	return (NULL);
+}
+
 static short 	prior_to_token(char *line, int it, char token)
 {
 	int aux_it;
@@ -192,6 +239,8 @@ static short 	prior_to_token(char *line, int it, char token)
 
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
+	char	*key;
+
 	if (prior_to_token(line, it - 1, line[it]))
 	{
 		if (separator == ';')
@@ -209,6 +258,11 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 		exit(2);
 		// Arreglarlo para que no salga de la ejecucion principal
 		//shell->stat_loc = 2;
+	}
+	else if ((key = post_to_token(shell, line, it, line[it])))
+	{
+		print_errors(shell, ft_strjoin(key,": ambiguous redirect" ), NULL);
+		exit(1);
 	}
 }
 
