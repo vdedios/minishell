@@ -27,19 +27,17 @@ void	find_pipes(t_shell *shell)
 	binary = 0;
 	while (shell->commands[it])
 	{
+		//hay que añadir expansion?
 		shell->args = get_args(shell->commands[it]);
 		shell->binary = ft_strdup(shell->args[0]);
 		pipe(p);
-		pid = fork();
-		if (pid == -1)
+		if ((pid = fork()) == -1)
 			exit(EXIT_FAILURE);
 		else if (pid == 0)
 		{
 			close(p[0]);
-			dup2(fd_in, 0);
 			if (shell->commands[it + 1])
 				dup2(p[1], 1);
-			close(p[1]);
 			fd = find_redirections(shell);
 			if (!check_builtin(shell))
 			{
@@ -48,13 +46,15 @@ void	find_pipes(t_shell *shell)
 				execve(path, shell->args, shell->env);
 			}
 			close(fd);
+			close(p[1]);
 			exit(shell->stat_loc);
 		}
 		else
 		{
-			waitpid(pid, &shell->stat_loc, WNOHANG);
 			close(p[1]);
-			fd_in = p[0];
+			dup2(p[0], 0);
+			waitpid(pid, &shell->stat_loc, WNOHANG);
+			//fd_in = p[0];
 			it++;
 		}
 	}

@@ -146,13 +146,13 @@ int 			check_builtin(t_shell *shell)
 
 static void 	handle_commands(t_shell *shell)
 {
-	int fd_out;
-	int fd_in;
+	//int fd_out;
+	//int fd_in;
 	int fd;
 
 	fd = -2;
-	fd_out = dup(1);
-	fd_in = dup(0);
+	//fd_out = dup(1);
+	//fd_in = dup(0);
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
@@ -165,8 +165,8 @@ static void 	handle_commands(t_shell *shell)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
-		dup2(fd_out, 1);
-		dup2(fd_in, 0);
+		//dup2(fd_out, 1);
+		//dup2(fd_in, 0);
 	}
 }
 
