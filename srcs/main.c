@@ -192,7 +192,11 @@ static short 	prior_to_token(char *line, int it, char token)
 
 static short	nothing_after_pipe(char *line)
 {
-
+	while (*line && *line == ' ')
+		line++;
+	if (!*line)
+		return (1);
+	return (0);
 }
 
 static void 	validator(t_shell *shell, char *line, char separator, int it)
