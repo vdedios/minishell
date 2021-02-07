@@ -401,7 +401,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
-	//ft_export(&shell, ft_strdup("_=/bin/bash"));
+	ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
