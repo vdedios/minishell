@@ -2,7 +2,7 @@ name: Minishell
 
 on:
   push: 
-   branches: [fix/preprocess-interpolation-expansion]
+   branches: [fix/preprocess-interpolation]
 
 jobs:
   build:
