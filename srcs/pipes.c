@@ -49,13 +49,13 @@ void	find_pipes(t_shell *shell)
 			close(p[1]);
 			exit(shell->stat_loc);
 		}
-		else
-		{
-			close(p[1]);
-			dup2(p[0], 0);
+		close(p[1]);
+		dup2(p[0], 0);
+		it++;
+		if (shell->commands[it])
 			waitpid(pid, &shell->stat_loc, WNOHANG);
-			//fd_in = p[0];
-			it++;
-		}
+		close(p[0]);
 	}
+	waitpid(pid, &shell->stat_loc, 0);
+	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 }

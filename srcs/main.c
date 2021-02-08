@@ -93,7 +93,7 @@ int 			run_command(t_shell *shell)
 		exit(shell->stat_loc);
 	}
 	signal(SIGINT, signal_handler_waiting);
-	wait(&shell->stat_loc);
+	waitpid(pid, &shell->stat_loc, 0);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
