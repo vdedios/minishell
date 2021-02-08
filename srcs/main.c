@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/29 17:01:42 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/08 00:28:04 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,10 @@ int 			check_builtin(t_shell *shell)
 	else if (ft_strcmp(*shell->args, "pwd"))
 		ret = ft_pwd();
 	else if (ft_strcmp(*shell->args, "export"))
+	{
+		delete_environment(shell, "_", shell->env);
 		ret = ft_export(shell, NULL);
+	}
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell);
 	else if (ft_strcmp(to_lower(shell->args[0]), "env"))

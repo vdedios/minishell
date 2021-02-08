@@ -115,7 +115,12 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		free(tmp);
 	}
 	else
-		tmp2 = ft_strjoin(buff, str_in_quotes);
+	{
+		if (ft_strcmp(buff, ""))
+			tmp2 = str_in_quotes;
+		else
+			tmp2 = ft_strjoin(buff, str_in_quotes);
+	}
 	free(buff);
 	/*
 	if (str_in_quotes != str)
