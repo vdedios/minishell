@@ -190,8 +190,10 @@ static short 	prior_to_token(char *line, int it, char token)
 	return (0);
 }
 
-static short	nothing_after_pipe(char *line)
+static short	nothing_after_pipe(char *line, int it)
 {
+	if ((it - 2) >= 0 && *(line - 2) == '\\')
+		return (0);
 	while (*line && *line == ' ')
 		line++;
 	if (!*line)
@@ -219,7 +221,7 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 		// Arreglarlo para que no salga de la ejecucion principal
 		//shell->stat_loc = 2;
 	}
-	else if (separator == '|' && nothing_after_pipe(&line[it + 1]))
+	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
 		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
 		exit(2);
