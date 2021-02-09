@@ -93,7 +93,7 @@ int 			run_command(t_shell *shell)
 		exit(shell->stat_loc);
 	}
 	signal(SIGINT, signal_handler_waiting);
-	wait(&shell->stat_loc);
+	waitpid(pid, &shell->stat_loc, 0);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
@@ -149,13 +149,13 @@ int 			check_builtin(t_shell *shell)
 
 static void 	handle_commands(t_shell *shell)
 {
-	int fd_out;
-	int fd_in;
+	//int fd_out;
+	//int fd_in;
 	int fd;
 
 	fd = -2;
-	fd_out = dup(1);
-	fd_in = dup(0);
+	//fd_out = dup(1);
+	//fd_in = dup(0);
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
@@ -168,8 +168,8 @@ static void 	handle_commands(t_shell *shell)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
-		dup2(fd_out, 1);
-		dup2(fd_in, 0);
+		//dup2(fd_out, 1);
+		//dup2(fd_in, 0);
 	}
 }
 
@@ -240,6 +240,17 @@ static short 	prior_to_token(char *line, int it, char token)
 	return (0);
 }
 
+static short	nothing_after_pipe(char *line, int it)
+{
+	if ((it - 2) >= 0 && *(line - 2) == '\\')
+		return (0);
+	while (*line && *line == ' ')
+		line++;
+	if (!*line)
+		return (1);
+	return (0);
+}
+
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
@@ -261,6 +272,11 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 		exit(2);
 		// Arreglarlo para que no salga de la ejecucion principal
 		//shell->stat_loc = 2;
+	}
+	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
+	{
+		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
+		exit(2);
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
