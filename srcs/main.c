@@ -274,6 +274,7 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 	{
 		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
 		exit(2);
+	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
 		print_errors(shell, ft_strjoin(key,": ambiguous redirect" ), NULL);
