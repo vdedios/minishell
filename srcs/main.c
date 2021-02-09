@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/08 00:28:04 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/09 23:46:31 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ int 			run_command(t_shell *shell)
 	}
 	signal(SIGINT, signal_handler_waiting);
 	waitpid(pid, &shell->stat_loc, 0);
-	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+	if (WIFEXITED(shell->stat_loc))
+		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	ft_export(shell, update_last_arg(shell->args));
