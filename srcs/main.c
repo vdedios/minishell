@@ -170,6 +170,53 @@ static void 	handle_commands(t_shell *shell)
 	}
 }
 
+static char		*get_var_key(char *line, int it)
+{
+	int		i;
+	int		k;
+	char	*key;
+
+	i = it;
+	k = 0;
+	while (i >= 0 && line[i] != '{')
+		i--;
+	if (!(key = malloc((it - i) * sizeof(char))))
+		return (NULL);
+	i++;
+	while (i < it)
+		key[k++] = line[i++];
+	key[k] = '\0';
+	return (key);
+}
+
+static short	contain_spaces(char *value)
+{
+	while (*value)
+	{
+		if (*value == ' ')
+			return (1);
+		value++;
+	}
+	return (0);
+}
+
+static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
+{
+	char	*key;
+	char	*value;
+
+	if (token == '>')
+		while (line[it++])
+			if (line[it] == '}' && line[it - 1] != ' ')
+			{
+				key = get_var_key(line, it);
+				value = expand_var(key, shell);
+				if (contain_spaces(value))
+					return (ft_strjoin("$", key));
+			}
+	return (NULL);
+}
+
 static short 	prior_to_token(char *line, int it, char token)
 {
 	int aux_it;
@@ -203,6 +250,8 @@ static short	nothing_after_pipe(char *line, int it)
 
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
+	char	*key;
+
 	if (prior_to_token(line, it - 1, line[it]))
 	{
 		if (separator == ';')
@@ -225,6 +274,10 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 	{
 		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
 		exit(2);
+	else if ((key = post_to_token(shell, line, it, line[it])))
+	{
+		print_errors(shell, ft_strjoin(key,": ambiguous redirect" ), NULL);
+		exit(1);
 	}
 }
 
@@ -363,7 +416,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
 	shell.instructions = NULL;
 	handle_shlvl(&shell);
-	//ft_export(&shell, ft_strdup("_=/bin/bash"));
+	ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);

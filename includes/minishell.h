@@ -71,6 +71,7 @@ char	*get_path(t_shell *shell, int *binary);
 
 char	*expansion(t_shell *shell, char *str);
 char	*embrace_expansion(char *str);
+char	*expand_var(char *env, t_shell *shell);
 char    *mantain_expansion_spaces(char *str);
 char	*parse_quotes(char *str);
 char	*parse_backslash(char *str, short residual);

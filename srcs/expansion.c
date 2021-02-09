@@ -96,18 +96,24 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 	return (ret);
 }
 
-static	char	*expand_var(char *env, t_shell *shell)
+char	*expand_var(char *env, t_shell *shell)
 {
 	int		i;
 	int		len;
 	char	*delimiter;
 
 	i = 0;
-	env++;
-	//free(env);
-	//delimiter = search_delimiters(env);
-	delimiter = ft_strchr(env, '}');
-	len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
+	delimiter = NULL;
+	if (*env == '{')
+	{
+		env++;
+		//free(env);
+		//delimiter = search_delimiters(env);
+		delimiter = ft_strchr(env, '}');
+		len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
+	}
+	else
+		len = ft_strlen(env);
 	if (delimiter && *(delimiter - 1) == ' ')
 		len--;
 	while (shell->env[i])
