@@ -15,6 +15,7 @@
 void	find_pipes(t_shell *shell)
 {
 	pid_t	pid;
+	pid_t	aux_pid;
 	int		p[2];
 	int		fd_in;
 	int		it;
@@ -54,8 +55,14 @@ void	find_pipes(t_shell *shell)
 		it++;
 		if (shell->commands[it])
 			waitpid(pid, &shell->stat_loc, WNOHANG);
+		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 		close(p[0]);
 	}
-	waitpid(pid, &shell->stat_loc, 0);
+	while ( (aux_pid = wait(&shell->stat_loc)) > 0)
+	{
+		if (aux_pid < pid)
+			shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+	}
+	//waitpid(pid, &shell->stat_loc, 0);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 }
