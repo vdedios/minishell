@@ -86,9 +86,7 @@ static	short	not_valid_keyname(t_shell *shell, char *var)
 {
 	char	*err_mssg;
 	int		len;
-	int		i;
 
-	i = 0;
 	len = ft_strlen(var);
 	if (!(err_mssg = malloc((len + 28) * sizeof(char))))
 		return (0);

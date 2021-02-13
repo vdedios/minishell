@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2021/01/19 23:49:42 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/13 01:10:10 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ static	char	*append_expanded(char *buff, char *env)
 	if (*env == '\\' && !(*(env + 1)))
 		return (buff);
 	tmp = ft_strjoin(env, buff);
-	free(env);
-	free(buff);
+	//free(env); No se debe liberar
+	//free(buff); No se debe liberar
 	return (tmp);
 }
 
@@ -76,23 +76,32 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 {
 	char	*ret;
 	char	*value;
+	char	*tmp;
 
 	if (shell->env[i])
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
-	// liberar memoria
-	value = escape_char(value, '\\');
+	// liberar memoria --> Ya liberada
+	tmp = ft_strdup(value);
+	free(value);
+	value = escape_char(tmp, '\\');
 	if (delimiter && *(delimiter - 1) == ' ')
-		value = escape_char(value, ' ');
+	{
+		tmp = ft_strdup(value);
+		free(value);
+		value = escape_char(tmp, ' ');
+		free(tmp);
+	}
 	if (delimiter && *delimiter)
 	{
 		delimiter++;
 		ret = ft_strjoin(value, delimiter);
-		free(value);
+		//free(value); Movido más abajo
 	}
 	else
-		ret = value;
+		ret = ft_strdup(value);
+	free(value);
 	return (ret);
 }
 

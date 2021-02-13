@@ -81,6 +81,7 @@ static char		*set_closing_braces(char *str)
     return (buff);
 }
 
+
 char            *mantain_expansion_spaces(char *str)
 {
     int     i;

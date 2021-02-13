@@ -38,7 +38,7 @@ static char		*remove_backslash(char *buff, char *backslash)
 		return (NULL);
 	ft_strlcpy(tmp, buff, len - len_left + 1);
 	tmp2 = ft_strjoin(tmp, backslash);
-	free(buff);
+	//free(buff); No se debe de liberar aqui
 	free(tmp);
 	return (tmp2);
 }
