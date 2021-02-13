@@ -10,6 +10,7 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include <fcntl.h>
+# include <limits.h>
 # include "libft.h"
 
 /*

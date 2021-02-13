@@ -46,7 +46,7 @@ $(OBJ_DIR):
 
 $(NAME): 		$(OBJS)
 				@make -C $(LIB_DIR)
-				@$(CC) $(CFLAGS) $(LFLAGS) -Llibft -lft $(OBJS) -o $(NAME)
+				@$(CC) $(CFLAGS) $(LFLAGS) $(OBJS) -Llibft -lft -o $(NAME)
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 				@$(CC) $(LFLAGS) $(CFLAGS) -c $< -o $@

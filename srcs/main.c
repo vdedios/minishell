@@ -292,11 +292,13 @@ static void 	validate_input(t_shell *shell, char *line)
 
 	it = -1;
 	while (line[++it])
+	{
 		if (line[it] == '|' ||
 			line[it] == '<' ||
 			line[it] == '>' ||
 			line[it] == ';')
 			validator(shell, line, line[it], it);
+	}
 		if (line[it + 1] == '<' || line[it + 1] == '>')
 			it++;
 }

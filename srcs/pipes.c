@@ -17,13 +17,11 @@ void	find_pipes(t_shell *shell)
 	pid_t	pid;
 	pid_t	aux_pid;
 	int		p[2];
-	int		fd_in;
 	int		it;
 	int		fd;
 	char	*path;
 	int		binary;
 
-	fd_in = 0;
 	it = 0;
 	binary = 0;
 	while (shell->commands[it])

@@ -23,7 +23,7 @@ void	handle_shlvl(t_shell *shell)
 	if (!shlvl)
 		shlvl = "0";
 	lvl = (int)ft_atoi(shlvl) + 1;
-	if (lvl < 0 && lvl >= -2147483648)
+	if (lvl < 0 && lvl >= INT_MIN)
 		lvl = 0;
 	else if(lvl > 2000000 ) 
 	{
