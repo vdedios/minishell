@@ -150,27 +150,24 @@ int 			check_builtin(t_shell *shell)
 
 static void 	handle_commands(t_shell *shell)
 {
-	//int fd_out;
-	//int fd_in;
-	int fd;
+	int		fd;
+	char	*tmp;
 
 	fd = -2;
-	//fd_out = dup(1);
-	//fd_in = dup(0);
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
 	{
-		shell->commands[0] = expansion(shell, shell->commands[0]);
-		shell->args = get_args(*shell->commands);
+		tmp = expansion(shell, shell->commands[0]);
+		free(shell->commands[0]);
+		shell->commands[0] = tmp;
+		shell->args = get_args(shell->commands[0]);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell);
 		if (fd != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
-		//dup2(fd_out, 1);
-		//dup2(fd_in, 0);
 	}
 }
 
@@ -368,23 +365,29 @@ static char		*inject_spaces(char *line)
 
 static void 	minishell(char *line, t_shell *shell)
 {
-	size_t it;
+	size_t 	it;
+	size_t	jt;
+	char	*tmp;
 
 	it = 0;
-	line = inject_spaces(line);
+	jt = 0;
+	tmp = inject_spaces(line);
+	free(line);
+	line = tmp;
 	validate_input(shell, line);
 	shell->instructions = ft_split_non_escaped(line, ';');	
+	free(line);
 	while (shell->instructions[it])
 	{
 		shell->stat_loc = 0;
-		while (is_space(*shell->instructions[it]))
-			shell->instructions[it]++;
-		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
+		while (is_space(shell->instructions[it][jt]))
+			jt++;
+		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
+		free(shell->instructions[it]);
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
-	free(line);
 	//clean_commands(shell);
 }
 
@@ -408,8 +411,6 @@ static void 	read_input(char *line, t_shell *shell)
 		free(line);
 		line = tmp;
 		minishell(line, shell);
-	//	free(line);
-	//	line = NULL;
 	}
 }
 
