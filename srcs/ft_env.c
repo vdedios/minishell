@@ -22,7 +22,7 @@ char	*get_env(t_shell *shell, char *arg)
 	while (shell->env[it])
 	{
 		if (!ft_strncmp(shell->env[it], arg, len))
-			return (ft_strchr(shell->env[it], '=') + 1);
+			return (ft_strdup(ft_strchr(shell->env[it], '=') + 1));
 		it++;
 	}
 	return (NULL);

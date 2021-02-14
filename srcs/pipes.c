@@ -20,15 +20,18 @@ void	find_pipes(t_shell *shell)
 	int		it;
 	int		fd;
 	char	*path;
+	char	*tmp;
 	int		binary;
 
 	it = 0;
 	binary = 0;
 	while (shell->commands[it])
 	{
-		//hay que añadir expansion?
-		shell->args = get_args(shell->commands[it]);
+		tmp = expansion(shell, shell->commands[it]);
+		shell->args = get_args(tmp);
 		shell->binary = ft_strdup(shell->args[0]);
+		free(tmp);
+		free(shell->commands[it]);
 		pipe(p);
 		if ((pid = fork()) == -1)
 			exit(EXIT_FAILURE);
@@ -61,6 +64,5 @@ void	find_pipes(t_shell *shell)
 		if (aux_pid < pid)
 			shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	}
-	//waitpid(pid, &shell->stat_loc, 0);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 }

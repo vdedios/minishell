@@ -64,7 +64,6 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 	char			*bin_name;
 
 	it = -1;
-	//hay que liberarlo, se pasa a lower solo para buscarlo
 	bin_name = strdup(shell->args[0]);
 	to_lower(bin_name);
 	while (paths[++it])

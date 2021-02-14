@@ -69,7 +69,9 @@ char 			*get_path(t_shell *shell, int *binary)
 		tmp = append_pwd(value);
 		paths = ft_split(tmp, ':');
 		path = search_binary(shell, paths, binary);
-		//clean_matrix(paths);
+		free(value);
+		free(tmp);
+		clean_matrix(paths);
 		free(paths);
 	}
 	
@@ -78,13 +80,12 @@ char 			*get_path(t_shell *shell, int *binary)
 
 int 			run_command(t_shell *shell)
 {
-	char *path;
 	pid_t pid;
 	int binary;
+	char *path;
 
 	binary = 0;
 	path = get_path(shell, &binary);
-	//shell->args[0] = shell->binary;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -99,7 +100,7 @@ int 			run_command(t_shell *shell)
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	ft_export(shell, update_last_arg(shell->args));
-	//free(path);
+	free(path);
 	return (1);
 }
 
@@ -150,27 +151,24 @@ int 			check_builtin(t_shell *shell)
 
 static void 	handle_commands(t_shell *shell)
 {
-	//int fd_out;
-	//int fd_in;
-	int fd;
+	int		fd;
+	char	*tmp;
 
 	fd = -2;
-	//fd_out = dup(1);
-	//fd_in = dup(0);
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
 	{
-		shell->commands[0] = expansion(shell, shell->commands[0]);
-		shell->args = get_args(*shell->commands);
+		tmp = expansion(shell, shell->commands[0]);
+		shell->args = get_args(tmp);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell);
 		if (fd != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
-		//dup2(fd_out, 1);
-		//dup2(fd_in, 0);
+		free(shell->commands[0]);
+		free(tmp);
 	}
 }
 
@@ -370,18 +368,25 @@ static char		*inject_spaces(char *line)
 
 static void 	minishell(char *line, t_shell *shell)
 {
-	size_t it;
+	size_t 	it;
+	size_t	jt;
+	char	*tmp;
 
 	it = 0;
-	line = inject_spaces(line);
+	tmp = inject_spaces(line);
+	free(line);
+	line = tmp;
 	validate_input(shell, line);
 	shell->instructions = ft_split_non_escaped(line, ';');	
+	free(line);
 	while (shell->instructions[it])
 	{
+		jt = 0;
 		shell->stat_loc = 0;
-		while (is_space(*shell->instructions[it]))
-			shell->instructions[it]++;
-		shell->commands = ft_split_non_escaped(shell->instructions[it], '|');
+		while (is_space(shell->instructions[it][jt]))
+			jt++;
+		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
+		free(shell->instructions[it]);
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
 		it++;
@@ -391,6 +396,8 @@ static void 	minishell(char *line, t_shell *shell)
 
 static void 	read_input(char *line, t_shell *shell)
 {
+	char *tmp;
+
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
@@ -403,33 +410,36 @@ static void 	read_input(char *line, t_shell *shell)
 			free(line);
 			exit(0);
 		}
-		line = parse_input(line);
-		minishell(line, shell);
+		tmp = parse_input(line);
 		free(line);
-		line = NULL;
+		line = tmp;
+		minishell(line, shell);
 	}
 }
 
 int 			main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
-	char *line;
-	char curr_pwd[1024];
+	char	*line;
+	char	*tmp;
+	char	curr_pwd[1024];
 
 	shell.stat_loc = 0;
 	line = NULL;
+	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
-	shell.instructions = NULL;
 	handle_shlvl(&shell);
 	ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
-		line = parse_input(line);
-		minishell(line, &shell);
+		tmp = parse_input(line);
 		free(line);
+		line = tmp;
+		minishell(line, &shell);
+		//free(line);
 	}
 	else
 		read_input(line, &shell);
