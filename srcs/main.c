@@ -78,13 +78,12 @@ char 			*get_path(t_shell *shell, int *binary)
 
 int 			run_command(t_shell *shell)
 {
-	char *path;
 	pid_t pid;
 	int binary;
+	char *path;
 
 	binary = 0;
 	path = get_path(shell, &binary);
-	//shell->args[0] = shell->binary;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -99,7 +98,7 @@ int 			run_command(t_shell *shell)
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
 	ft_export(shell, update_last_arg(shell->args));
-	//free(path);
+	free(path);
 	return (1);
 }
 
