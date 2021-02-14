@@ -390,6 +390,8 @@ static void 	minishell(char *line, t_shell *shell)
 
 static void 	read_input(char *line, t_shell *shell)
 {
+	char *tmp;
+
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
@@ -402,10 +404,12 @@ static void 	read_input(char *line, t_shell *shell)
 			free(line);
 			exit(0);
 		}
-		line = parse_input(line);
-		minishell(line, shell);
+		tmp = parse_input(line);
 		free(line);
-		line = NULL;
+		line = tmp;
+		minishell(line, shell);
+	//	free(line);
+	//	line = NULL;
 	}
 }
 
