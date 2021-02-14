@@ -20,9 +20,13 @@
 
 static	void	delete_residual_backslash(char **args)
 {
+	char *tmp;
+
 	while (*args)
 	{
-		*args = parse_backslash(*args, 1);
+		tmp = parse_backslash(*args, 1);
+		free(*args);
+		*args = tmp;
 		args++;
 	}
 }
@@ -35,7 +39,7 @@ char			**get_args(char *input)
 		return (NULL);
 	args = ft_split_non_escaped(input, ' ');
 	delete_residual_backslash(args);
-	free(input);
+	//free(input);
 	if (!args)
 		return (NULL);
 	return (args);

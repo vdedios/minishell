@@ -160,15 +160,15 @@ static void 	handle_commands(t_shell *shell)
 	else if (shell->commands[0])
 	{
 		tmp = expansion(shell, shell->commands[0]);
-		free(shell->commands[0]);
-		shell->commands[0] = tmp;
-		shell->args = get_args(shell->commands[0]);
+		shell->args = get_args(tmp);
 		shell->binary = ft_strdup(shell->args[0]);
 		fd = find_redirections(shell);
 		if (fd != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
+		free(shell->commands[0]);
+		free(tmp);
 	}
 }
 
