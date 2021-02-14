@@ -69,7 +69,9 @@ char 			*get_path(t_shell *shell, int *binary)
 		tmp = append_pwd(value);
 		paths = ft_split(tmp, ':');
 		path = search_binary(shell, paths, binary);
-		//clean_matrix(paths);
+		free(value);
+		free(tmp);
+		clean_matrix(paths);
 		free(paths);
 	}
 	
