@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/16 00:34:14 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/13 00:30:42 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,23 +32,10 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 		}
 		it++;
 	}
+	//if (variable)
+	//	free(variable);Si se libera se pierde el env
 	//free(path);
 }
-
-/*static char	*get_workdir(t_shell *shell, char *path)
-{
-	size_t 	it;
-	size_t	len;
-
-	it = -1;
-	len = ft_strlen(path);
-	while (shell->env[++it])
-	{
-		if (!ft_strncmp(shell->env[it], path, len))
-			return (ft_strchr(shell->env[it], '=') + 1);
-	}
-	return (NULL);
-}*/
 
 static void	change_dir(char *path, t_shell *shell)
 {
@@ -56,6 +43,7 @@ static void	change_dir(char *path, t_shell *shell)
 	char		*cwd;
 	struct stat	s;
 	char		*msg;
+	char		*tmp;
 
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
@@ -83,8 +71,12 @@ static void	change_dir(char *path, t_shell *shell)
 			if (s.st_mode & S_IFDIR)
 			{
 				path = ft_strjoin(" ", path);
-				msg = ft_strjoin(path, ": Permission denied");
+				tmp = ft_strdup(path);
+				free(path);
+				msg = ft_strjoin(tmp, ": Permission denied");
+				free(tmp);
 				print_errors(shell, msg, shell->binary);
+				free(msg);
 			}
 			else
 				print_errors(shell, "not a directory:", shell->binary);
@@ -92,11 +84,17 @@ static void	change_dir(char *path, t_shell *shell)
 		else
 		{
 			path = ft_strjoin(" ", path);
-			msg = ft_strjoin(path, ": No such file or directory");
+			tmp = ft_strdup(path);
+			free(path);
+			msg = ft_strjoin(tmp, ": No such file or directory");
+			free(tmp);
 			print_errors(shell, msg, shell->binary);
+			free(msg);
 		}
 		//ft_putendl_fd(path, 1);
 	}
+	free(oldcwd);
+	free(cwd);
 }
 
 int			ft_cd(t_shell *shell)

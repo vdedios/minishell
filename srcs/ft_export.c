@@ -114,9 +114,7 @@ static size_t	print_sorted_env(t_shell *shell)
 	tmp_envp2 = process_envs(tmp_envp);
 	ft_env(shell, tmp_envp2);
 	clean_matrix(tmp_envp);
-	/*
-	free(tmp_envp);
-	*/
+	//free(tmp_envp);
 	clean_matrix(tmp_envp2);
 	free(tmp_envp2);
 	return (1);
@@ -147,7 +145,7 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 
 	i = 0;
 	if (last_arg)
-		value = last_arg;
+		value = ft_strdup(last_arg);
 	else
 		value = ft_strdup(shell->args[j]);
 	tmp = ft_strchr(value, '=');
@@ -155,6 +153,7 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	while (shell->env[i]
 			&& ft_strncmp_equal(shell->env[i], value, key_len))
 		i++;
+	//Aqui se deberia de meter un temporal para poder liberar value
 	value = parse_backslash(value, 2);
 	tmp_env = add_env(&value, shell->env, i);
 	clean_env(shell);
@@ -206,9 +205,7 @@ static	short	not_valid_keyname(t_shell *shell, char *var)
 {
 	char	*err_mssg;
 	int		len;
-	int		i;
 
-	i = 0;
 	len = ft_strlen(var);
 	if (!(err_mssg = malloc((len + 28) * sizeof(char))))
 		return (0);

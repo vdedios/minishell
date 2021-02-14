@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/16 19:38:47 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/12 20:09:08 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,15 @@
 static	void	numeric_arg_req(t_shell *shell)
 {
 	char		*msg;
+	char		*tmp;
 
 	msg = ft_strjoin(shell->binary, ": ");
-	msg = ft_strjoin(msg, shell->args[1]);
+	tmp = ft_strdup(msg);
+	free(msg);
+	msg = ft_strjoin(tmp, shell->args[1]);
+	free(tmp);
 	print_errors(shell, " numeric argument required", msg);
+	free(msg);
 	exit (255);
 }
 
@@ -49,7 +54,7 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 			num = num * 10 + *nptr - '0';
 		nptr++;
 	}
-	if ((!sign && num > INTMAX_MAX) || (sign && num > (uintmax_t)(-INTMAX_MIN)))
+	if ((!sign && num > INTMAX_MAX) || (sign && num > -(uintmax_t)(INTMAX_MIN)))
 		numeric_arg_req(shell);
 	if (sign == 1)
 		num = -1 * num;
