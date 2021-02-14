@@ -80,7 +80,7 @@ static	void	divide_arguments(char	**args, char *input, int len)
 	j = 0;
 	while(i < len)
 	{
-		args[j] = strdup(&input[i]);
+		args[j] = ft_strdup(&input[i]);
 		if (!ft_strncmp(args[j], "\"\"", 3))
 		{
 			tmp = ft_strdup("");
@@ -89,7 +89,7 @@ static	void	divide_arguments(char	**args, char *input, int len)
 			i += 2;
 		}
 		else
-			i += strlen(args[j]);
+			i += ft_strlen(args[j]);
 		j++;
 		while (i < len && !input[i])
 			i++;
@@ -106,7 +106,7 @@ char			**ft_split_non_escaped(char *input, char delimiter)
 
 	if (!(args = malloc((count_args(input, delimiter) + 2) * sizeof(char *))))
 		return (NULL);
-	len = strlen(input);
+	len = ft_strlen(input);
 	input = set_split_delimiter(input, delimiter);
 	divide_arguments(args, input, len);
 	return (args);

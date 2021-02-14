@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2021/02/13 01:10:10 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/14 18:35:50 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ char			*expansion(t_shell *shell, char *str)
 			str = parse_expansion(shell, env_split, (short)(*str == '$'));
 		}
 	}
+	clean_matrix(env_split);
 	free(env_split);
 	return (str);
 	//liberar el resto?
