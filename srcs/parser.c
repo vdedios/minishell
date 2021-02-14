@@ -49,6 +49,6 @@ char			*parse_input(char *input)
 	tmp = parse_quotes(input);
 	buff = parse_backslash(tmp, 0);
 	free (tmp);
-	free(input);
+	//free(input);
 	return (buff);
 }

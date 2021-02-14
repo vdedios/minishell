@@ -384,6 +384,7 @@ static void 	minishell(char *line, t_shell *shell)
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
+	free(line);
 	//clean_commands(shell);
 }
 
@@ -411,23 +412,26 @@ static void 	read_input(char *line, t_shell *shell)
 int 			main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
-	char *line;
-	char curr_pwd[1024];
+	char	*line;
+	char	*tmp;
+	char	curr_pwd[1024];
 
 	shell.stat_loc = 0;
 	line = NULL;
+	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
 	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
-	shell.instructions = NULL;
 	handle_shlvl(&shell);
 	ft_export(&shell, ft_strdup("_=/bin/bash"));
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
-		line = parse_input(line);
-		minishell(line, &shell);
+		tmp = parse_input(line);
 		free(line);
+		line = tmp;
+		minishell(line, &shell);
+		//free(line);
 	}
 	else
 		read_input(line, &shell);
