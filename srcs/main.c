@@ -371,7 +371,6 @@ static void 	minishell(char *line, t_shell *shell)
 	char	*tmp;
 
 	it = 0;
-	jt = 0;
 	tmp = inject_spaces(line);
 	free(line);
 	line = tmp;
@@ -380,6 +379,7 @@ static void 	minishell(char *line, t_shell *shell)
 	free(line);
 	while (shell->instructions[it])
 	{
+		jt = 0;
 		shell->stat_loc = 0;
 		while (is_space(shell->instructions[it][jt]))
 			jt++;
