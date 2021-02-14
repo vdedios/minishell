@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 10:36:17 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/13 00:21:51 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/14 15:34:56 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	handle_shlvl(t_shell *shell)
 		lvl = 1;
 	}
 	shlvl = ft_itoa(lvl);
-	ft_export(shell, ft_strjoin("SHLVL=", shlvl));
+	tmp = ft_strjoin("SHLVL=", shlvl); 
+	ft_export(shell, tmp);
+	free(tmp);
 	free(shlvl);
 }

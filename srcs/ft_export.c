@@ -153,8 +153,10 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	while (shell->env[i]
 			&& ft_strncmp_equal(shell->env[i], value, key_len))
 		i++;
-	//Aqui se deberia de meter un temporal para poder liberar value
-	value = parse_backslash(value, 2);
+	tmp = ft_strdup(value);
+	free(value);
+	value = parse_backslash(tmp, 2);
+	free(tmp);
 	tmp_env = add_env(&value, shell->env, i);
 	clean_env(shell);
 	shell->env = tmp_env;

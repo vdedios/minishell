@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/09 23:46:31 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/14 17:49:39 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 static char		*last_arg(char *arg)
 {
-	char *buff;
+	char 	*buff;
+
 	if ((buff = ft_strchr(arg, '=')))
 		*buff = '\0';
 	return (ft_strjoin("_=", arg));
@@ -121,7 +122,8 @@ static char 	*to_lower(char *input)
 
 int 			check_builtin(t_shell *shell)
 {
-	int ret;
+	int 	ret;
+	char	*tmp;
 
 	ret = 0;
 	//to_lower(shell->args[0]);
@@ -145,7 +147,9 @@ int 			check_builtin(t_shell *shell)
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
 		return(ft_env(shell, shell->env));
 	}
-	ft_export(shell, update_last_arg(shell->args));
+	tmp =  update_last_arg(shell->args); 
+	ft_export(shell, tmp);
+	free(tmp);
 	return (ret);
 }
 
@@ -297,8 +301,8 @@ static void 	validate_input(t_shell *shell, char *line)
 			line[it] == ';')
 			validator(shell, line, line[it], it);
 	}
-		if (line[it + 1] == '<' || line[it + 1] == '>')
-			it++;
+	if (line[it + 1] == '<' || line[it + 1] == '>')
+		it++;
 }
 
 static char		*inject_spaces(char *line)
@@ -388,10 +392,18 @@ static void 	minishell(char *line, t_shell *shell)
 		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
 		free(shell->instructions[it]);
 		handle_commands(shell);
+		free(shell->commands);
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
-	//clean_commands(shell);
+	clean_matrix(shell->env);
+	clean_matrix(shell->args);
+	//clean_shell(shell);
+	//clean_matrix(shell->instructions);
+	free(shell->env);
+	free(shell->args);
+	free(shell->binary);
+	free(shell->instructions);
 }
 
 static void 	read_input(char *line, t_shell *shell)
@@ -429,9 +441,13 @@ int 			main(int argc, char **argv, char **envp)
 	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
-	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
+	tmp = ft_strjoin("PWD=", curr_pwd);
+	ft_export(&shell, tmp);
+	free(tmp);
 	handle_shlvl(&shell);
-	ft_export(&shell, ft_strdup("_=/bin/bash"));
+	tmp = ft_strdup("_=/bin/bash");
+	ft_export(&shell, tmp);
+	free(tmp);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
