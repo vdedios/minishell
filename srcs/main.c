@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 23:09:22 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:52:04 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ static void 	handle_commands(t_shell *shell)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
+		clean_matrix(shell->args);
+		free(shell->args);
 		free(shell->commands[0]);
 		free(tmp);
 		free(shell->binary);
@@ -457,8 +459,8 @@ int 			main(int argc, char **argv, char **envp)
 		free(line);
 		line = tmp;
 		minishell(line, &shell);
-		clean_matrix(shell.args);
-		free(shell.args);
+		//clean_matrix(shell.args);
+		//free(shell.args);
 		clean_matrix(shell.env);
 		free(shell.env);
 		//clean_matrix(shell.commands);
