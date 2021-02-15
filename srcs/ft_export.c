@@ -110,7 +110,7 @@ static size_t	print_sorted_env(t_shell *shell)
 	char **tmp_envp;
 	char **tmp_envp2;
 
-	tmp_envp = sort_alpha(shell->env);
+	tmp_envp = sort_alpha(ft_strdup_matrix(shell->env));
 	tmp_envp2 = process_envs(tmp_envp);
 	ft_env(shell, tmp_envp2);
 	clean_matrix(tmp_envp);
