@@ -106,7 +106,8 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 	{
 		tmp = mantain_expansion_spaces(tmp_in_quotes);
 		free(tmp_in_quotes);
-		tmp_in_quotes = tmp;
+		tmp_in_quotes = ft_strdup(tmp);
+		free(tmp);
 	}
 	if (opening && opening != -1)
 	{
@@ -118,18 +119,19 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		tmp2 = ft_strjoin(tmp, tmp_in_quotes);
 		free(tmp_pre_quotes);
 		free(str_pre_quotes);
+		free(tmp_in_quotes);
 		free(tmp);
 	}
 	else
 	{
 		if (ft_strcmp(buff, ""))
-			tmp2 = tmp_in_quotes;
+			tmp2 = ft_strdup(tmp_in_quotes);
 		else
 		{
 			tmp2 = ft_strjoin(buff, tmp_in_quotes);
-			free(tmp_in_quotes);
 		}
 	}
+	free(tmp_in_quotes);
 	return (tmp2);
 }
 

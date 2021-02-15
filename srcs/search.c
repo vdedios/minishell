@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 16:18:56 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 17:52:37 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 	char			*bin_name;
 
 	it = -1;
-	bin_name = strdup(shell->args[0]);
+	bin_name = ft_strdup(shell->args[0]);
 	to_lower(bin_name);
 	while (paths[++it])
 	{
@@ -80,6 +80,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 					if (binary)
 						*binary = 1;
 					closedir(pdir);
+					free(bin_name);
 					return (absolute_bin_path(paths[it], shell->binary));
 				}
 				direntp++;
@@ -100,6 +101,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 				exit(shell->stat_loc);
 			}
 		}
+		free(bin_name);
 		return (ft_strdup(shell->binary));
 	}
 	if (lstat(bin_name, &s) != -1 || !ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
@@ -108,5 +110,6 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 		print_errors(shell, " No such file or directory", shell->binary);
 		exit(shell->stat_loc);
 	}
+	free(bin_name);
 	return (NULL);
 }

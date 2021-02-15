@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 16:21:48 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 18:00:04 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ int 			run_command(t_shell *shell)
 	pid_t pid;
 	int binary;
 	char *path;
+	char	*tmp;
 
 	binary = 0;
 	path = get_path(shell, &binary);
@@ -100,8 +101,10 @@ int 			run_command(t_shell *shell)
 		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
-	ft_export(shell, update_last_arg(shell->args));
+	tmp = update_last_arg(shell->args);
+	ft_export(shell, tmp);
 	free(path);
+	free(tmp);
 	return (1);
 }
 
@@ -109,13 +112,16 @@ static char 	*to_lower(char *input)
 {
 	size_t it;
 	char *output;
+	char	*tmp;
 
-	output = calloc(1, ft_strlen(input));
+	tmp = ft_strdup(input);
+	output = calloc(1, ft_strlen(tmp));
 	it = -1;
-	while (input[++it])
+	while (tmp[++it])
 	{
-		output[it] = ft_tolower(input[it]);
+		output[it] = ft_tolower(tmp[it]);
 	}
+	free(tmp);
 	output[it] = '\0';
 	return (output);
 }
@@ -124,9 +130,10 @@ int 			check_builtin(t_shell *shell)
 {
 	int 	ret;
 	char	*tmp;
+	char	*lower;
 
 	ret = 0;
-	//to_lower(shell->args[0]);
+	lower = to_lower(shell->args[0]);
 	if (ft_strcmp(shell->args[0], "exit"))
 		ft_exit(shell);
 	else if (ft_strcmp(shell->args[0], "echo"))
@@ -142,14 +149,16 @@ int 			check_builtin(t_shell *shell)
 	}
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell);
-	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
+	else if (ft_strcmp(lower, "env"))
 	{
 		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
+		free(lower);
 		return(ft_env(shell, shell->env));
 	}
 	tmp =  update_last_arg(shell->args); 
 	ft_export(shell, tmp);
 	free(tmp);
+	free(lower);
 	return (ret);
 }
 
@@ -392,16 +401,16 @@ static void 	minishell(char *line, t_shell *shell)
 		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
 		free(shell->instructions[it]);
 		handle_commands(shell);
+		free(shell->args);
+		clean_matrix(shell->args);
 		free(shell->commands);
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
 	clean_matrix(shell->env);
-	clean_matrix(shell->args);
 	//clean_shell(shell);
 	//clean_matrix(shell->instructions);
 	free(shell->env);
-	free(shell->args);
 	free(shell->binary);
 	free(shell->instructions);
 }

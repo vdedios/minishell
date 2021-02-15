@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:18:25 by migferna          #+#    #+#             */
-/*   Updated: 2020/11/09 12:08:36 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 18:07:53 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,15 @@
 static	void	delete_residual_backslash(char **args)
 {
 	char *tmp;
+	size_t	it;
 
-	while (*args)
+	it = -1;
+	while (args[++it])
 	{
-		tmp = parse_backslash(*args, 1);
-		free(*args);
-		*args = tmp;
-		args++;
+		tmp = parse_backslash(args[it], 1);
+		free(args[it]);
+		args[it] = ft_strdup(tmp);
+		free(tmp);
 	}
 }
 
