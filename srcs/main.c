@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 20:42:04 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:06:45 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ static void 	handle_commands(t_shell *shell)
 		close(fd);
 		free(shell->commands[0]);
 		free(tmp);
+		free(shell->binary);
 	}
 }
 
@@ -401,6 +402,7 @@ static void 	minishell(char *line, t_shell *shell)
 		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
+		free(shell->commands);
 		it++;
 	}
 	//clean_shell(shell);
@@ -460,10 +462,8 @@ int 			main(int argc, char **argv, char **envp)
 		clean_matrix(shell.env);
 		free(shell.env);
 		//clean_matrix(shell.commands);
-		//free(shell.commands);
 		clean_matrix(shell.instructions);
 		free(shell.instructions);
-		free(shell.binary);
 		//free(line);
 	}
 	else
