@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 18:50:59 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/15 20:42:04 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,20 +399,11 @@ static void 	minishell(char *line, t_shell *shell)
 		while (is_space(shell->instructions[it][jt]))
 			jt++;
 		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
-		free(shell->instructions[it]);
 		handle_commands(shell);
-		clean_matrix(shell->args);
-		free(shell->args);
-		free(shell->commands);
 		shell->previous_stat = shell->stat_loc;
 		it++;
 	}
-	clean_matrix(shell->env);
 	//clean_shell(shell);
-	//clean_matrix(shell->instructions);
-	free(shell->env);
-	free(shell->binary);
-	free(shell->instructions);
 }
 
 static void 	read_input(char *line, t_shell *shell)
@@ -464,6 +455,15 @@ int 			main(int argc, char **argv, char **envp)
 		free(line);
 		line = tmp;
 		minishell(line, &shell);
+		clean_matrix(shell.args);
+		free(shell.args);
+		clean_matrix(shell.env);
+		free(shell.env);
+		//clean_matrix(shell.commands);
+		//free(shell.commands);
+		clean_matrix(shell.instructions);
+		free(shell.instructions);
+		free(shell.binary);
 		//free(line);
 	}
 	else
