@@ -119,7 +119,7 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		tmp2 = ft_strjoin(tmp, tmp_in_quotes);
 		free(tmp_pre_quotes);
 		free(str_pre_quotes);
-		free(tmp_in_quotes);
+		//free(tmp_in_quotes);
 		free(tmp);
 	}
 	else
