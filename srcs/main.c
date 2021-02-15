@@ -460,7 +460,7 @@ int 			main(int argc, char **argv, char **envp)
 		clean_matrix(shell.env);
 		free(shell.env);
 		//clean_matrix(shell.commands);
-		//free(shell.commands);
+		free(shell.commands);
 		clean_matrix(shell.instructions);
 		free(shell.instructions);
 		free(shell.binary);
