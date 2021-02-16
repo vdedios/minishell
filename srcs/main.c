@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 23:52:04 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 00:03:48 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,8 +182,8 @@ static void 	handle_commands(t_shell *shell)
 		close(fd);
 		clean_matrix(shell->args);
 		free(shell->args);
-		free(shell->commands[0]);
 		free(tmp);
+		free(shell->commands[0]);
 		free(shell->binary);
 	}
 }

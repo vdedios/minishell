@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2021/02/14 18:35:50 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 16:57:01 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 	tmp = ft_strdup(value);
 	free(value);
 	value = escape_char(tmp, '\\');
+	free(tmp);
 	if (delimiter && *(delimiter - 1) == ' ')
 	{
 		tmp = ft_strdup(value);
@@ -147,6 +148,7 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 {
 	int		len;
 	char	*buff;
+	char	*tmp;
 
 	len = 0;
 	buff = ft_strdup("");
@@ -156,11 +158,21 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 	while (len >= 0)
 	{
 		if (env_split[len][1] == '?' && !env_split[len][3])
+		{
 			env_split[len] = last_proc_status(shell, env_split[len]);
+		}
 		else if (len || first_is_env)
-			env_split[len] = expand_var(env_split[len], shell);
+		{
+			tmp = ft_strdup(env_split[len]);
+			free(env_split[len]);
+			env_split[len] = expand_var(tmp, shell);
+			free(tmp);
+		}
 		//liberar desde fuera
-		buff = append_expanded(buff, env_split[len]);
+		tmp = ft_strdup(buff);
+		free(buff);
+		buff = append_expanded(tmp, env_split[len]);
+		free(tmp);
 		len--;
 	}
 	return (buff);

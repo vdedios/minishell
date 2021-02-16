@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/13 00:30:42 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 17:37:13 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ static void	change_dir(char *path, t_shell *shell)
 	struct stat	s;
 	char		*msg;
 	char		*tmp;
+	char		*tmp2;
 
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
@@ -55,12 +56,20 @@ static void	change_dir(char *path, t_shell *shell)
 	{
 		getcwd(cwd, 1024);
 		//set_path(get_workdir(shell, "PWD="), "OLDPWD=", shell);
-		if (get_env(shell, "PWD"))
-			ft_export(shell, ft_strjoin("OLDPWD=", get_env(shell, "PWD")));
+		tmp = get_env(shell, "PWD");
+		if (tmp)
+		{
+			tmp2 = ft_strjoin("OLDPWD=", tmp);
+			ft_export(shell, tmp2);
+			free(tmp2);
+		}
 		else
 		{
-			ft_export(shell, ft_strjoin("OLDPWD=", ""));
+			tmp2 = ft_strjoin("OLDPWD=", "");
+			ft_export(shell, tmp2);
+			free(tmp2);
 		}
+		free(tmp);
 		set_path(cwd, "PWD=", shell);
 		//ft_export(shell, ft_strjoin("OLDPWD=", oldcwd));
 	}
@@ -101,16 +110,18 @@ int			ft_cd(t_shell *shell)
 {
 	char	*path;
 	char	*target;
+	char	*tmp;
 
 	target = shell->args[1];
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
 	{
-		if (get_env(shell, "HOME"))
-			path = get_env(shell, "HOME");
-		else
+		path = get_env(shell, "HOME");
+		if (!path)
 		{
 			path = NULL;
-			print_errors(shell, " HOME not set", ft_strdup(shell->binary));
+			tmp = ft_strdup(shell->binary);
+			print_errors(shell, " HOME not set", tmp);
+			free(tmp);
 		}
 			
 	}
@@ -120,7 +131,7 @@ int			ft_cd(t_shell *shell)
 		path = get_env(shell, "OLDPWD");
 	else if (shell->args[2] && *shell->args[2])
 	{
-		path = target;
+		path = ft_strdup(target);
 		if (shell->args[3])
 		{
 			print_errors(shell, "too many arguments", shell->binary);
@@ -128,8 +139,9 @@ int			ft_cd(t_shell *shell)
 		}
 	}
 	else
-		path = target;
+		path = ft_strdup(target);
 	if (!path) return (1);
 	change_dir(path, shell);
+	free(path);
 	return (1);
 }
