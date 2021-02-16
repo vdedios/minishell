@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/16 00:03:48 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 19:18:03 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ int 			check_builtin(t_shell *shell)
 	int 	ret;
 	char	*tmp;
 	char	*lower;
+	char	*path;
 
 	ret = 0;
 	lower = to_lower(shell->args[0]);
@@ -151,7 +152,11 @@ int 			check_builtin(t_shell *shell)
 		ret = ft_unset(shell);
 	else if (ft_strcmp(lower, "env"))
 	{
-		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
+		path = get_path(shell, NULL);
+		tmp = ft_strjoin("_=", path);
+		free(path);
+		ft_export(shell, tmp);
+		free(tmp);
 		free(lower);
 		return(ft_env(shell, shell->env));
 	}
