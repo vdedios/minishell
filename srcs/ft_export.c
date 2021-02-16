@@ -159,7 +159,10 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	free(tmp);
 	tmp_env = add_env(&value, shell->env, i);
 	clean_env(shell);
+	free(value);
 	shell->env = tmp_env;
+	//clean_matrix(tmp_env);
+	//free(tmp_env);
 }
 
 static short	is_num(char c)

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/16 17:37:13 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 22:35:55 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 		{
 			variable = ft_strjoin(key, path);
 			tmp = add_env(&variable, shell->env, it);
+			free(variable);
 			clean_env(shell);
 			shell->env = tmp;
 		}

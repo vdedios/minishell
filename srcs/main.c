@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/16 19:18:03 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:00:10 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ int 			check_builtin(t_shell *shell)
 		return(ft_env(shell, shell->env));
 	}
 	tmp =  update_last_arg(shell->args); 
+	//clean_env(shell);
 	ft_export(shell, tmp);
 	free(tmp);
 	free(lower);
@@ -466,9 +467,8 @@ int 			main(int argc, char **argv, char **envp)
 		minishell(line, &shell);
 		//clean_matrix(shell.args);
 		//free(shell.args);
-		clean_matrix(shell.env);
-		free(shell.env);
 		//clean_matrix(shell.commands);
+		clean_env(&shell);
 		clean_matrix(shell.instructions);
 		free(shell.instructions);
 		//free(line);
