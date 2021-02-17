@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/16 22:35:55 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/17 19:27:41 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int			ft_cd(t_shell *shell)
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
 	{
 		path = get_env(shell, "HOME");
-		if (!path)
+		if (ft_strcmp(path, ""))
 		{
 			path = NULL;
 			tmp = ft_strdup(shell->binary);
