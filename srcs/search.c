@@ -51,6 +51,22 @@ char	*search_binary_in_pwd(t_shell *shell)
 	return (NULL);
 }
 
+static	void	command_exists(t_shell *shell, char *bin_name
+								, struct stat s)
+{
+	if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
+	{
+		if (ft_strncmp(shell->args[0], "/", 1) &&
+			ft_strncmp(shell->args[0], "./", 2) &&
+			!(shell->args[0][ft_strlen(bin_name) - 1] == '/'))
+		{
+			shell->stat_loc = 127;
+			print_errors(shell, " command not found", shell->binary);
+			exit(shell->stat_loc);
+		}
+	}
+}
+
 static	short	binary_path_exists(char *path,char *bin_name,
 									int *binary, struct stat *s)
 {
@@ -93,17 +109,7 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 			return (absolute_bin_path(paths[it], shell->binary));
 	if (stat(bin_name, &s) != -1)
 	{
-		if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
-		{
-			if (ft_strncmp(shell->args[0], "/", 1) &&
-				ft_strncmp(shell->args[0], "./", 2) &&
-				!(shell->args[0][ft_strlen(bin_name) - 1] == '/'))
-			{
-				shell->stat_loc = 127;
-				print_errors(shell, " command not found", shell->binary);
-				exit(shell->stat_loc);
-			}
-		}
+		command_exists(shell, bin_name, s);
 		free(bin_name);
 		return (ft_strdup(shell->binary));
 	}
