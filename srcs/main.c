@@ -126,31 +126,24 @@ static char 	*to_lower(char *input)
 	return (output);
 }
 
-int 			check_builtin(t_shell *shell)
+static int		exec_export(t_shell *shell)
 {
-	int 	ret;
-	char	*tmp;
-	char	*lower;
-	char	*path;
+	int ret;
 
 	ret = 0;
+	delete_environment(shell, "_", shell->env);
+	ret = ft_export(shell, NULL);
+	return (ret);
+}
+
+static int		exec_env(t_shell *shell)
+{
+	char	*lower;
+	char	*path;
+	char	*tmp;
+
 	lower = to_lower(shell->args[0]);
-	if (ft_strcmp(shell->args[0], "exit"))
-		ft_exit(shell);
-	else if (ft_strcmp(shell->args[0], "echo"))
-		ret = ft_echo(shell->args + 1);
-	else if (ft_strcmp(shell->args[0], "cd"))
-		ret = ft_cd(shell);
-	else if (ft_strcmp(*shell->args, "pwd"))
-		ret = ft_pwd();
-	else if (ft_strcmp(*shell->args, "export"))
-	{
-		delete_environment(shell, "_", shell->env);
-		ret = ft_export(shell, NULL);
-	}
-	else if (ft_strcmp(*shell->args, "unset"))
-		ret = ft_unset(shell);
-	else if (ft_strcmp(lower, "env"))
+	if (ft_strcmp(lower, "env"))
 	{
 		path = get_path(shell, NULL);
 		tmp = ft_strjoin("_=", path);
@@ -160,11 +153,33 @@ int 			check_builtin(t_shell *shell)
 		free(lower);
 		return(ft_env(shell, shell->env));
 	}
+	free(lower);
+	return (0);
+}
+
+int 			check_builtin(t_shell *shell)
+{
+	int 	ret;
+	char	*tmp;
+
+	ret = 0;
+	if (ft_strcmp(shell->args[0], "exit"))
+		ft_exit(shell);
+	else if (ft_strcmp(shell->args[0], "echo"))
+		ret = ft_echo(shell->args + 1);
+	else if (ft_strcmp(shell->args[0], "cd"))
+		ret = ft_cd(shell);
+	else if (ft_strcmp(*shell->args, "pwd"))
+		ret = ft_pwd();
+	else if (ft_strcmp(*shell->args, "export"))
+		ret = exec_export(shell);
+	else if (ft_strcmp(*shell->args, "unset"))
+		ret = ft_unset(shell);
+	else 
+		return (exec_env(shell));
 	tmp =  update_last_arg(shell->args); 
-	//clean_env(shell);
 	ft_export(shell, tmp);
 	free(tmp);
-	free(lower);
 	return (ret);
 }
 
