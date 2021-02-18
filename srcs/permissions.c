@@ -27,7 +27,7 @@ void	check_permissions(t_shell *shell, char *path, int *binary)
 	{
 		if (s.st_mode & S_IFDIR)
 			set_err_message(shell, " is a directory", 126);
-		if (*binary == 1)
+		if (*binary == 1 && (!(s.st_mode & S_IXUSR)))
 			set_err_message(shell, " Permission denied", 126);
 		else if (*binary == 0 &&
 				(!(s.st_mode & S_IXUSR) || !(s.st_mode & S_IRUSR)))
