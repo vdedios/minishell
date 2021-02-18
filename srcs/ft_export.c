@@ -114,7 +114,7 @@ static size_t	print_sorted_env(t_shell *shell)
 	tmp_envp2 = process_envs(tmp_envp);
 	ft_env(shell, tmp_envp2);
 	clean_matrix(tmp_envp);
-	//free(tmp_envp);
+	free(tmp_envp);
 	clean_matrix(tmp_envp2);
 	free(tmp_envp2);
 	return (1);
