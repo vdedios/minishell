@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   backslash.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/18 19:16:36 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/18 20:52:47 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static short	is_escapable_char(char c, short parse_mode)
@@ -9,7 +21,7 @@ static short	is_escapable_char(char c, short parse_mode)
 			c == '$' || c == '\\' || is_alpha(c) ||
 			c == '&'))
 		return (1);
-	else if (parse_mode == 2 &&  c == '\\')
+	else if (parse_mode == 2 && c == '\\')
 		return (1);
 	return (0);
 }
@@ -59,7 +71,7 @@ char			*parse_backslash(char *str, short parse_mode)
 	while (*str)
 	{
 		if (!(backslash = ft_strchr(str, '\\')))
-			break;
+			break ;
 		if (is_escapable_char(*(backslash + 1), parse_mode) ||
 			is_between_delimiters(backslash, ref, parse_mode))
 		{

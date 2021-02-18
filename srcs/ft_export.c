@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/18 19:45:32 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/18 19:49:40 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static size_t	is_bigger(char *s1, char *s2)
@@ -41,7 +53,8 @@ static char		**sort_alpha(char **envp)
 	return (envp);
 }
 
-static short	is_escapable_char(char c) {
+static short	is_escapable_char(char c)
+{
 	if (c == '$' || c == '\\' || c == '\"')
 		return (1);
 	return (0);
@@ -52,7 +65,7 @@ static int		count_special_chars(char *str)
 	int count;
 
 	count = 0;
-	while(*str)
+	while (*str)
 	{
 		if (is_escapable_char(*str))
 			count++;
@@ -70,7 +83,7 @@ static char		*add_quotes_and_backslash(char *str)
 	if (!(buff = malloc((ft_strlen(str) + count_special_chars(str) + 3)
 						* sizeof(char))))
 		return (NULL);
-	while(*str)
+	while (*str)
 	{
 		if (is_escapable_char(*str))
 			buff[i++] = '\\';
@@ -84,12 +97,12 @@ static char		*add_quotes_and_backslash(char *str)
 	return (buff);
 }
 
-static  char	**process_envs(char **env)
+static char		**process_envs(char **env)
 {
-	char **tmp_envp;
-	char *tmp;
-	char *tmp2;
-	int	 i;
+	char	**tmp_envp;
+	char	*tmp;
+	char	*tmp2;
+	int		i;
 
 	i = 0;
 	tmp_envp = ft_strdup_matrix(env);
@@ -137,11 +150,11 @@ static	int		ft_strncmp_equal(char *str1, char *str2, int len)
 
 static	void	export_values(t_shell *shell, char *last_arg, int j)
 {
-	int  	i;
-	int  	key_len;
-	char 	*value;
+	int		i;
+	int		key_len;
+	char	*value;
 	char	*tmp;
-	char 	**tmp_env;
+	char	**tmp_env;
 
 	i = 0;
 	if (last_arg)
@@ -161,8 +174,6 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	clean_env(shell);
 	free(value);
 	shell->env = tmp_env;
-	//clean_matrix(tmp_env);
-	//free(tmp_env);
 }
 
 static short	is_num(char c)
@@ -184,7 +195,7 @@ static short	is_forbidden_char(char *str, int i)
 		str[i] == '\"' ||
 		str[i] == '\'')
 		return (1);
-	else if(str[i] == '\\' &&
+	else if (str[i] == '\\' &&
 			(str[i + 1] != '_' && !is_num(str[i + 1])))
 		return (1);
 	return (0);
@@ -226,7 +237,7 @@ static	short	not_valid_keyname(t_shell *shell, char *var)
 int				ft_export(t_shell *shell, char *last_arg)
 {
 	char	*tmp;
-	int  	j;
+	int		j;
 
 	j = 1;
 	if (last_arg)
@@ -236,15 +247,16 @@ int				ft_export(t_shell *shell, char *last_arg)
 		else
 			not_valid_keyname(shell, last_arg);
 	}
-	else if(!shell->args[j])
-		return(print_sorted_env(shell));
+	else if (!shell->args[j])
+		return (print_sorted_env(shell));
 	else
 	{
 		while (shell->args[j])
 		{
 			if (has_valid_name(shell->args[j]))
 			{
-				if ((tmp = ft_strchr(shell->args[j], '=')) && *tmp != *shell->args[j])
+				if ((tmp = ft_strchr(shell->args[j], '=')) &&
+						*tmp != *shell->args[j])
 					export_values(shell, last_arg, j);
 			}
 			else

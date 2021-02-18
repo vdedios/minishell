@@ -6,7 +6,7 @@
 /*   By: vde-dios <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/18 09:03:31 by vde-dios          #+#    #+#             */
-/*   Updated: 2021/02/16 16:57:01 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 19:39:35 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static	char	*escape_char(char *str, char key)
 				str[i + 1] == ' ' ||
 				str[i + 1] == '\\' ||
 				str[i + 1] == '%')
-			buff[++j] = '\\';
+				buff[++j] = '\\';
 		}
 		else if (key != '$' && str[i] == key)
 			buff[++j] = '\\';
@@ -67,8 +67,6 @@ static	char	*append_expanded(char *buff, char *env)
 	if (*env == '\\' && !(*(env + 1)))
 		return (buff);
 	tmp = ft_strjoin(env, buff);
-	//free(env); No se debe liberar
-	//free(buff); No se debe liberar
 	return (tmp);
 }
 
@@ -82,7 +80,6 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
-	// liberar memoria --> Ya liberada
 	tmp = ft_strdup(value);
 	free(value);
 	value = escape_char(tmp, '\\');
@@ -98,7 +95,6 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 	{
 		delimiter++;
 		ret = ft_strjoin(value, delimiter);
-		//free(value); Movido más abajo
 	}
 	else
 		ret = ft_strdup(value);
@@ -106,7 +102,7 @@ static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 	return (ret);
 }
 
-char	*expand_var(char *env, t_shell *shell)
+char			*expand_var(char *env, t_shell *shell)
 {
 	int		i;
 	int		len;
@@ -117,8 +113,6 @@ char	*expand_var(char *env, t_shell *shell)
 	if (*env == '{')
 	{
 		env++;
-		//free(env);
-		//delimiter = search_delimiters(env);
 		delimiter = ft_strchr(env, '}');
 		len = ft_strlen(env) - (delimiter ? ft_strlen(delimiter) : 0);
 	}
@@ -130,7 +124,7 @@ char	*expand_var(char *env, t_shell *shell)
 	{
 		if (!ft_strncmp(shell->env[i], env, len)
 			&& shell->env[i][len] == '=')
-			break;
+			break ;
 		else
 			i++;
 	}
@@ -168,7 +162,6 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 			env_split[len] = expand_var(tmp, shell);
 			free(tmp);
 		}
-		//liberar desde fuera
 		tmp = ft_strdup(buff);
 		free(buff);
 		buff = append_expanded(tmp, env_split[len]);
@@ -177,13 +170,6 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 	}
 	return (buff);
 }
-
-/*
-** Arg is splitted by $. If any escaped $ is found (\$), the split will be as follows:
-** hello$PATH\$PWD -> [hello] [PATH\] [PWD]
-** We must then start with the last split and check if previous split ends in '\' in
-** order to escape the current env split.
-*/
 
 char			*expansion(t_shell *shell, char *str)
 {
@@ -202,5 +188,4 @@ char			*expansion(t_shell *shell, char *str)
 	clean_matrix(env_split);
 	free(env_split);
 	return (str);
-	//liberar el resto?
 }
