@@ -92,28 +92,12 @@ static int	redirections_input(t_shell *shell, size_t it)
 	return (fd);
 }
 
-static void	validator(t_shell *shell, char *str)
+static void	validate_count(t_shell *shell
+							, size_t cont_output, size_t cont_input)
 {
-	size_t 	cont_output;
-	size_t	cont_input;
 	char	*msg;
 
 	msg = NULL;
-	cont_output = 0;
-	cont_input = 0;
-	while (*str)
-	{
-		if (*str == '>' )
-			cont_output++;
-		else if (*str == '<')
-			cont_input++;
-		else if (*str != ' ')
-		{
-			cont_output = 0;
-			cont_input = 0;
-		}
-		str++;
-	}
 	if (cont_output > 2)
 	{
 		if (cont_output < 4)
@@ -129,7 +113,29 @@ static void	validator(t_shell *shell, char *str)
 		print_errors(shell, msg, NULL);
 		exit (2);
 	}
+}
 
+static void	validator(t_shell *shell, char *str)
+{
+	size_t 	cont_output;
+	size_t	cont_input;
+
+	cont_output = 0;
+	cont_input = 0;
+	while (*str)
+	{
+		if (*str == '>' )
+			cont_output++;
+		else if (*str == '<')
+			cont_input++;
+		else if (*str != ' ')
+		{
+			cont_output = 0;
+			cont_input = 0;
+		}
+		str++;
+	}
+	validate_count(shell, cont_output, cont_input);
 }
 
 int	find_redirections(t_shell *shell)
