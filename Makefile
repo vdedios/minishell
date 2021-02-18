@@ -29,7 +29,8 @@ SRC_FILES =		main.c \
 				redirections.c \
 				pipes.c \
 				permissions.c \
-				ft_shlvl.c
+				ft_shlvl.c \
+				braces.c
 			
 OBJ_FILES=$(SRC_FILES:.c=.o)
 SRC_DIR=srcs
