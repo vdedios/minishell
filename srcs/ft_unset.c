@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/01 11:12:51 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/17 22:33:21 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 	}
 	if (env[it])
 	{
+		free(env[it]);
 		env[it] = NULL;
 		it++;
 		while (env[it])
@@ -35,6 +36,7 @@ void	delete_environment(t_shell *shell, char	*key, char **env)
 			env[it - 1] = env[it];
 			it++;
 		}
+		//free(env[it - 1]);
 		env[it - 1] = NULL;
 	}
 }

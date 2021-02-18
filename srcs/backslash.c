@@ -38,7 +38,6 @@ static char		*remove_backslash(char *buff, char *backslash)
 		return (NULL);
 	ft_strlcpy(tmp, buff, len - len_left + 1);
 	tmp2 = ft_strjoin(tmp, backslash);
-	//free(buff); No se debe de liberar aqui
 	free(tmp);
 	return (tmp2);
 }
@@ -48,6 +47,7 @@ char			*parse_backslash(char *str, short parse_mode)
 	char	*buff;
 	char	*ref;
 	char	*backslash;
+	char	*tmp;
 
 	buff = ft_strdup(str);
 	ref = str;
@@ -62,7 +62,12 @@ char			*parse_backslash(char *str, short parse_mode)
 			break;
 		if (is_escapable_char(*(backslash + 1), parse_mode) ||
 			is_between_delimiters(backslash, ref, parse_mode))
-			buff = remove_backslash(buff, backslash);
+		{
+			tmp = remove_backslash(buff, backslash);
+			free(buff);
+			buff = ft_strdup(tmp);
+			free(tmp);
+		}
 		str = backslash + 1;
 		if (*str == '\\')
 			str++;

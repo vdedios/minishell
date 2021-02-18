@@ -55,7 +55,7 @@ char	**add_env(char **variable, char **env, int n)
 		tmp_envp = realloc_matrix(env, 0);
 	else
 		tmp_envp = realloc_matrix(env, 1);
-	tmp_envp[n] = *variable;
+	tmp_envp[n] = ft_strdup(*variable);
 	while (*env)
 	{
 		if (i != n)

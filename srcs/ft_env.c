@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:15:33 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/16 00:49:36 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/17 19:24:28 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*get_env(t_shell *shell, char *arg)
 			return (ft_strdup(ft_strchr(shell->env[it], '=') + 1));
 		it++;
 	}
-	return (NULL);
+	return (ft_strdup(""));
 }
 
 static	void	sort_like_bash(char **env)

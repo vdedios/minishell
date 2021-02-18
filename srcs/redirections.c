@@ -84,8 +84,11 @@ static int	redirections_input(t_shell *shell, size_t it)
 		delete_environment(shell, shell->args[it], shell->args);
 	}
 	delete_environment(shell, shell->args[it], shell->args);
-	if (it == 0)
-		shell->binary = shell->args[0];
+	if (it == 0 && shell->args[0])
+	{
+		free(shell->binary);
+		shell->binary = ft_strdup(shell->args[0]);
+	}
 	return (fd);
 }
 

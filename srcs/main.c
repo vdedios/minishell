@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/09 23:46:31 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:40:02 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 static char		*last_arg(char *arg)
 {
-	char *buff;
+	char 	*buff;
+
 	if ((buff = ft_strchr(arg, '=')))
 		*buff = '\0';
 	return (ft_strjoin("_=", arg));
@@ -83,6 +84,7 @@ int 			run_command(t_shell *shell)
 	pid_t pid;
 	int binary;
 	char *path;
+	char	*tmp;
 
 	binary = 0;
 	path = get_path(shell, &binary);
@@ -99,8 +101,10 @@ int 			run_command(t_shell *shell)
 		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	if (shell->stat_loc == -1)
 		ft_putstr_fd("\n", 1);
-	ft_export(shell, update_last_arg(shell->args));
+	tmp = update_last_arg(shell->args);
+	ft_export(shell, tmp);
 	free(path);
+	free(tmp);
 	return (1);
 }
 
@@ -108,23 +112,29 @@ static char 	*to_lower(char *input)
 {
 	size_t it;
 	char *output;
+	char	*tmp;
 
-	output = calloc(1, ft_strlen(input));
+	tmp = ft_strdup(input);
+	output = calloc(1, ft_strlen(tmp));
 	it = -1;
-	while (input[++it])
+	while (tmp[++it])
 	{
-		output[it] = ft_tolower(input[it]);
+		output[it] = ft_tolower(tmp[it]);
 	}
+	free(tmp);
 	output[it] = '\0';
 	return (output);
 }
 
 int 			check_builtin(t_shell *shell)
 {
-	int ret;
+	int 	ret;
+	char	*tmp;
+	char	*lower;
+	char	*path;
 
 	ret = 0;
-	//to_lower(shell->args[0]);
+	lower = to_lower(shell->args[0]);
 	if (ft_strcmp(shell->args[0], "exit"))
 		ft_exit(shell);
 	else if (ft_strcmp(shell->args[0], "echo"))
@@ -140,12 +150,21 @@ int 			check_builtin(t_shell *shell)
 	}
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell);
-	else if (ft_strcmp(to_lower(shell->args[0]), "env"))
+	else if (ft_strcmp(lower, "env"))
 	{
-		ft_export(shell, ft_strjoin("_=", get_path(shell, NULL)));
+		path = get_path(shell, NULL);
+		tmp = ft_strjoin("_=", path);
+		free(path);
+		ft_export(shell, tmp);
+		free(tmp);
+		free(lower);
 		return(ft_env(shell, shell->env));
 	}
-	ft_export(shell, update_last_arg(shell->args));
+	tmp =  update_last_arg(shell->args); 
+	//clean_env(shell);
+	ft_export(shell, tmp);
+	free(tmp);
+	free(lower);
 	return (ret);
 }
 
@@ -167,8 +186,11 @@ static void 	handle_commands(t_shell *shell)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
 		close(fd);
-		free(shell->commands[0]);
+		clean_matrix(shell->args);
+		free(shell->args);
 		free(tmp);
+		free(shell->commands[0]);
+		free(shell->binary);
 	}
 }
 
@@ -206,6 +228,7 @@ static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
 {
 	char	*key;
 	char	*value;
+	char 	*tmp;
 
 	if (token == '>')
 		while (line[it++])
@@ -214,7 +237,14 @@ static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
 				key = get_var_key(line, it);
 				value = expand_var(key, shell);
 				if (contain_spaces(value))
-					return (ft_strjoin("$", key));
+				{
+					free(value);
+					tmp = ft_strjoin("$", key);
+					free(key);
+					return (tmp);
+				}
+				free(key);
+				free(value);
 			}
 	return (NULL);
 }
@@ -253,6 +283,7 @@ static short	nothing_after_pipe(char *line, int it)
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
+	char	*tmp;
 
 	if (prior_to_token(line, it - 1, line[it]))
 	{
@@ -279,7 +310,9 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
-		print_errors(shell, ft_strjoin(key,": ambiguous redirect" ), NULL);
+		tmp = ft_strjoin(key,": ambiguous redirect" );
+		print_errors(shell, tmp, NULL);
+		free(tmp);
 		exit(1);
 	}
 }
@@ -297,8 +330,8 @@ static void 	validate_input(t_shell *shell, char *line)
 			line[it] == ';')
 			validator(shell, line, line[it], it);
 	}
-		if (line[it + 1] == '<' || line[it + 1] == '>')
-			it++;
+	if (line[it + 1] == '<' || line[it + 1] == '>')
+		it++;
 }
 
 static char		*inject_spaces(char *line)
@@ -386,12 +419,12 @@ static void 	minishell(char *line, t_shell *shell)
 		while (is_space(shell->instructions[it][jt]))
 			jt++;
 		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
-		free(shell->instructions[it]);
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
+		free(shell->commands);
 		it++;
 	}
-	//clean_commands(shell);
+	//clean_shell(shell);
 }
 
 static void 	read_input(char *line, t_shell *shell)
@@ -429,9 +462,13 @@ int 			main(int argc, char **argv, char **envp)
 	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
-	ft_export(&shell, ft_strjoin("PWD=", curr_pwd));
+	tmp = ft_strjoin("PWD=", curr_pwd);
+	ft_export(&shell, tmp);
+	free(tmp);
 	handle_shlvl(&shell);
-	ft_export(&shell, ft_strdup("_=/bin/bash"));
+	tmp = ft_strdup("_=/bin/bash");
+	ft_export(&shell, tmp);
+	free(tmp);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
 	{
 		line = ft_strdup(argv[2]);
@@ -439,6 +476,12 @@ int 			main(int argc, char **argv, char **envp)
 		free(line);
 		line = tmp;
 		minishell(line, &shell);
+		//clean_matrix(shell.args);
+		//free(shell.args);
+		//clean_matrix(shell.commands);
+		clean_env(&shell);
+		clean_matrix(shell.instructions);
+		free(shell.instructions);
 		//free(line);
 	}
 	else

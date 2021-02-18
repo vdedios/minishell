@@ -110,11 +110,11 @@ static size_t	print_sorted_env(t_shell *shell)
 	char **tmp_envp;
 	char **tmp_envp2;
 
-	tmp_envp = sort_alpha(shell->env);
+	tmp_envp = sort_alpha(ft_strdup_matrix(shell->env));
 	tmp_envp2 = process_envs(tmp_envp);
 	ft_env(shell, tmp_envp2);
 	clean_matrix(tmp_envp);
-	//free(tmp_envp);
+	free(tmp_envp);
 	clean_matrix(tmp_envp2);
 	free(tmp_envp2);
 	return (1);
@@ -153,11 +153,16 @@ static	void	export_values(t_shell *shell, char *last_arg, int j)
 	while (shell->env[i]
 			&& ft_strncmp_equal(shell->env[i], value, key_len))
 		i++;
-	//Aqui se deberia de meter un temporal para poder liberar value
-	value = parse_backslash(value, 2);
+	tmp = ft_strdup(value);
+	free(value);
+	value = parse_backslash(tmp, 2);
+	free(tmp);
 	tmp_env = add_env(&value, shell->env, i);
 	clean_env(shell);
+	free(value);
 	shell->env = tmp_env;
+	//clean_matrix(tmp_env);
+	//free(tmp_env);
 }
 
 static short	is_num(char c)

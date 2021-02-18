@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 20:20:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/01/12 19:20:35 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/17 20:07:47 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ void	find_pipes(t_shell *shell)
 			waitpid(pid, &shell->stat_loc, WNOHANG);
 		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 		close(p[0]);
+		clean_matrix(shell->args);
+		free(shell->args);
+		free(shell->binary);
 	}
 	while ( (aux_pid = wait(&shell->stat_loc)) > 0)
 	{

@@ -9,7 +9,7 @@ void	clean_matrix(char **matrix)
 	{
 		while (*matrix)
 		{
-			//free(*matrix);
+			free(*matrix);
 			matrix++;
 		}
 	}
