@@ -127,7 +127,7 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		free(tmp);
 	}
 	if (opening && opening != -1)
-		tmp = join_prev_in_quotes(str, str_in_quotes,
+		tmp = join_prev_in_quotes(str, buff,
 									tmp_in_quotes, opening);
 	else
 	{
