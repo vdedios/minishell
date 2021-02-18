@@ -49,6 +49,7 @@ void	print_errors(t_shell *shell, char *msg, char *bin);
 ** Utils functions
 */
 
+int		ft_isspace(int c);
 char	**ft_strdup_matrix(char **envp);
 char	*absolute_bin_path(char *path, char *bin);
 char	**add_env(char **variable, char **env, int n);

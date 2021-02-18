@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 13:17:27 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/12 20:09:08 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 23:33:06 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,31 @@ static	void	numeric_arg_req(t_shell *shell)
 	free(tmp);
 	print_errors(shell, " numeric argument required", msg);
 	free(msg);
-	exit (255);
+	exit(255);
 }
 
-static	int		exit_atoi(t_shell *shell, const char *nptr)
+static short	is_sign(char c, int *sign)
+{
+	if (c == '-' || c == '+')
+	{
+		if (c == '-')
+			*sign = 1;
+		return (1);
+	}
+	return (0);
+}
+
+static int		exit_atoi(t_shell *shell, const char *nptr)
 {
 	uintmax_t	num;
 	int			sign;
 
 	num = 0;
 	sign = 0;
-	while (*nptr == '\t' || *nptr == '\n' || *nptr == '\v'
-		|| *nptr == '\f' || *nptr == '\r' || *nptr == ' ')
+	while (ft_isspace(*nptr))
 		nptr++;
-	if (*nptr == '-' || *nptr == '+')
-	{
-		if (*nptr == '-')
-			sign = 1;
+	if (is_sign(*nptr, &sign))
 		nptr++;
-	}
 	while (*nptr == '0')
 		nptr++;
 	while (*nptr)
@@ -63,7 +69,7 @@ static	int		exit_atoi(t_shell *shell, const char *nptr)
 
 void			ft_exit(t_shell *shell)
 {
-	int 	value;
+	int		value;
 	char	*nbr;
 
 	if (shell->args[1])
