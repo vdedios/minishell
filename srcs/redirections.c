@@ -50,12 +50,35 @@ static int	redirections_output(t_shell *shell, size_t it)
 	return (fd);
 }
 
+static short redirection_exists(t_shell *shell, size_t it)
+{
+	struct stat	s;
+	int			fd;
+
+	fd = -1;
+	if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
+	{
+		if (stat(shell->args[it + 1], &s) != -1)
+		{
+			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+			{
+				shell->stat_loc = 1;
+				print_errors(shell, " Permission denied", shell->args[it + 1]);
+			}
+		}
+		else
+		{
+			shell->stat_loc = 1;
+			print_errors(shell, " No such file or directory", shell->args[it + 1]);
+		}
+	}
+	return (fd);
+}
+
 static int	redirections_input(t_shell *shell, size_t it)
 {
 	int fd;
-	struct stat	s;
 
-	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
@@ -63,23 +86,7 @@ static int	redirections_input(t_shell *shell, size_t it)
 	}
 	else
 	{
-		if ((fd = open(shell->args[it + 1], O_RDONLY, 0644)) == -1)
-		{
-			if (stat(shell->args[it + 1], &s) != -1)
-			{
-				if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
-				{
-					shell->stat_loc = 1;
-					print_errors(shell, " Permission denied", shell->args[it + 1]);
-				}
-			}
-			else
-			{
-				shell->stat_loc = 1;
-				print_errors(shell, " No such file or directory", shell->args[it + 1]);
-			}
-		}
-		else
+		if ((fd = redirection_exists(shell, it)) != -1)
 			dup2(fd, 0);
 		delete_environment(shell, shell->args[it], shell->args);
 	}
@@ -91,6 +98,7 @@ static int	redirections_input(t_shell *shell, size_t it)
 	}
 	return (fd);
 }
+
 
 static void	validate_count(t_shell *shell
 							, size_t cont_output, size_t cont_input)
