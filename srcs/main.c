@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/17 23:23:49 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:40:02 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,7 @@ static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
 {
 	char	*key;
 	char	*value;
+	char 	*tmp;
 
 	if (token == '>')
 		while (line[it++])
@@ -236,7 +237,14 @@ static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
 				key = get_var_key(line, it);
 				value = expand_var(key, shell);
 				if (contain_spaces(value))
-					return (ft_strjoin("$", key));
+				{
+					free(value);
+					tmp = ft_strjoin("$", key);
+					free(key);
+					return (tmp);
+				}
+				free(key);
+				free(value);
 			}
 	return (NULL);
 }
@@ -275,6 +283,7 @@ static short	nothing_after_pipe(char *line, int it)
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
+	char	*tmp;
 
 	if (prior_to_token(line, it - 1, line[it]))
 	{
@@ -301,7 +310,9 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
-		print_errors(shell, ft_strjoin(key,": ambiguous redirect" ), NULL);
+		tmp = ft_strjoin(key,": ambiguous redirect" );
+		print_errors(shell, tmp, NULL);
+		free(tmp);
 		exit(1);
 	}
 }
