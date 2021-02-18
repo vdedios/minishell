@@ -41,7 +41,6 @@ char			**get_args(char *input)
 		return (NULL);
 	args = ft_split_non_escaped(input, ' ');
 	delete_residual_backslash(args);
-	//free(input);
 	if (!args)
 		return (NULL);
 	return (args);
@@ -55,6 +54,5 @@ char			*parse_input(char *input)
 	tmp = parse_quotes(input);
 	buff = parse_backslash(tmp, 0);
 	free (tmp);
-	//free(input);
 	return (buff);
 }
