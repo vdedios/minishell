@@ -1,6 +1,18 @@
 #include "minishell.h"
 
-static char	*get_string_between_quotes(char *str, int opening, int closing, char quote)
+static char	*alloc_in_quotes(char *str, char quote, int opening, int closing)
+{
+	char *buff;
+
+	if (!(buff = malloc((closing - opening
+		+ n_special_chars(str, opening, closing, quote) + 1)
+		* sizeof(char))))
+		return (NULL);
+	return (buff);
+}
+
+static char	*get_string_between_quotes(char *str, int opening,
+										int closing, char quote)
 {
 	char	*buff;
 	int		i;
@@ -8,9 +20,7 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 
 	j = 0;
 	i = opening + 1;
-	if (!(buff = malloc((closing - opening
-		+ n_special_chars(str, opening, closing, quote) + 1) * sizeof(char))))
-		return (NULL);
+	buff = alloc_in_quotes(str, quote, opening, closing);
 	while (i < closing)
 	{
 		if (quote == '\'' && (is_special_char(str[i]) ||
