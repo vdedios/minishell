@@ -92,14 +92,31 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 	return (str);
 }
 
-static char	*join_parsed_str(char *str, char *str_in_quotes,
-							char *buff, int opening)
+static char	*join_prev_in_quotes(char *str, char *buff,
+									char *tmp_in_quotes, int opening)
 {
 	char 	*str_pre_quotes;
-	char 	*tmp_in_quotes;
 	char 	*tmp_pre_quotes;
 	char 	*tmp;
 	char 	*tmp2;
+
+	if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
+		return (NULL);
+	ft_strlcpy(str_pre_quotes, str, opening + 1);
+	tmp_pre_quotes = embrace_expansion(str_pre_quotes);
+	tmp = ft_strjoin(buff, tmp_pre_quotes);
+	tmp2 = ft_strjoin(tmp, tmp_in_quotes);
+	free(tmp_pre_quotes);
+	free(str_pre_quotes);
+	free(tmp);
+	return (tmp2);
+}
+
+static char	*join_parsed_str(char *str, char *str_in_quotes,
+								char *buff, int opening)
+{
+	char 	*tmp_in_quotes;
+	char 	*tmp;
 
 	tmp_in_quotes = embrace_expansion(str_in_quotes);
 	if (opening != -1)
@@ -110,29 +127,17 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		free(tmp);
 	}
 	if (opening && opening != -1)
-	{
-		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
-			return (NULL);
-		ft_strlcpy(str_pre_quotes, str, opening + 1);
-		tmp_pre_quotes = embrace_expansion(str_pre_quotes);
-		tmp = ft_strjoin(buff, tmp_pre_quotes);
-		tmp2 = ft_strjoin(tmp, tmp_in_quotes);
-		free(tmp_pre_quotes);
-		free(str_pre_quotes);
-		//free(tmp_in_quotes);
-		free(tmp);
-	}
+		tmp = join_prev_in_quotes(str, str_in_quotes,
+									tmp_in_quotes, opening);
 	else
 	{
 		if (ft_strcmp(buff, ""))
-			tmp2 = ft_strdup(tmp_in_quotes);
+			tmp = ft_strdup(tmp_in_quotes);
 		else
-		{
-			tmp2 = ft_strjoin(buff, tmp_in_quotes);
-		}
+			tmp = ft_strjoin(buff, tmp_in_quotes);
 	}
 	free(tmp_in_quotes);
-	return (tmp2);
+	return (tmp);
 }
 
 char		*parse_quotes(char *str)
