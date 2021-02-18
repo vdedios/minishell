@@ -6,40 +6,11 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/17 22:33:21 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:54:49 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	delete_environment(t_shell *shell, char	*key, char **env)
-{
-	size_t	it;
-	size_t	len;
-
-	(void)shell;
-	len = ft_strlen(key);
-	it = 0;
-	while (env[it])
-	{
-		if (ft_strncmp(key, env[it], len) == 0)
-			break ;
-		it++;
-	}
-	if (env[it])
-	{
-		free(env[it]);
-		env[it] = NULL;
-		it++;
-		while (env[it])
-		{
-			env[it - 1] = env[it];
-			it++;
-		}
-		//free(env[it - 1]);
-		env[it - 1] = NULL;
-	}
-}
 
 static short	is_num(char c)
 {
@@ -60,7 +31,7 @@ static short	is_forbidden_char(char *str, int i)
 		str[i] == '&' ||
 		str[i] == '@')
 		return (1);
-	else if(str[i] == '\\' &&
+	else if (str[i] == '\\' &&
 			(str[i + 1] != '_' && !is_num(str[i + 1])))
 		return (1);
 	return (0);
@@ -101,7 +72,7 @@ static	short	not_valid_keyname(t_shell *shell, char *var)
 	return (1);
 }
 
-int		ft_unset(t_shell *shell)
+int				ft_unset(t_shell *shell)
 {
 	size_t	it;
 
