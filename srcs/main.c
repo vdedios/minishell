@@ -437,7 +437,6 @@ static void		exec_argument(char *line, t_shell shell)
 {
 	char	*tmp;
 
-	line = ft_strdup(argv[2]);
 	tmp = parse_input(line);
 	free(line);
 	line = tmp;
@@ -467,7 +466,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, tmp);
 	free(tmp);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
-		exec_argument(line, shell);
+		exec_argument(ft_strdup(argv[2]), shell);
 	else
 		read_input(line, &shell);
 	return (shell.stat_loc);
