@@ -2,7 +2,7 @@ name: Minishell
 
 on:
   push: 
-   branches: [fix/25-lines]
+   branches: [fix/25lines]
 
 jobs:
   build:
