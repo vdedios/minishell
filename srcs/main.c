@@ -291,8 +291,6 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 		else if (separator == '<')
 			print_errors(shell, "syntax error near unexpected token `<'", NULL);
 		exit(2);
-		// Arreglarlo para que no salga de la ejecucion principal
-		//shell->stat_loc = 2;
 	}
 	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
@@ -327,7 +325,6 @@ static char		*inject_spaces(char *line)
 {
 	size_t	it;
 	size_t	cont;
-	//size_t 	len;
 	char	*output;
 
 	it = -1;
@@ -351,7 +348,6 @@ static char		*inject_spaces(char *line)
 	it = -1;
 	while (line[++it])
 	{
-		//printf("U: %zu-%c\n", it, line[it]);
 		if (line[it] == '>')
 		{
 			ft_strlcat(output, line, ft_strlen(output) + it + 1);
@@ -384,7 +380,6 @@ static char		*inject_spaces(char *line)
 		}
 	}
 	ft_strlcat(output, line, line - output);
-	//printf("S: %s", output);
 	return (output);
 }
 
@@ -413,7 +408,6 @@ static void 	minishell(char *line, t_shell *shell)
 		free(shell->commands);
 		it++;
 	}
-	//clean_shell(shell);
 }
 
 static void 	read_input(char *line, t_shell *shell)
@@ -439,6 +433,20 @@ static void 	read_input(char *line, t_shell *shell)
 	}
 }
 
+static void		exec_argument(char *line, t_shell shell)
+{
+	char	*tmp;
+
+	line = ft_strdup(argv[2]);
+	tmp = parse_input(line);
+	free(line);
+	line = tmp;
+	minishell(line, &shell);
+	clean_env(&shell);
+	clean_matrix(shell.instructions);
+	free(shell.instructions);
+}
+
 int 			main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
@@ -446,8 +454,8 @@ int 			main(int argc, char **argv, char **envp)
 	char	*tmp;
 	char	curr_pwd[1024];
 
-	shell.stat_loc = 0;
 	line = NULL;
+	shell.stat_loc = 0;
 	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
@@ -459,20 +467,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, tmp);
 	free(tmp);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
-	{
-		line = ft_strdup(argv[2]);
-		tmp = parse_input(line);
-		free(line);
-		line = tmp;
-		minishell(line, &shell);
-		//clean_matrix(shell.args);
-		//free(shell.args);
-		//clean_matrix(shell.commands);
-		clean_env(&shell);
-		clean_matrix(shell.instructions);
-		free(shell.instructions);
-		//free(line);
-	}
+		exec_argument(line, shell);
 	else
 		read_input(line, &shell);
 	return (shell.stat_loc);
