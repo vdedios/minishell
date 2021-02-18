@@ -321,6 +321,22 @@ static void 	validate_input(t_shell *shell, char *line)
 		it++;
 }
 
+static char		*add_space(char *line, char *output, size_t *it, char redir)
+{
+	if (line[*it] == redir)
+	{
+		ft_strlcat(output, line, ft_strlen(output) + *it + 1);
+		if (line[*it - 1] != ' ' && line[*it - 1] != redir)
+			ft_strlcat(output, " ", ft_strlen(output) + 2);
+		ft_strlcat(output, line + *it, ft_strlen(output) + 2);
+		if (line[*it + 1] != ' ' && line[*it + 1] != redir)
+			ft_strlcat(output, " ", ft_strlen(output) + 2);
+		line = line + *it + 1;
+		*it = -1;
+	}
+	return (line);
+}
+
 static char		*inject_spaces(char *line)
 {
 	size_t	it;
@@ -342,42 +358,12 @@ static char		*inject_spaces(char *line)
 	}
 	output = calloc(1, ft_strlen(line) + cont + 1);
 	while (*line == ' ')
-	{
 		line++;
-	}
 	it = -1;
 	while (line[++it])
 	{
-		if (line[it] == '>')
-		{
-			ft_strlcat(output, line, ft_strlen(output) + it + 1);
-			if (line[it - 1] != ' ' && line[it - 1] != '>')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			ft_strlcat(output, line + it, ft_strlen(output) + 2);
-			if (line[it + 1] != ' ' && line[it + 1] != '>')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			line = line + it + 1;
-			it = -1;
-		}
-		if (line[it] == '<')
-		{
-			ft_strlcat(output, line, ft_strlen(output) + it + 1);
-			if (line[it - 1] != ' ' && line[it - 1] != '<')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			ft_strlcat(output, line + it, ft_strlen(output) + 2);
-			if (line[it + 1] != ' ' && line[it + 1] != '<')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			line = line + it + 1;
-			it = -1;
-		}
+		line = add_space(line, output, &it, '>');
+		line = add_space(line, output, &it, '<');
 	}
 	ft_strlcat(output, line, line - output);
 	return (output);
