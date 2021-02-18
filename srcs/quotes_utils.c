@@ -23,7 +23,6 @@ short	is_alpha(char c)
 	return (0);
 }
 
-
 short	is_special_char(char c)
 {
 	if (c == '$' || c == '\\' || c == '|' || c == ';' || c == '\'')

@@ -185,10 +185,8 @@ int 			check_builtin(t_shell *shell)
 
 static void 	handle_commands(t_shell *shell)
 {
-	int		fd;
 	char	*tmp;
 
-	fd = -2;
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
@@ -196,11 +194,9 @@ static void 	handle_commands(t_shell *shell)
 		tmp = expansion(shell, shell->commands[0]);
 		shell->args = get_args(tmp);
 		shell->binary = ft_strdup(shell->args[0]);
-		fd = find_redirections(shell);
-		if (fd != -1)
+		if (find_redirections(shell) != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
-		close(fd);
 		clean_matrix(shell->args);
 		free(shell->args);
 		free(tmp);

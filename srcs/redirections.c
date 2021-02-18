@@ -152,5 +152,6 @@ int	find_redirections(t_shell *shell)
 
 			it++;
 	}
+	close(fd);
 	return (fd);
 }
