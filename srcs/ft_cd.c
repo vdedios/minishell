@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/17 19:27:41 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:11:43 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ int			ft_cd(t_shell *shell)
 		path = get_env(shell, "HOME");
 		if (ft_strcmp(path, ""))
 		{
+			free(path);
 			path = NULL;
 			tmp = ft_strdup(shell->binary);
 			print_errors(shell, " HOME not set", tmp);
@@ -141,7 +142,11 @@ int			ft_cd(t_shell *shell)
 	}
 	else
 		path = ft_strdup(target);
-	if (!path) return (1);
+	if (!path)
+	{	
+		free(path);
+		return (1);
+	}
 	change_dir(path, shell);
 	free(path);
 	return (1);
