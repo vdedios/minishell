@@ -272,26 +272,30 @@ static short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
+static void		select_validator_err(t_shell *shell, char *line, char separator, int it)
+{
+
+	if (separator == ';')
+		print_errors(shell, "syntax error near unexpected token `;'", NULL);
+	else if (separator == '|')
+		print_errors(shell, "syntax error near unexpected token `|'", NULL);
+	else if (separator == '>' && line[it + 1] == '>')
+		print_errors(shell, "syntax error near unexpected token `>>'", NULL);
+	else if (separator == '>')
+		print_errors(shell, "syntax error near unexpected token `>'", NULL);
+	else if (separator == '<' && line[it + 1] == '<')
+		print_errors(shell, "syntax error near unexpected token `<<'", NULL);
+	else if (separator == '<')
+		print_errors(shell, "syntax error near unexpected token `<'", NULL);
+	exit(2);
+}
+
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
 
 	if (prior_to_token(line, it - 1, line[it]))
-	{
-		if (separator == ';')
-			print_errors(shell, "syntax error near unexpected token `;'", NULL);
-		else if (separator == '|')
-			print_errors(shell, "syntax error near unexpected token `|'", NULL);
-		else if (separator == '>' && line[it + 1] == '>')
-			print_errors(shell, "syntax error near unexpected token `>>'", NULL);
-		else if (separator == '>')
-			print_errors(shell, "syntax error near unexpected token `>'", NULL);
-		else if (separator == '<' && line[it + 1] == '<')
-			print_errors(shell, "syntax error near unexpected token `<<'", NULL);
-		else if (separator == '<')
-			print_errors(shell, "syntax error near unexpected token `<'", NULL);
-		exit(2);
-	}
+		select_validator_err(shell, line, separator, it);
 	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
 		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
