@@ -337,11 +337,10 @@ static char		*add_space(char *line, char *output, size_t *it, char redir)
 	return (line);
 }
 
-static char		*inject_spaces(char *line)
+static size_t	additional_spaces(char *line)
 {
-	size_t	it;
 	size_t	cont;
-	char	*output;
+	size_t	it;
 
 	it = -1;
 	cont = 0;
@@ -356,10 +355,20 @@ static char		*inject_spaces(char *line)
 		if (line[it] == '<' && line[it + 1] != ' ')
 			cont++;
 	}
+	return (cont);
+}
+
+static char		*inject_spaces(char *line)
+{
+	size_t	it;
+	size_t	cont;
+	char	*output;
+
+	it = -1;
+	cont = additional_spaces(line);
 	output = calloc(1, ft_strlen(line) + cont + 1);
 	while (*line == ' ')
 		line++;
-	it = -1;
 	while (line[++it])
 	{
 		line = add_space(line, output, &it, '>');
