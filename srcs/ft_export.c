@@ -240,27 +240,21 @@ int				ft_export(t_shell *shell, char *last_arg)
 	int		j;
 
 	j = 1;
-	if (last_arg)
-	{
-		if (has_valid_name(last_arg))
-			export_values(shell, last_arg, 0);
-		else
-			not_valid_keyname(shell, last_arg);
-	}
+	if (last_arg && has_valid_name(last_arg))
+		export_values(shell, last_arg, 0);
+	else if (last_arg)
+		not_valid_keyname(shell, last_arg);
 	else if (!shell->args[j])
 		return (print_sorted_env(shell));
 	else
 	{
 		while (shell->args[j])
 		{
-			if (has_valid_name(shell->args[j]))
-			{
-				if ((tmp = ft_strchr(shell->args[j], '=')) &&
-						*tmp != *shell->args[j])
-					export_values(shell, last_arg, j);
-			}
-			else
+			if (!has_valid_name(shell->args[j]))
 				not_valid_keyname(shell, shell->args[j]);
+			else if ((tmp = ft_strchr(shell->args[j], '='))
+					&& *tmp != *shell->args[j])
+					export_values(shell, last_arg, j);
 			j++;
 		}
 	}
