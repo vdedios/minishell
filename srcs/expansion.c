@@ -145,9 +145,10 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 	char	*buff;
 	char	*tmp;
 
-	len = -1;
+	len = 0;
 	buff = ft_strdup("");
-	while (env_split[++len]);
+	while (env_split[len])
+		len++;
 	while (--len >= 0)
 	{
 		if (env_split[len][1] == '?' && !env_split[len][3])
