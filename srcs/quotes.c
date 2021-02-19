@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/19 18:54:38 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/19 18:59:47 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*alloc_in_quotes(char *str, char quote, int opening, int closing)
@@ -53,7 +65,7 @@ static void	handle_quote_error(char quote)
 static char	*find_closing_quote(char *str, char quote
 								, int opening, int *closing)
 {
-	int 	i;
+	int	i;
 
 	i = opening + 1;
 	*closing = 0;
@@ -78,16 +90,9 @@ static char	*find_closing_quote(char *str, char quote
 	return (NULL);
 }
 
-/*
-** char	*remove_quotes(char *str) attemps to find first string
-** between quotes. If there is a valid quote couple it returns
-** string between them (which is returned by find_closing_quote
-** function) If there isn't couple quotes, it returns input str.
-*/
-
-static char	*remove_quotes(char *str, int *opening, int *closing) 
+static char	*remove_quotes(char *str, int *opening, int *closing)
 {
-	char 	quote;
+	char	quote;
 
 	*opening = 0;
 	while (str[*opening])
@@ -96,7 +101,7 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 			&& check_prev_backslashes(str, *opening))
 		{
 			quote = str[*opening];
-			return(find_closing_quote(str, quote, *opening, closing));
+			return (find_closing_quote(str, quote, *opening, closing));
 		}
 		*opening += 1;
 	}
@@ -107,10 +112,10 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 static char	*join_prev_in_quotes(char *str, char *buff,
 									char *tmp_in_quotes, int opening)
 {
-	char 	*str_pre_quotes;
-	char 	*tmp_pre_quotes;
-	char 	*tmp;
-	char 	*tmp2;
+	char	*str_pre_quotes;
+	char	*tmp_pre_quotes;
+	char	*tmp;
+	char	*tmp2;
 
 	if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
 		return (NULL);
@@ -127,8 +132,8 @@ static char	*join_prev_in_quotes(char *str, char *buff,
 static char	*join_parsed_str(char *str, char *str_in_quotes,
 								char *buff, int opening)
 {
-	char 	*tmp_in_quotes;
-	char 	*tmp;
+	char	*tmp_in_quotes;
+	char	*tmp;
 
 	tmp_in_quotes = embrace_expansion(str_in_quotes);
 	if (opening != -1)
@@ -161,11 +166,11 @@ char		*parse_quotes(char *str)
 	int		closing;
 
 	buff = ft_strdup("");
-	while(*str)
+	while (*str)
 	{
 		if (!(str_in_quotes = remove_quotes(str, &opening, &closing)))
 		{
-			free (buff);
+			free(buff);
 			exit(2);
 		}
 		tmp = join_parsed_str(str, str_in_quotes, buff, opening);
@@ -176,7 +181,7 @@ char		*parse_quotes(char *str)
 		if (opening != -1)
 			str += (closing + 1);
 		else
-			break;
+			break ;
 	}
 	return (buff);
 }
