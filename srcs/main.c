@@ -129,31 +129,24 @@ static char 	*to_lower(char *input)
 	return (output);
 }
 
-int 			check_builtin(t_shell *shell)
+static int		exec_export(t_shell *shell)
 {
-	int 	ret;
-	char	*tmp;
-	char	*lower;
-	char	*path;
+	int ret;
 
 	ret = 0;
+	delete_environment(shell, "_", shell->env);
+	ret = ft_export(shell, NULL);
+	return (ret);
+}
+
+static int		exec_env(t_shell *shell)
+{
+	char	*lower;
+	char	*path;
+	char	*tmp;
+
 	lower = to_lower(shell->args[0]);
-	if (ft_strcmp(shell->args[0], "exit"))
-		ft_exit(shell);
-	else if (ft_strcmp(shell->args[0], "echo"))
-		ret = ft_echo(shell->args + 1);
-	else if (ft_strcmp(shell->args[0], "cd"))
-		ret = ft_cd(shell);
-	else if (ft_strcmp(*shell->args, "pwd"))
-		ret = ft_pwd();
-	else if (ft_strcmp(*shell->args, "export"))
-	{
-		delete_environment(shell, "_", shell->env);
-		ret = ft_export(shell, NULL);
-	}
-	else if (ft_strcmp(*shell->args, "unset"))
-		ret = ft_unset(shell);
-	else if (ft_strcmp(lower, "env"))
+	if (ft_strcmp(lower, "env"))
 	{
 		path = get_path(shell, NULL);
 		tmp = ft_strjoin("_=", path);
@@ -163,20 +156,40 @@ int 			check_builtin(t_shell *shell)
 		free(lower);
 		return(ft_env(shell, shell->env));
 	}
+	free(lower);
+	return (0);
+}
+
+int 			check_builtin(t_shell *shell)
+{
+	int 	ret;
+	char	*tmp;
+
+	ret = 0;
+	if (ft_strcmp(shell->args[0], "exit"))
+		ft_exit(shell);
+	else if (ft_strcmp(shell->args[0], "echo"))
+		ret = ft_echo(shell->args + 1);
+	else if (ft_strcmp(shell->args[0], "cd"))
+		ret = ft_cd(shell);
+	else if (ft_strcmp(*shell->args, "pwd"))
+		ret = ft_pwd();
+	else if (ft_strcmp(*shell->args, "export"))
+		ret = exec_export(shell);
+	else if (ft_strcmp(*shell->args, "unset"))
+		ret = ft_unset(shell);
+	else 
+		return (exec_env(shell));
 	tmp =  update_last_arg(shell->args); 
-	//clean_env(shell);
 	ft_export(shell, tmp);
 	free(tmp);
-	free(lower);
 	return (ret);
 }
 
 static void 	handle_commands(t_shell *shell)
 {
-	int		fd;
 	char	*tmp;
 
-	fd = -2;
 	if (*(shell->commands + 1))
 		find_pipes(shell);
 	else if (shell->commands[0])
@@ -184,11 +197,9 @@ static void 	handle_commands(t_shell *shell)
 		tmp = expansion(shell, shell->commands[0]);
 		shell->args = get_args(tmp);
 		shell->binary = ft_strdup(shell->args[0]);
-		fd = find_redirections(shell);
-		if (fd != -1)
+		if (find_redirections(shell) != -1)
 			if (shell->args[0] && !(check_builtin(shell)))
 				run_command(shell);
-		close(fd);
 		clean_matrix(shell->args);
 		free(shell->args);
 		free(tmp);
@@ -283,29 +294,31 @@ static short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
+static void		select_validator_err(t_shell *shell, char *line, char separator, int it)
+{
+
+	if (separator == ';')
+		print_errors(shell, "syntax error near unexpected token `;'", NULL);
+	else if (separator == '|')
+		print_errors(shell, "syntax error near unexpected token `|'", NULL);
+	else if (separator == '>' && line[it + 1] == '>')
+		print_errors(shell, "syntax error near unexpected token `>>'", NULL);
+	else if (separator == '>')
+		print_errors(shell, "syntax error near unexpected token `>'", NULL);
+	else if (separator == '<' && line[it + 1] == '<')
+		print_errors(shell, "syntax error near unexpected token `<<'", NULL);
+	else if (separator == '<')
+		print_errors(shell, "syntax error near unexpected token `<'", NULL);
+	exit(2);
+}
+
 static void 	validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
 	char	*tmp;
 
 	if (prior_to_token(line, it - 1, line[it]))
-	{
-		if (separator == ';')
-			print_errors(shell, "syntax error near unexpected token `;'", NULL);
-		else if (separator == '|')
-			print_errors(shell, "syntax error near unexpected token `|'", NULL);
-		else if (separator == '>' && line[it + 1] == '>')
-			print_errors(shell, "syntax error near unexpected token `>>'", NULL);
-		else if (separator == '>')
-			print_errors(shell, "syntax error near unexpected token `>'", NULL);
-		else if (separator == '<' && line[it + 1] == '<')
-			print_errors(shell, "syntax error near unexpected token `<<'", NULL);
-		else if (separator == '<')
-			print_errors(shell, "syntax error near unexpected token `<'", NULL);
-		exit(2);
-		// Arreglarlo para que no salga de la ejecucion principal
-		//shell->stat_loc = 2;
-	}
+		select_validator_err(shell, line, separator, it);
 	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
 		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
@@ -337,12 +350,26 @@ static void 	validate_input(t_shell *shell, char *line)
 		it++;
 }
 
-static char		*inject_spaces(char *line)
+static char		*add_space(char *line, char *output, size_t *it, char redir)
 {
-	size_t	it;
+	if (line[*it] == redir)
+	{
+		ft_strlcat(output, line, ft_strlen(output) + *it + 1);
+		if (line[*it - 1] != ' ' && line[*it - 1] != redir)
+			ft_strlcat(output, " ", ft_strlen(output) + 2);
+		ft_strlcat(output, line + *it, ft_strlen(output) + 2);
+		if (line[*it + 1] != ' ' && line[*it + 1] != redir)
+			ft_strlcat(output, " ", ft_strlen(output) + 2);
+		line = line + *it + 1;
+		*it = -1;
+	}
+	return (line);
+}
+
+static size_t	additional_spaces(char *line)
+{
 	size_t	cont;
-	//size_t 	len;
-	char	*output;
+	size_t	it;
 
 	it = -1;
 	cont = 0;
@@ -357,48 +384,26 @@ static char		*inject_spaces(char *line)
 		if (line[it] == '<' && line[it + 1] != ' ')
 			cont++;
 	}
+	return (cont);
+}
+
+static char		*inject_spaces(char *line)
+{
+	size_t	it;
+	size_t	cont;
+	char	*output;
+
+	it = -1;
+	cont = additional_spaces(line);
 	output = calloc(1, ft_strlen(line) + cont + 1);
 	while (*line == ' ')
-	{
 		line++;
-	}
-	it = -1;
 	while (line[++it])
 	{
-		//printf("U: %zu-%c\n", it, line[it]);
-		if (line[it] == '>')
-		{
-			ft_strlcat(output, line, ft_strlen(output) + it + 1);
-			if (line[it - 1] != ' ' && line[it - 1] != '>')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			ft_strlcat(output, line + it, ft_strlen(output) + 2);
-			if (line[it + 1] != ' ' && line[it + 1] != '>')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			line = line + it + 1;
-			it = -1;
-		}
-		if (line[it] == '<')
-		{
-			ft_strlcat(output, line, ft_strlen(output) + it + 1);
-			if (line[it - 1] != ' ' && line[it - 1] != '<')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			ft_strlcat(output, line + it, ft_strlen(output) + 2);
-			if (line[it + 1] != ' ' && line[it + 1] != '<')
-			{
-				ft_strlcat(output, " ", ft_strlen(output) + 2);
-			}
-			line = line + it + 1;
-			it = -1;
-		}
+		line = add_space(line, output, &it, '>');
+		line = add_space(line, output, &it, '<');
 	}
 	ft_strlcat(output, line, line - output);
-	//printf("S: %s", output);
 	return (output);
 }
 
@@ -427,7 +432,6 @@ static void 	minishell(char *line, t_shell *shell)
 		free(shell->commands);
 		it++;
 	}
-	//clean_shell(shell);
 }
 
 static void 	read_input(char *line, t_shell *shell)
@@ -453,6 +457,19 @@ static void 	read_input(char *line, t_shell *shell)
 	}
 }
 
+static void		exec_argument(char *line, t_shell *shell)
+{
+	char	*tmp;
+
+	tmp = parse_input(line);
+	free(line);
+	line = tmp;
+	minishell(line, shell);
+	clean_env(shell);
+	clean_matrix(shell->instructions);
+	free(shell->instructions);
+}
+
 int 			main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
@@ -460,8 +477,8 @@ int 			main(int argc, char **argv, char **envp)
 	char	*tmp;
 	char	curr_pwd[1024];
 
-	shell.stat_loc = 0;
 	line = NULL;
+	shell.stat_loc = 0;
 	shell.instructions = NULL;
 	shell.env = ft_strdup_matrix(envp);
 	getcwd(curr_pwd, 1024);
@@ -473,20 +490,7 @@ int 			main(int argc, char **argv, char **envp)
 	ft_export(&shell, tmp);
 	free(tmp);
 	if (argc == 3 && ft_strcmp(argv[1], "-c"))
-	{
-		line = ft_strdup(argv[2]);
-		tmp = parse_input(line);
-		free(line);
-		line = tmp;
-		minishell(line, &shell);
-		//clean_matrix(shell.args);
-		//free(shell.args);
-		//clean_matrix(shell.commands);
-		clean_env(&shell);
-		clean_matrix(shell.instructions);
-		free(shell.instructions);
-		//free(line);
-	}
+		exec_argument(ft_strdup(argv[2]), &shell);
 	else
 		read_input(line, &shell);
 	return (shell.stat_loc);
