@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 19:45:32 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/18 19:49:40 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 20:16:29 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ int				ft_export(t_shell *shell, char *last_arg)
 				not_valid_keyname(shell, shell->args[j]);
 			else if ((tmp = ft_strchr(shell->args[j], '='))
 					&& *tmp != *shell->args[j])
-					export_values(shell, last_arg, j);
+				export_values(shell, last_arg, j);
 			j++;
 		}
 	}
