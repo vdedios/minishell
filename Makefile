@@ -2,7 +2,7 @@ NAME=minishell
 
 CC=gcc
 RM = rm -rf
-#CFLAGS=-g -Wall -Wextra -Werror
+CFLAGS=-g -Wall -Wextra -Werror
 LFLAGS=-I includes/
 
 SRC_FILES =		main.c \
