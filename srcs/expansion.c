@@ -138,6 +138,7 @@ static	char	*last_proc_status(t_shell *shell, char *env)
 	return (ft_itoa(shell->previous_stat));
 }
 
+
 static	char	*parse_expansion(t_shell *shell, char **env_split,
 								short first_is_env)
 {
@@ -145,17 +146,13 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 	char	*buff;
 	char	*tmp;
 
-	len = 0;
+	len = -1;
 	buff = ft_strdup("");
-	while (env_split[len])
-		len++;
-	len--;
-	while (len >= 0)
+	while (env_split[++len]);
+	while (--len >= 0)
 	{
 		if (env_split[len][1] == '?' && !env_split[len][3])
-		{
 			env_split[len] = last_proc_status(shell, env_split[len]);
-		}
 		else if (len || first_is_env)
 		{
 			tmp = ft_strdup(env_split[len]);
@@ -167,7 +164,6 @@ static	char	*parse_expansion(t_shell *shell, char **env_split,
 		free(buff);
 		buff = append_expanded(tmp, env_split[len]);
 		free(tmp);
-		len--;
 	}
 	return (buff);
 }
