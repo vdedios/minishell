@@ -78,7 +78,6 @@ static void		change_dir(char *path, t_shell *shell)
 	char		*oldcwd;
 	char		*cwd;
 	char		*tmp;
-	char		*tmp2;
 
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
