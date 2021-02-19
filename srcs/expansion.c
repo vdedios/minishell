@@ -138,7 +138,6 @@ static	char	*last_proc_status(t_shell *shell, char *env)
 	return (ft_itoa(shell->previous_stat));
 }
 
-
 static	char	*parse_expansion(t_shell *shell, char **env_split,
 								short first_is_env)
 {

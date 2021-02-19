@@ -35,37 +35,33 @@ static void		set_path(char *path, const char *key, t_shell *shell)
 	}
 }
 
+static void		dir_err(t_shell *shell, char *path, char *err)
+{
+	char		*msg;
+	char		*tmp;
+
+	path = ft_strjoin(" ", path);
+	tmp = ft_strdup(path);
+	free(path);
+	msg = ft_strjoin(tmp, err);
+	free(tmp);
+	print_errors(shell, msg, shell->binary);
+	free(msg);
+}
+
 static void		change_dir_error(t_shell *shell, char *path)
 {
 	struct stat	s;
-	char		*msg;
-	char		*tmp;
 
 	if (stat(path, &s) != -1)
 	{
 		if (s.st_mode & S_IFDIR)
-		{
-			path = ft_strjoin(" ", path);
-			tmp = ft_strdup(path);
-			free(path);
-			msg = ft_strjoin(tmp, ": Permission denied");
-			free(tmp);
-			print_errors(shell, msg, shell->binary);
-			free(msg);
-		}
+			dir_err(shell, path, ": Permission denied");
 		else
 			print_errors(shell, "not a directory:", shell->binary);
 	}
 	else
-	{
-		path = ft_strjoin(" ", path);
-		tmp = ft_strdup(path);
-		free(path);
-		msg = ft_strjoin(tmp, ": No such file or directory");
-		free(tmp);
-		print_errors(shell, msg, shell->binary);
-		free(msg);
-	}
+		dir_err(shell, path, ": No such file or directory");
 }
 
 static void		change_dir(char *path, t_shell *shell)
