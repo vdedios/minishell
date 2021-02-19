@@ -64,6 +64,15 @@ static void		change_dir_error(t_shell *shell, char *path)
 		dir_err(shell, path, ": No such file or directory");
 }
 
+static void		update_olddir(t_shell *shell, char *key, char *oldpwd)
+{
+	char		*tmp;
+
+	tmp = ft_strjoin(key, oldpwd);
+	ft_export(shell, tmp);
+	free(tmp);
+}
+
 static void		change_dir(char *path, t_shell *shell)
 {
 	char		*oldcwd;
@@ -79,12 +88,14 @@ static void		change_dir(char *path, t_shell *shell)
 		getcwd(cwd, 1024);
 		tmp = get_env(shell, "PWD");
 		if (tmp)
+		//	update_olddir(shell, "oldpwd=", tmp);
 		{
-			tmp2 = ft_strjoin("OLDPWD=", tmp);
+			tmp2 = ft_strjoin("oldpwd=", tmp);
 			ft_export(shell, tmp2);
 			free(tmp2);
 		}
 		else
+			//update_olddir(shell, "OLDPWD=", "");
 		{
 			tmp2 = ft_strjoin("OLDPWD=", "");
 			ft_export(shell, tmp2);
