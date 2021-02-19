@@ -54,12 +54,21 @@ static char		*remove_backslash(char *buff, char *backslash)
 	return (tmp2);
 }
 
+static void		remove_backslash_safe(char **buff, char *backslash)
+{
+	char	*tmp;
+
+	tmp = remove_backslash(*buff, backslash);
+	free(*buff);
+	*buff = ft_strdup(tmp);
+	free(tmp);
+}
+
 char			*parse_backslash(char *str, short parse_mode)
 {
 	char	*buff;
 	char	*ref;
 	char	*backslash;
-	char	*tmp;
 
 	buff = ft_strdup(str);
 	ref = str;
@@ -74,12 +83,7 @@ char			*parse_backslash(char *str, short parse_mode)
 			break ;
 		if (is_escapable_char(*(backslash + 1), parse_mode) ||
 			is_between_delimiters(backslash, ref, parse_mode))
-		{
-			tmp = remove_backslash(buff, backslash);
-			free(buff);
-			buff = ft_strdup(tmp);
-			free(tmp);
-		}
+			remove_backslash_safe(&buff, backslash);
 		str = backslash + 1;
 		if (*str == '\\')
 			str++;
