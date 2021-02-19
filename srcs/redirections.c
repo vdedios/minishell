@@ -1,21 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/19 19:01:20 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/19 19:13:33 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static	int	redirections_append(t_shell *shell, size_t it)
+static int		redirections_append(t_shell *shell, size_t it)
 {
 	int fd;
-	
+
 	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
+		print_errors(shell,
+				"syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
-		if ((fd = open(shell->args[it + 1], O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
+		if ((fd = open(shell->args[it + 1],
+						O_CREAT | O_APPEND | O_WRONLY, 0644)) == -1)
 		{
 			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1]);
+			print_errors(shell,
+					" No such file or directory", shell->args[it + 1]);
 		}
 		else
 			dup2(fd, 1);
@@ -25,22 +40,25 @@ static	int	redirections_append(t_shell *shell, size_t it)
 	return (fd);
 }
 
-static int	redirections_output(t_shell *shell, size_t it)
-{	
+static int		redirections_output(t_shell *shell, size_t it)
+{
 	int fd;
 
 	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
+		print_errors(shell,
+				"syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
-		if ((fd = open(shell->args[it + 1], O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
+		if ((fd = open(shell->args[it + 1],
+						O_CREAT | O_TRUNC | O_WRONLY, 0644)) == -1)
 		{
 			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1]);
+			print_errors(shell,
+					" No such file or directory", shell->args[it + 1]);
 		}
 		else
 			dup2(fd, 1);
@@ -50,7 +68,7 @@ static int	redirections_output(t_shell *shell, size_t it)
 	return (fd);
 }
 
-static short redirection_exists(t_shell *shell, size_t it)
+static short	redirection_exists(t_shell *shell, size_t it)
 {
 	struct stat	s;
 	int			fd;
@@ -60,7 +78,8 @@ static short redirection_exists(t_shell *shell, size_t it)
 	{
 		if (stat(shell->args[it + 1], &s) != -1)
 		{
-			if (!(s.st_mode & S_IRUSR) || (s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
+			if (!(s.st_mode & S_IRUSR) ||
+					(s.st_mode & S_IRUSR && (!(s.st_mode & S_IXUSR))))
 			{
 				shell->stat_loc = 1;
 				print_errors(shell, " Permission denied", shell->args[it + 1]);
@@ -69,20 +88,22 @@ static short redirection_exists(t_shell *shell, size_t it)
 		else
 		{
 			shell->stat_loc = 1;
-			print_errors(shell, " No such file or directory", shell->args[it + 1]);
+			print_errors(shell,
+					" No such file or directory", shell->args[it + 1]);
 		}
 	}
 	return (fd);
 }
 
-static int	redirections_input(t_shell *shell, size_t it)
+static int		redirections_input(t_shell *shell, size_t it)
 {
 	int fd;
 
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
-		print_errors(shell, "syntax error near unexpected token `newline'", NULL);
+		print_errors(shell,
+				"syntax error near unexpected token `newline'", NULL);
 	}
 	else
 	{
@@ -99,8 +120,7 @@ static int	redirections_input(t_shell *shell, size_t it)
 	return (fd);
 }
 
-
-static void	validate_count(t_shell *shell
+static void		validate_count(t_shell *shell
 							, size_t cont_output, size_t cont_input)
 {
 	char	*msg;
@@ -109,30 +129,33 @@ static void	validate_count(t_shell *shell
 	if (cont_output > 2)
 	{
 		if (cont_output < 4)
-			msg = ft_strjoin("syntax error near unexpected token `", ">'");
+			msg = ft_strjoin("syntax error near unexpected token `",
+					">'");
 		else
-			msg = ft_strjoin("syntax error near unexpected token `", ">>'");
+			msg = ft_strjoin("syntax error near unexpected token `",
+					">>'");
 		print_errors(shell, msg, NULL);
-		exit (2);
+		exit(2);
 	}
 	if (cont_input > 2)
 	{
-		msg = ft_strjoin("syntax error near unexpected token `", "<<'");
+		msg = ft_strjoin("syntax error near unexpected token `",
+				"<<'");
 		print_errors(shell, msg, NULL);
-		exit (2);
+		exit(2);
 	}
 }
 
-static void	validator(t_shell *shell, char *str)
+static void		validator(t_shell *shell, char *str)
 {
-	size_t 	cont_output;
+	size_t	cont_output;
 	size_t	cont_input;
 
 	cont_output = 0;
 	cont_input = 0;
 	while (*str)
 	{
-		if (*str == '>' )
+		if (*str == '>')
 			cont_output++;
 		else if (*str == '<')
 			cont_input++;
@@ -146,11 +169,11 @@ static void	validator(t_shell *shell, char *str)
 	validate_count(shell, cont_output, cont_input);
 }
 
-int	find_redirections(t_shell *shell)
+int				find_redirections(t_shell *shell)
 {
-	size_t 	it;
+	size_t	it;
 	int		fd;
-	
+
 	it = 0;
 	fd = -5;
 	while (shell->args[it])
@@ -163,7 +186,6 @@ int	find_redirections(t_shell *shell)
 		else if (ft_strcmp(shell->args[it], ">>"))
 			fd = redirections_append(shell, it);
 		else
-
 			it++;
 	}
 	close(fd);
