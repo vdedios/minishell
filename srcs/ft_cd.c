@@ -6,13 +6,13 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:58:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/18 18:11:43 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 22:19:14 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	set_path(char *path, const char *key, t_shell *shell)
+static void		set_path(char *path, const char *key, t_shell *shell)
 {
 	size_t	len;
 	size_t	it;
@@ -33,99 +33,101 @@ static void	set_path(char *path, const char *key, t_shell *shell)
 		}
 		it++;
 	}
-	//if (variable)
-	//	free(variable);Si se libera se pierde el env
-	//free(path);
 }
 
-static void	change_dir(char *path, t_shell *shell)
+static void		dir_err(t_shell *shell, char *path, char *err)
+{
+	char		*msg;
+	char		*tmp;
+
+	path = ft_strjoin(" ", path);
+	tmp = ft_strdup(path);
+	free(path);
+	msg = ft_strjoin(tmp, err);
+	free(tmp);
+	print_errors(shell, msg, shell->binary);
+	free(msg);
+}
+
+static void		change_dir_error(t_shell *shell, char *path)
+{
+	struct stat	s;
+
+	if (stat(path, &s) != -1)
+	{
+		if (s.st_mode & S_IFDIR)
+			dir_err(shell, path, ": Permission denied");
+		else
+			print_errors(shell, "not a directory:", shell->binary);
+	}
+	else
+		dir_err(shell, path, ": No such file or directory");
+}
+
+static void		update_olddir(t_shell *shell, char *oldpwd)
+{
+	char		*tmp;
+
+	tmp = ft_strjoin("OLDPWD=", oldpwd);
+	ft_export(shell, tmp);
+	free(tmp);
+}
+
+static void		change_dir(char *path, t_shell *shell)
 {
 	char		*oldcwd;
 	char		*cwd;
-	struct stat	s;
-	char		*msg;
 	char		*tmp;
-	char		*tmp2;
 
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
 	getcwd(oldcwd, 1024);
-	//oldcwd = get_workdir(shell, "PWD=");
-	//printf("Sale: %s\n", oldcwd);
-	//set_path(oldcwd, "PWD=", shell);
 	if (chdir(path) == 0)
 	{
 		getcwd(cwd, 1024);
-		//set_path(get_workdir(shell, "PWD="), "OLDPWD=", shell);
 		tmp = get_env(shell, "PWD");
 		if (tmp)
-		{
-			tmp2 = ft_strjoin("OLDPWD=", tmp);
-			ft_export(shell, tmp2);
-			free(tmp2);
-		}
+			update_olddir(shell, tmp);
 		else
-		{
-			tmp2 = ft_strjoin("OLDPWD=", "");
-			ft_export(shell, tmp2);
-			free(tmp2);
-		}
+			update_olddir(shell, "");
 		free(tmp);
 		set_path(cwd, "PWD=", shell);
-		//ft_export(shell, ft_strjoin("OLDPWD=", oldcwd));
 	}
 	else
-	{
-		if (stat(path, &s) != -1)
-		{
-			if (s.st_mode & S_IFDIR)
-			{
-				path = ft_strjoin(" ", path);
-				tmp = ft_strdup(path);
-				free(path);
-				msg = ft_strjoin(tmp, ": Permission denied");
-				free(tmp);
-				print_errors(shell, msg, shell->binary);
-				free(msg);
-			}
-			else
-				print_errors(shell, "not a directory:", shell->binary);
-		}
-		else
-		{
-			path = ft_strjoin(" ", path);
-			tmp = ft_strdup(path);
-			free(path);
-			msg = ft_strjoin(tmp, ": No such file or directory");
-			free(tmp);
-			print_errors(shell, msg, shell->binary);
-			free(msg);
-		}
-		//ft_putendl_fd(path, 1);
-	}
+		change_dir_error(shell, path);
 	free(oldcwd);
 	free(cwd);
 }
 
-int			ft_cd(t_shell *shell)
+static short	home_not_exists(t_shell *shell, char *path)
+{
+	char	*tmp;
+
+	free(path);
+	path = NULL;
+	tmp = ft_strdup(shell->binary);
+	print_errors(shell, " HOME not set", tmp);
+	free(tmp);
+	return (1);
+}
+
+static short	many_arguments(t_shell *shell)
+{
+	print_errors(shell, "too many arguments", shell->binary);
+	return (1);
+}
+
+int				ft_cd(t_shell *shell)
 {
 	char	*path;
 	char	*target;
-	char	*tmp;
 
 	target = shell->args[1];
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
 	{
 		path = get_env(shell, "HOME");
 		if (ft_strcmp(path, ""))
-		{
-			free(path);
-			path = NULL;
-			tmp = ft_strdup(shell->binary);
-			print_errors(shell, " HOME not set", tmp);
-			free(tmp);
-		}
-			
+			return (home_not_exists(shell, path));
 	}
 	else if (!ft_strncmp(target, ".", 2) || !ft_strncmp(target, "", 1))
 		path = get_env(shell, "PWD");
@@ -135,18 +137,10 @@ int			ft_cd(t_shell *shell)
 	{
 		path = ft_strdup(target);
 		if (shell->args[3])
-		{
-			print_errors(shell, "too many arguments", shell->binary);
-			return (1);
-		}
+			return (many_arguments(shell));
 	}
 	else
 		path = ft_strdup(target);
-	if (!path)
-	{	
-		free(path);
-		return (1);
-	}
 	change_dir(path, shell);
 	free(path);
 	return (1);

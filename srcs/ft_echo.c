@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:03:29 by migferna          #+#    #+#             */
-/*   Updated: 2020/12/07 20:08:13 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:57:32 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		ft_echo(char **args)
 	while (args[it])
 	{
 		ft_putstr_fd(args[it], 1);
-		if (args[it+1])
+		if (args[it + 1])
 			write(1, " ", 1);
 		it++;
 	}

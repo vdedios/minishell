@@ -6,13 +6,41 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:15:33 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/17 19:24:28 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:56:15 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_env(t_shell *shell, char *arg)
+void			delete_environment(t_shell *shell, char *key, char **env)
+{
+	size_t	it;
+	size_t	len;
+
+	(void)shell;
+	len = ft_strlen(key);
+	it = 0;
+	while (env[it])
+	{
+		if (ft_strncmp(key, env[it], len) == 0)
+			break ;
+		it++;
+	}
+	if (env[it])
+	{
+		free(env[it]);
+		env[it] = NULL;
+		it++;
+		while (env[it])
+		{
+			env[it - 1] = env[it];
+			it++;
+		}
+		env[it - 1] = NULL;
+	}
+}
+
+char			*get_env(t_shell *shell, char *arg)
 {
 	size_t it;
 	size_t len;
@@ -47,7 +75,7 @@ static	void	sort_like_bash(char **env)
 	}
 }
 
-int	ft_env(t_shell *shell, char **args)
+int				ft_env(t_shell *shell, char **args)
 {
 	size_t	it;
 	char	**to_print_env;

@@ -49,6 +49,7 @@ void	print_errors(t_shell *shell, char *msg, char *bin);
 ** Utils functions
 */
 
+int		ft_isspace(int c);
 char	**ft_strdup_matrix(char **envp);
 char	*absolute_bin_path(char *path, char *bin);
 char	**add_env(char **variable, char **env, int n);
@@ -84,6 +85,9 @@ short	check_prev_backslashes(char *str, int i);
 int		n_special_chars(char *str, int opening, int closing, char quote);
 char	**ft_split_non_escaped(char *input, char delimiter);
 void	delete_environment(t_shell *shell, char *key, char **env);
+char	*set_opening_braces(char *str);
+char	*set_closing_braces(char *str);
+
 /*
 ** Builtin functions
 */

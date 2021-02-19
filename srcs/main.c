@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/18 17:40:02 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/18 22:29:00 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ char 			*get_path(t_shell *shell, int *binary)
 
 	value = get_env(shell, "PATH");
 	if (!value || ft_strlen(value) == 0)
+	{
+		free(value);
 		path = search_binary_in_pwd(shell);
+	}
 	else
 	{
 		tmp = append_pwd(value);

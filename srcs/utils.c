@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+int		ft_isspace(int c)
+{
+	c = (unsigned char)c;
+	if (c == '\t' || c == '\n' || c == '\v'
+		|| c == '\f' || c == '\r' || c == ' ')
+		return (1);
+	return (0);
+}
+
 char	**ft_strdup_matrix(char **envp)
 {
 	char	**tmp_envp;
