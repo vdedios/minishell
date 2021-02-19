@@ -99,6 +99,7 @@ static int		redirections_input(t_shell *shell, size_t it)
 {
 	int fd;
 
+	fd = -1;
 	if (!(shell->args[it + 1]))
 	{
 		shell->stat_loc = 2;
