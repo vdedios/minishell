@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 18:54:38 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 18:59:47 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 20:21:02 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,11 @@ static char	*find_closing_quote(char *str, char quote
 	{
 		if (str[i] == quote
 			&& (quote == '\'' || check_prev_backslashes(str, i)))
-			{
-				*closing += opening + 1;
-				return (get_string_between_quotes(str, opening
+		{
+			*closing += opening + 1;
+			return (get_string_between_quotes(str, opening
 						, *closing, quote));
-			}
+		}
 		*closing += 1;
 		i++;
 	}
