@@ -99,24 +99,35 @@ static void		change_dir(char *path, t_shell *shell)
 	free(cwd);
 }
 
+static short	home_not_exists(t_shell *shell, char *path)
+{
+	char	*tmp;
+
+	free(path);
+	path = NULL;
+	tmp = ft_strdup(shell->binary);
+	print_errors(shell, " HOME not set", tmp);
+	free(tmp);
+	return (1);
+}
+
+static short	many_arguments(t_shell *shell)
+{
+	print_errors(shell, "too many arguments", shell->binary);
+	return (1);
+}
+
 int				ft_cd(t_shell *shell)
 {
 	char	*path;
 	char	*target;
-	char	*tmp;
 
 	target = shell->args[1];
 	if (!target || !ft_strncmp(target, "--", 3) || !ft_strncmp(target, "~", 2))
 	{
 		path = get_env(shell, "HOME");
 		if (ft_strcmp(path, ""))
-		{
-			free(path);
-			path = NULL;
-			tmp = ft_strdup(shell->binary);
-			print_errors(shell, " HOME not set", tmp);
-			free(tmp);
-		}
+			return (home_not_exists(shell, path));
 	}
 	else if (!ft_strncmp(target, ".", 2) || !ft_strncmp(target, "", 1))
 		path = get_env(shell, "PWD");
@@ -126,18 +137,10 @@ int				ft_cd(t_shell *shell)
 	{
 		path = ft_strdup(target);
 		if (shell->args[3])
-		{
-			print_errors(shell, "too many arguments", shell->binary);
-			return (1);
-		}
+			return (many_arguments(shell));
 	}
 	else
 		path = ft_strdup(target);
-	if (!path)
-	{
-		free(path);
-		return (1);
-	}
 	change_dir(path, shell);
 	free(path);
 	return (1);
