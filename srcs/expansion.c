@@ -70,27 +70,28 @@ static	char	*append_expanded(char *buff, char *env)
 	return (tmp);
 }
 
+static	void	escape_char_safe(char **value, char c)
+{
+	char	*tmp;
+
+	tmp = ft_strdup(*value);
+	free(*value);
+	*value = escape_char(tmp, c);
+	free(tmp);
+}
+
 static	char	*get_env_value(t_shell *shell, char *delimiter, int i)
 {
 	char	*ret;
 	char	*value;
-	char	*tmp;
 
 	if (shell->env[i])
 		value = ft_strdup(ft_strchr(shell->env[i], '=') + 1);
 	else
 		value = ft_strdup("");
-	tmp = ft_strdup(value);
-	free(value);
-	value = escape_char(tmp, '\\');
-	free(tmp);
+	escape_char_safe(&value, '\\');
 	if (delimiter && *(delimiter - 1) == ' ')
-	{
-		tmp = ft_strdup(value);
-		free(value);
-		value = escape_char(tmp, ' ');
-		free(tmp);
-	}
+		escape_char_safe(&value, ' ');
 	if (delimiter && *delimiter)
 	{
 		delimiter++;
