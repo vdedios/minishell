@@ -1,6 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/19 18:54:38 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/19 20:21:02 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static char	*get_string_between_quotes(char *str, int opening, int closing, char quote)
+static char	*alloc_in_quotes(char *str, char quote, int opening, int closing)
+{
+	char *buff;
+
+	if (!(buff = malloc((closing - opening
+		+ n_special_chars(str, opening, closing, quote) + 1)
+		* sizeof(char))))
+		return (NULL);
+	return (buff);
+}
+
+static char	*get_string_between_quotes(char *str, int opening,
+										int closing, char quote)
 {
 	char	*buff;
 	int		i;
@@ -8,9 +32,7 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 
 	j = 0;
 	i = opening + 1;
-	if (!(buff = malloc((closing - opening
-		+ n_special_chars(str, opening, closing, quote) + 1) * sizeof(char))))
-		return (NULL);
+	buff = alloc_in_quotes(str, quote, opening, closing);
 	while (i < closing)
 	{
 		if (quote == '\'' && (is_special_char(str[i]) ||
@@ -33,14 +55,17 @@ static char	*get_string_between_quotes(char *str, int opening, int closing, char
 static void	handle_quote_error(char quote)
 {
 	if (quote == '\'')
-		print_errors(NULL, "unexpected EOF while looking for matching `''", NULL);
+		print_errors(NULL
+			, "unexpected EOF while looking for matching `''", NULL);
 	else
-		print_errors(NULL, "unexpected EOF while looking for matching `\"'", NULL);
+		print_errors(NULL
+			, "unexpected EOF while looking for matching `\"'", NULL);
 }
 
-static char	*find_closing_quote(char *str, char quote, int opening, int *closing)
+static char	*find_closing_quote(char *str, char quote
+								, int opening, int *closing)
 {
-	int 	i;
+	int	i;
 
 	i = opening + 1;
 	*closing = 0;
@@ -51,13 +76,12 @@ static char	*find_closing_quote(char *str, char quote, int opening, int *closing
 	}
 	while (str[i])
 	{
-		if (str[i] == quote)
+		if (str[i] == quote
+			&& (quote == '\'' || check_prev_backslashes(str, i)))
 		{
-			if ((quote == '\'' || check_prev_backslashes(str, i)))
-			{
-				*closing += opening + 1;
-				return (get_string_between_quotes(str, opening, *closing, quote));
-			}
+			*closing += opening + 1;
+			return (get_string_between_quotes(str, opening
+						, *closing, quote));
 		}
 		*closing += 1;
 		i++;
@@ -66,16 +90,9 @@ static char	*find_closing_quote(char *str, char quote, int opening, int *closing
 	return (NULL);
 }
 
-/*
-** char	*remove_quotes(char *str) attemps to find first string
-** between quotes. If there is a valid quote couple it returns
-** string between them (which is returned by find_closing_quote
-** function) If there isn't couple quotes, it returns input str.
-*/
-
-static char	*remove_quotes(char *str, int *opening, int *closing) 
+static char	*remove_quotes(char *str, int *opening, int *closing)
 {
-	char 	quote;
+	char	quote;
 
 	*opening = 0;
 	while (str[*opening])
@@ -84,7 +101,7 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 			&& check_prev_backslashes(str, *opening))
 		{
 			quote = str[*opening];
-			return(find_closing_quote(str, quote, *opening, closing));
+			return (find_closing_quote(str, quote, *opening, closing));
 		}
 		*opening += 1;
 	}
@@ -92,14 +109,31 @@ static char	*remove_quotes(char *str, int *opening, int *closing)
 	return (str);
 }
 
-static char	*join_parsed_str(char *str, char *str_in_quotes,
-							char *buff, int opening)
+static char	*join_prev_in_quotes(char *str, char *buff,
+									char *tmp_in_quotes, int opening)
 {
-	char 	*str_pre_quotes;
-	char 	*tmp_in_quotes;
-	char 	*tmp_pre_quotes;
-	char 	*tmp;
-	char 	*tmp2;
+	char	*str_pre_quotes;
+	char	*tmp_pre_quotes;
+	char	*tmp;
+	char	*tmp2;
+
+	if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
+		return (NULL);
+	ft_strlcpy(str_pre_quotes, str, opening + 1);
+	tmp_pre_quotes = embrace_expansion(str_pre_quotes);
+	tmp = ft_strjoin(buff, tmp_pre_quotes);
+	tmp2 = ft_strjoin(tmp, tmp_in_quotes);
+	free(tmp_pre_quotes);
+	free(str_pre_quotes);
+	free(tmp);
+	return (tmp2);
+}
+
+static char	*join_parsed_str(char *str, char *str_in_quotes,
+								char *buff, int opening)
+{
+	char	*tmp_in_quotes;
+	char	*tmp;
 
 	tmp_in_quotes = embrace_expansion(str_in_quotes);
 	if (opening != -1)
@@ -110,29 +144,17 @@ static char	*join_parsed_str(char *str, char *str_in_quotes,
 		free(tmp);
 	}
 	if (opening && opening != -1)
-	{
-		if (!(str_pre_quotes = malloc((opening + 1) * sizeof(char))))
-			return (NULL);
-		ft_strlcpy(str_pre_quotes, str, opening + 1);
-		tmp_pre_quotes = embrace_expansion(str_pre_quotes);
-		tmp = ft_strjoin(buff, tmp_pre_quotes);
-		tmp2 = ft_strjoin(tmp, tmp_in_quotes);
-		free(tmp_pre_quotes);
-		free(str_pre_quotes);
-		//free(tmp_in_quotes);
-		free(tmp);
-	}
+		tmp = join_prev_in_quotes(str, buff,
+									tmp_in_quotes, opening);
 	else
 	{
 		if (ft_strcmp(buff, ""))
-			tmp2 = ft_strdup(tmp_in_quotes);
+			tmp = ft_strdup(tmp_in_quotes);
 		else
-		{
-			tmp2 = ft_strjoin(buff, tmp_in_quotes);
-		}
+			tmp = ft_strjoin(buff, tmp_in_quotes);
 	}
 	free(tmp_in_quotes);
-	return (tmp2);
+	return (tmp);
 }
 
 char		*parse_quotes(char *str)
@@ -144,11 +166,11 @@ char		*parse_quotes(char *str)
 	int		closing;
 
 	buff = ft_strdup("");
-	while(*str)
+	while (*str)
 	{
 		if (!(str_in_quotes = remove_quotes(str, &opening, &closing)))
 		{
-			free (buff);
+			free(buff);
 			exit(2);
 		}
 		tmp = join_parsed_str(str, str_in_quotes, buff, opening);
@@ -159,7 +181,7 @@ char		*parse_quotes(char *str)
 		if (opening != -1)
 			str += (closing + 1);
 		else
-			break;
+			break ;
 	}
 	return (buff);
 }

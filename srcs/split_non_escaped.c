@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_non_escaped.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/19 19:29:44 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/19 19:30:50 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static short	is_whitespace(char c)
@@ -16,14 +28,14 @@ static	short	is_delimiter(char input, char delimiter)
 	return (0);
 }
 
-static	int		count_args(char	*input, char delimiter)
+static	int		count_args(char *input, char delimiter)
 {
 	int		i;
 	int		l;
 
 	l = 0;
 	i = 0;
-	while(input[i])
+	while (input[i])
 	{
 		if (is_delimiter(input[i], delimiter) && input[i - 1] != '\\')
 		{
@@ -70,7 +82,7 @@ static char		*set_split_delimiter(char *input, char delimiter)
 	return (input);
 }
 
-static	void	divide_arguments(char	**args, char *input, int len)
+static	void	divide_arguments(char **args, char *input, int len)
 {
 	int		i;
 	int		j;
@@ -78,7 +90,7 @@ static	void	divide_arguments(char	**args, char *input, int len)
 
 	i = 0;
 	j = 0;
-	while(i < len)
+	while (i < len)
 	{
 		args[j] = ft_strdup(&input[i]);
 		if (!ft_strncmp(args[j], "\"\"", 3))
@@ -94,7 +106,7 @@ static	void	divide_arguments(char	**args, char *input, int len)
 		while (i < len && !input[i])
 			i++;
 		if (i >= len)
-			break;
+			break ;
 	}
 	args[j] = NULL;
 }
