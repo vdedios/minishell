@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 21:14:03 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/20 00:49:14 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,7 +295,7 @@ static short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
-static void		select_validator_err(t_shell *shell,
+static int		select_validator_err(t_shell *shell,
 		char *line, char separator, int it)
 {
 	if (separator == ';')
@@ -310,32 +310,41 @@ static void		select_validator_err(t_shell *shell,
 		print_errors(shell, "syntax error near unexpected token `<<'", NULL);
 	else if (separator == '<')
 		print_errors(shell, "syntax error near unexpected token `<'", NULL);
-	exit(2);
+	shell->stat_loc = 2;
+	return (1);
 }
 
-static void		validator(t_shell *shell, char *line, char separator, int it)
+static int		validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
 	char	*tmp;
 
 	if (prior_to_token(line, it - 1, line[it]))
-		select_validator_err(shell, line, separator, it);
+	{
+		if (select_validator_err(shell, line, separator, it))
+			return (1);
+		return (0);
+	}
 	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
 		print_errors(shell,
 				"line 1: syntax error: unexpected end of file", NULL);
-		exit(2);
+		shell->stat_loc = 2;
+		return (1);
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
 		tmp = ft_strjoin(key, ": ambiguous redirect");
 		print_errors(shell, tmp, NULL);
+		//free(key);
 		free(tmp);
-		exit(1);
+		shell->stat_loc = 1;
+		return (1);
 	}
+	return (0);
 }
 
-static void		validate_input(t_shell *shell, char *line)
+static int		validate_input(t_shell *shell, char *line)
 {
 	int it;
 
@@ -346,8 +355,12 @@ static void		validate_input(t_shell *shell, char *line)
 			line[it] == '<' ||
 			line[it] == '>' ||
 			line[it] == ';')
-			validator(shell, line, line[it], it);
+		{
+			if (validator(shell, line, line[it], it))
+				return (0);
+		}
 	}
+	return (1);
 	if (line[it + 1] == '<' || line[it + 1] == '>')
 		it++;
 }
@@ -419,21 +432,23 @@ static void		minishell(char *line, t_shell *shell)
 	tmp = inject_spaces(line);
 	free(line);
 	line = tmp;
-	validate_input(shell, line);
-	shell->instructions = ft_split_non_escaped(line, ';');
-	free(line);
-	while (shell->instructions[it])
+	if (validate_input(shell, line))
 	{
-		jt = 0;
-		shell->stat_loc = 0;
-		while (is_space(shell->instructions[it][jt]))
-			jt++;
-		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt],
-				'|');
-		handle_commands(shell);
-		shell->previous_stat = shell->stat_loc;
-		free(shell->commands);
-		it++;
+		shell->instructions = ft_split_non_escaped(line, ';');
+		free(line);
+		while (shell->instructions[it])
+		{
+			jt = 0;
+			shell->stat_loc = 0;
+			while (is_space(shell->instructions[it][jt]))
+				jt++;
+			shell->commands = ft_split_non_escaped(&shell->instructions[it][jt],
+					'|');
+			handle_commands(shell);
+			shell->previous_stat = shell->stat_loc;
+			free(shell->commands);
+			it++;
+		}
 	}
 }
 
