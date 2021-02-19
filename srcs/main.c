@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/18 22:29:00 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 21:14:03 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 static char		*last_arg(char *arg)
 {
-	char 	*buff;
+	char	*buff;
 
 	if ((buff = ft_strchr(arg, '=')))
 		*buff = '\0';
 	return (ft_strjoin("_=", arg));
 }
 
-static char 	*update_last_arg(char **args)
+static char		*update_last_arg(char **args)
 {
 	int len;
 
@@ -46,7 +46,7 @@ static	char	*append_pwd(char *value)
 		while (*aux)
 		{
 			if (!(aux = ft_strchr(aux, ':')))
-				break;
+				break ;
 			if (*(aux + 1) == ':')
 				return (ft_strjoin(value, cwd));
 			aux++;
@@ -55,7 +55,7 @@ static	char	*append_pwd(char *value)
 	return (ft_strdup(value));
 }
 
-char 			*get_path(t_shell *shell, int *binary)
+char			*get_path(t_shell *shell, int *binary)
 {
 	char *value;
 	char *tmp;
@@ -78,15 +78,14 @@ char 			*get_path(t_shell *shell, int *binary)
 		clean_matrix(paths);
 		free(paths);
 	}
-	
 	return (path);
 }
 
-int 			run_command(t_shell *shell)
+int				run_command(t_shell *shell)
 {
-	pid_t pid;
-	int binary;
-	char *path;
+	pid_t	pid;
+	int		binary;
+	char	*path;
 	char	*tmp;
 
 	binary = 0;
@@ -111,10 +110,10 @@ int 			run_command(t_shell *shell)
 	return (1);
 }
 
-static char 	*to_lower(char *input)
+static char		*to_lower(char *input)
 {
-	size_t it;
-	char *output;
+	size_t	it;
+	char	*output;
 	char	*tmp;
 
 	tmp = ft_strdup(input);
@@ -154,15 +153,15 @@ static int		exec_env(t_shell *shell)
 		ft_export(shell, tmp);
 		free(tmp);
 		free(lower);
-		return(ft_env(shell, shell->env));
+		return (ft_env(shell, shell->env));
 	}
 	free(lower);
 	return (0);
 }
 
-int 			check_builtin(t_shell *shell)
+int				check_builtin(t_shell *shell)
 {
-	int 	ret;
+	int		ret;
 	char	*tmp;
 
 	ret = 0;
@@ -178,15 +177,15 @@ int 			check_builtin(t_shell *shell)
 		ret = exec_export(shell);
 	else if (ft_strcmp(*shell->args, "unset"))
 		ret = ft_unset(shell);
-	else 
+	else
 		return (exec_env(shell));
-	tmp =  update_last_arg(shell->args); 
+	tmp = update_last_arg(shell->args);
 	ft_export(shell, tmp);
 	free(tmp);
 	return (ret);
 }
 
-static void 	handle_commands(t_shell *shell)
+static void		handle_commands(t_shell *shell)
 {
 	char	*tmp;
 
@@ -238,11 +237,11 @@ static short	contain_spaces(char *value)
 	return (0);
 }
 
-static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
+static char		*post_to_token(t_shell *shell, char *line, int it, char token)
 {
 	char	*key;
 	char	*value;
-	char 	*tmp;
+	char	*tmp;
 
 	if (token == '>')
 		while (line[it++])
@@ -263,7 +262,7 @@ static char 	*post_to_token(t_shell *shell, char *line, int it, char token)
 	return (NULL);
 }
 
-static short 	prior_to_token(char *line, int it, char token)
+static short	prior_to_token(char *line, int it, char token)
 {
 	int aux_it;
 
@@ -274,12 +273,14 @@ static short 	prior_to_token(char *line, int it, char token)
 		return (aux_it > 0 && aux_it != it &&
 				(line[aux_it] == '>' ||
 				line[aux_it] == '<'));
-	else 
+	else
+	{
 		return (aux_it < 1 ||
 				line[aux_it] == ';' ||
 				line[aux_it] == '>' ||
 				line[aux_it] == '<' ||
 				line[aux_it] == '|');
+	}
 	return (0);
 }
 
@@ -294,9 +295,9 @@ static short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
-static void		select_validator_err(t_shell *shell, char *line, char separator, int it)
+static void		select_validator_err(t_shell *shell,
+		char *line, char separator, int it)
 {
-
 	if (separator == ';')
 		print_errors(shell, "syntax error near unexpected token `;'", NULL);
 	else if (separator == '|')
@@ -312,7 +313,7 @@ static void		select_validator_err(t_shell *shell, char *line, char separator, in
 	exit(2);
 }
 
-static void 	validator(t_shell *shell, char *line, char separator, int it)
+static void		validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
 	char	*tmp;
@@ -321,19 +322,20 @@ static void 	validator(t_shell *shell, char *line, char separator, int it)
 		select_validator_err(shell, line, separator, it);
 	else if (separator == '|' && nothing_after_pipe(&line[it + 1], it))
 	{
-		print_errors(shell, "line 1: syntax error: unexpected end of file", NULL);
+		print_errors(shell,
+				"line 1: syntax error: unexpected end of file", NULL);
 		exit(2);
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
-		tmp = ft_strjoin(key,": ambiguous redirect" );
+		tmp = ft_strjoin(key, ": ambiguous redirect");
 		print_errors(shell, tmp, NULL);
 		free(tmp);
 		exit(1);
 	}
 }
 
-static void 	validate_input(t_shell *shell, char *line)
+static void		validate_input(t_shell *shell, char *line)
 {
 	int it;
 
@@ -407,9 +409,9 @@ static char		*inject_spaces(char *line)
 	return (output);
 }
 
-static void 	minishell(char *line, t_shell *shell)
+static void		minishell(char *line, t_shell *shell)
 {
-	size_t 	it;
+	size_t	it;
 	size_t	jt;
 	char	*tmp;
 
@@ -418,7 +420,7 @@ static void 	minishell(char *line, t_shell *shell)
 	free(line);
 	line = tmp;
 	validate_input(shell, line);
-	shell->instructions = ft_split_non_escaped(line, ';');	
+	shell->instructions = ft_split_non_escaped(line, ';');
 	free(line);
 	while (shell->instructions[it])
 	{
@@ -426,7 +428,8 @@ static void 	minishell(char *line, t_shell *shell)
 		shell->stat_loc = 0;
 		while (is_space(shell->instructions[it][jt]))
 			jt++;
-		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt], '|');
+		shell->commands = ft_split_non_escaped(&shell->instructions[it][jt],
+				'|');
 		handle_commands(shell);
 		shell->previous_stat = shell->stat_loc;
 		free(shell->commands);
@@ -434,7 +437,7 @@ static void 	minishell(char *line, t_shell *shell)
 	}
 }
 
-static void 	read_input(char *line, t_shell *shell)
+static void		read_input(char *line, t_shell *shell)
 {
 	char *tmp;
 
@@ -470,7 +473,7 @@ static void		exec_argument(char *line, t_shell *shell)
 	free(shell->instructions);
 }
 
-int 			main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
 	char	*line;
