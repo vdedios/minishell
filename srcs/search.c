@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 22:57:51 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 19:16:37 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static	void	to_lower(char *input)
 	}
 }
 
-char	*search_binary_in_pwd(t_shell *shell)
+char			*search_binary_in_pwd(t_shell *shell)
 {
 	struct stat		s;
 	struct dirent	*direntp;
@@ -67,7 +67,7 @@ static	void	command_exists(t_shell *shell, char *bin_name
 	}
 }
 
-static	short	binary_path_exists(char *path,char *bin_name,
+static	short	binary_path_exists(char *path, char *bin_name,
 									int *binary, struct stat *s)
 {
 	DIR				*pdir;
@@ -95,7 +95,7 @@ static	short	binary_path_exists(char *path,char *bin_name,
 	return (0);
 }
 
-char	*search_binary(t_shell *shell, char **paths, int *binary)
+char			*search_binary(t_shell *shell, char **paths, int *binary)
 {
 	size_t			it;
 	struct stat		s;
@@ -113,7 +113,8 @@ char	*search_binary(t_shell *shell, char **paths, int *binary)
 		free(bin_name);
 		return (ft_strdup(shell->binary));
 	}
-	if (lstat(bin_name, &s) != -1 || !ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
+	if (lstat(bin_name, &s) != -1 ||
+			!ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
 	{
 		shell->stat_loc = 127;
 		print_errors(shell, " No such file or directory", shell->binary);

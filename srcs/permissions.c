@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:53:16 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 22:57:20 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 18:51:49 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	set_err_message(t_shell *shell, char *err, int code, char *arg)
 	exit(shell->stat_loc);
 }
 
-void	check_permissions(t_shell *shell, char *path, int *binary)
+void		check_permissions(t_shell *shell, char *path, int *binary)
 {
 	struct stat s;
 
@@ -31,7 +31,7 @@ void	check_permissions(t_shell *shell, char *path, int *binary)
 			set_err_message(shell, " Permission denied", 126, path);
 		else if (*binary == 0 &&
 				(!(s.st_mode & S_IXUSR) || !(s.st_mode & S_IRUSR)))
-				set_err_message(shell, " Permission denied", 126, path);
+			set_err_message(shell, " Permission denied", 126, path);
 	}
 	else
 		set_err_message(shell, " command not found", 127, shell->binary);

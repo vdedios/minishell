@@ -1,10 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/19 19:00:26 by migferna          #+#    #+#             */
+/*   Updated: 2021/02/19 19:00:41 by migferna         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/*
-** Given a string, check previous number of backslashes. If
-** number is even it returns 1 meaning previous backslashes
-** do not hace effect on it. If it's odd, it returns 0.
-*/
+#include "minishell.h"
 
 short	check_prev_backslashes(char *str, int i)
 {

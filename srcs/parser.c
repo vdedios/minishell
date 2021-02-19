@@ -6,21 +6,15 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:18:25 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/15 18:07:53 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 18:50:58 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** ft_split_args behaves similarly like ft_split with space
-** as a delimiter, and only considering it as valid if not 
-** escaped.
-*/
-
-static	void	delete_residual_backslash(char **args)
+static void		delete_residual_backslash(char **args)
 {
-	char *tmp;
+	char	*tmp;
 	size_t	it;
 
 	it = -1;
@@ -53,6 +47,6 @@ char			*parse_input(char *input)
 
 	tmp = parse_quotes(input);
 	buff = parse_backslash(tmp, 0);
-	free (tmp);
+	free(tmp);
 	return (buff);
 }

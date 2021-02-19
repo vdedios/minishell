@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 20:20:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/17 20:07:47 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/19 18:54:01 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,11 @@ static void		get_args_and_binary(t_shell *shell, int it)
 	shell->args = get_args(tmp);
 	free(tmp);
 	shell->binary = ft_strdup(shell->args[0]);
-
 }
 
 static void		exec_arg(t_shell *shell)
 {
-	int	binary;
+	int		binary;
 	char	*path;
 
 	binary = 0;
@@ -78,7 +77,7 @@ void			find_pipes(t_shell *shell)
 		free(shell->args);
 		free(shell->binary);
 	}
-	while ( (aux_pid = wait(&shell->stat_loc)) > 0)
+	while ((aux_pid = wait(&shell->stat_loc)) > 0)
 		if (aux_pid < pid)
 			shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
