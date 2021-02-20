@@ -172,7 +172,7 @@ int				check_builtin(t_shell *shell)
 	else if (ft_strcmp(shell->args[0], "cd"))
 		ret = ft_cd(shell);
 	else if (ft_strcmp(*shell->args, "pwd"))
-		ret = ft_pwd();
+		ret = ft_pwd(shell);
 	else if (ft_strcmp(*shell->args, "export"))
 		ret = exec_export(shell);
 	else if (ft_strcmp(*shell->args, "unset"))

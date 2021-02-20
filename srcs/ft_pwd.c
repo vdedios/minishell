@@ -12,11 +12,16 @@
 
 #include "minishell.h"
 
-int		ft_pwd(void)
+int		ft_pwd(t_shell *shell)
 {
 	char	cwd[1024];
+	char		*tmp;
 
-	if (getcwd(cwd, sizeof(cwd)))
+	tmp = get_env(shell, "PWD");
+	if (is_symbolic_link(tmp))
+		ft_putendl_fd(tmp, 1);
+	else if (getcwd(cwd, sizeof(cwd)))
 		ft_putendl_fd(cwd, 1);
+	free(tmp);
 	return (1);
 }

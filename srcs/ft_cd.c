@@ -73,15 +73,24 @@ static void		update_olddir(t_shell *shell, char *oldpwd)
 	free(tmp);
 }
 
+int	is_symbolic_link(char *path)
+{
+    struct stat buf;
+    int 		x;
+
+    x = lstat(path, &buf);
+    return (S_ISLNK(buf.st_mode));
+}
+
 static void		change_dir(char *path, t_shell *shell)
 {
 	char		*oldcwd;
 	char		*cwd;
 	char		*tmp;
 
+
 	oldcwd = ft_calloc(1024, sizeof(oldcwd));
 	cwd = ft_calloc(1024, sizeof(cwd));
-	getcwd(oldcwd, 1024);
 	if (chdir(path) == 0)
 	{
 		getcwd(cwd, 1024);
@@ -91,7 +100,10 @@ static void		change_dir(char *path, t_shell *shell)
 		else
 			update_olddir(shell, "");
 		free(tmp);
-		set_path(cwd, "PWD=", shell);
+		if (is_symbolic_link(path))
+			set_path(path, "PWD=", shell);
+		else
+			set_path(cwd, "PWD=", shell);
 	}
 	else
 		change_dir_error(shell, path);
