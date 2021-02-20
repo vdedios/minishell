@@ -89,13 +89,14 @@ char	*set_opening_braces(char *str);
 char	*set_closing_braces(char *str);
 
 /*
-** Builtin functions
+** Builtin functions and utils
 */
 
 int		ft_env(t_shell *shell, char **args);
 int		ft_cd(t_shell *shell);
+int		is_symbolic_link(char *path);
 int		ft_echo(char **args);
-int		ft_pwd();
+int		ft_pwd(t_shell *shell);
 int		ft_unset(t_shell *shell);
 void	ft_exit(t_shell *shell);
 int 	ft_export(t_shell *shell, char *last_arg);

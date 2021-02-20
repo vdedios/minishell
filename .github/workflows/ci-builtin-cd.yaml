@@ -2,7 +2,7 @@ name: Minishell
 
 on:
   push: 
-   branches: [fix/builtin-cd]
+   branches: [fix/builtin-cd, fix/cd-/home]
 
 jobs:
   build:
