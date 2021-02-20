@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/20 00:49:14 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/20 01:20:07 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,11 +431,11 @@ static void		minishell(char *line, t_shell *shell)
 	it = 0;
 	tmp = inject_spaces(line);
 	free(line);
-	line = tmp;
+	line = ft_strdup(tmp);
+	free(tmp);
 	if (validate_input(shell, line))
 	{
 		shell->instructions = ft_split_non_escaped(line, ';');
-		free(line);
 		while (shell->instructions[it])
 		{
 			jt = 0;
@@ -450,6 +450,7 @@ static void		minishell(char *line, t_shell *shell)
 			it++;
 		}
 	}
+	free(line);
 }
 
 static void		read_input(char *line, t_shell *shell)
