@@ -63,7 +63,7 @@ int		find_redirections(t_shell *shell);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell);
-void	check_permissions(t_shell *shell, char *path, int *binary);
+int		check_permissions(t_shell *shell, char *path, int *binary);
 void	handle_shlvl(t_shell *shell);
 char	*get_path(t_shell *shell, int *binary);
 

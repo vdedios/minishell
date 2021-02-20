@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 19:16:37 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/21 00:06:57 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,10 @@ char			*search_binary_in_pwd(t_shell *shell)
 	}
 	shell->stat_loc = 127;
 	print_errors(shell, " No such file or directory", shell->binary);
-	exit(shell->stat_loc);
 	return (NULL);
 }
 
-static	void	command_exists(t_shell *shell, char *bin_name
+static int		command_exists(t_shell *shell, char *bin_name
 								, struct stat s)
 {
 	if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
@@ -62,9 +61,10 @@ static	void	command_exists(t_shell *shell, char *bin_name
 		{
 			shell->stat_loc = 127;
 			print_errors(shell, " command not found", shell->binary);
-			exit(shell->stat_loc);
+			return (0);
 		}
 	}
+	return (1);
 }
 
 static	short	binary_path_exists(char *path, char *bin_name,
@@ -109,17 +109,35 @@ char			*search_binary(t_shell *shell, char **paths, int *binary)
 			return (absolute_bin_path(paths[it], shell->binary));
 	if (stat(bin_name, &s) != -1)
 	{
-		command_exists(shell, bin_name, s);
-		free(bin_name);
-		return (ft_strdup(shell->binary));
+		if (command_exists(shell, bin_name, s))
+		{
+			free(bin_name);
+			return (ft_strdup(shell->binary));
+		}
+		else
+		{	
+			free(bin_name);
+			return (NULL);
+		}
 	}
-	if (lstat(bin_name, &s) != -1 ||
+	else if (lstat(bin_name, &s) != -1 ||
 			!ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
 	{
 		shell->stat_loc = 127;
 		print_errors(shell, " No such file or directory", shell->binary);
-		exit(shell->stat_loc);
+		return (NULL);
 	}
-	free(bin_name);
-	return (NULL);
+	else
+	{
+		if (command_exists(shell, bin_name, s))
+		{
+			free(bin_name);
+			return (ft_strdup(shell->binary));
+		}
+		else
+		{	
+			free(bin_name);
+			return (NULL);
+		}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/20 01:20:07 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/21 00:14:34 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,23 +90,28 @@ int				run_command(t_shell *shell)
 
 	binary = 0;
 	path = get_path(shell, &binary);
-	pid = fork();
-	if (pid == 0)
+	if (path)
 	{
-		check_permissions(shell, path, &binary);
-		execve(path, shell->args, shell->env);
-		exit(shell->stat_loc);
+		pid = fork();
+		if (pid == 0)
+		{
+			if (check_permissions(shell, path, &binary))
+			{
+				execve(path, shell->args, shell->env);
+				exit(shell->stat_loc);
+			}
+		}
+		signal(SIGINT, signal_handler_waiting);
+		waitpid(pid, &shell->stat_loc, 0);
+		if (WIFEXITED(shell->stat_loc))
+			shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+		if (shell->stat_loc == -1)
+			ft_putstr_fd("\n", 1);
+		tmp = update_last_arg(shell->args);
+		ft_export(shell, tmp);
+		free(tmp);
 	}
-	signal(SIGINT, signal_handler_waiting);
-	waitpid(pid, &shell->stat_loc, 0);
-	if (WIFEXITED(shell->stat_loc))
-		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
-	if (shell->stat_loc == -1)
-		ft_putstr_fd("\n", 1);
-	tmp = update_last_arg(shell->args);
-	ft_export(shell, tmp);
 	free(path);
-	free(tmp);
 	return (1);
 }
 
