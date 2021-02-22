@@ -67,8 +67,8 @@ static int		command_exists(t_shell *shell, char *bin_name
 	return (1);
 }
 
-static	short	binary_path_exists(char *path, char *bin_name,
-									int *binary, struct stat *s)
+static	short	binary_path_exists(t_shell *shell, char *path,
+									char *bin_name, struct stat *s)
 {
 	DIR				*pdir;
 	struct dirent	*direntp;
@@ -82,8 +82,7 @@ static	short	binary_path_exists(char *path, char *bin_name,
 		{
 			if (ft_strcmp(direntp->d_name, bin_name))
 			{
-				if (binary)
-					*binary = 1;
+				shell->is_binary = 1;
 				closedir(pdir);
 				free(bin_name);
 				return (1);
@@ -95,7 +94,7 @@ static	short	binary_path_exists(char *path, char *bin_name,
 	return (0);
 }
 
-char			*search_binary(t_shell *shell, char **paths, int *binary)
+char			*search_binary(t_shell *shell, char **paths)
 {
 	size_t			it;
 	struct stat		s;
@@ -105,7 +104,7 @@ char			*search_binary(t_shell *shell, char **paths, int *binary)
 	bin_name = ft_strdup(shell->args[0]);
 	to_lower(bin_name);
 	while (paths[++it])
-		if (binary_path_exists(paths[it], bin_name, binary, &s))
+		if (binary_path_exists(shell, paths[it], bin_name, &s))
 			return (absolute_bin_path(paths[it], shell->binary));
 	if (stat(bin_name, &s) != -1)
 	{

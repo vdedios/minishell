@@ -55,7 +55,7 @@ static	char	*append_pwd(char *value)
 	return (ft_strdup(value));
 }
 
-char			*get_path(t_shell *shell, int *binary)
+char			*get_path(t_shell *shell)
 {
 	char *value;
 	char *tmp;
@@ -72,7 +72,7 @@ char			*get_path(t_shell *shell, int *binary)
 	{
 		tmp = append_pwd(value);
 		paths = ft_split(tmp, ':');
-		path = search_binary(shell, paths, binary);
+		path = search_binary(shell, paths);
 		free(value);
 		free(tmp);
 		clean_matrix(paths);
@@ -84,22 +84,17 @@ char			*get_path(t_shell *shell, int *binary)
 int				run_command(t_shell *shell)
 {
 	pid_t	pid;
-	int		binary;
 	char	*path;
 	char	*tmp;
 
-	binary = 0;
-	path = get_path(shell, &binary);
+	shell->is_binary = 0;
+	path = get_path(shell);
 	if (path)
 	{
-		pid = fork();
-		if (pid == 0)
+		if ((pid = fork()) == 0 && check_permissions(shell, path))
 		{
-			if (check_permissions(shell, path, &binary))
-			{
-				execve(path, shell->args, shell->env);
-				exit(shell->stat_loc);
-			}
+			execve(path, shell->args, shell->env);
+			exit(shell->stat_loc);
 		}
 		signal(SIGINT, signal_handler_waiting);
 		waitpid(pid, &shell->stat_loc, 0);
@@ -152,7 +147,7 @@ static int		exec_env(t_shell *shell)
 	lower = to_lower(shell->args[0]);
 	if (ft_strcmp(lower, "env"))
 	{
-		path = get_path(shell, NULL);
+		path = get_path(shell);
 		tmp = ft_strjoin("_=", path);
 		free(path);
 		ft_export(shell, tmp);

@@ -25,16 +25,14 @@ static void		get_args_and_binary(t_shell *shell, int it)
 
 static void		exec_arg(t_shell *shell)
 {
-	int		binary;
 	char	*path;
 
-	binary = 0;
 	if (!check_builtin(shell))
 	{
-		path = get_path(shell, &binary);
+		path = get_path(shell);
 		if (path)
 		{
-			if (check_permissions(shell, path, &binary))
+			if (check_permissions(shell, path))
 				execve(path, shell->args, shell->env);
 		}
 	}

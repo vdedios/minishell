@@ -19,7 +19,7 @@ static int	set_err_message(t_shell *shell, char *err, int code, char *arg)
 	return (0);
 }
 
-int			check_permissions(t_shell *shell, char *path, int *binary)
+int			check_permissions(t_shell *shell, char *path)
 {
 	struct stat s;
 
@@ -27,9 +27,9 @@ int			check_permissions(t_shell *shell, char *path, int *binary)
 	{
 		if (s.st_mode & S_IFDIR)
 			return (set_err_message(shell, " is a directory", 126, shell->binary));
-		if (*binary == 1 && (!(s.st_mode & S_IXUSR)))
+		if (shell->is_binary == 1 && (!(s.st_mode & S_IXUSR)))
 			return (set_err_message(shell, " Permission denied", 126, path));
-		else if (*binary == 0 &&
+		else if (shell->is_binary == 0 &&
 				(!(s.st_mode & S_IXUSR) || !(s.st_mode & S_IRUSR)))
 			return (set_err_message(shell, " Permission denied", 126, path));
 		return (1);
