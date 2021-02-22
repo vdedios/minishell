@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:09:49 by migferna          #+#    #+#             */
-/*   Updated: 2020/09/12 10:10:14 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:34:09 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		ft_pwd(t_shell *shell)
 {
-	char	cwd[1024];
+	char		cwd[1024];
 	char		*tmp;
 
 	tmp = get_env(shell, "PWD");
