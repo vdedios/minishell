@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 15:19:08 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 17:15:31 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char			*search_binary(t_shell *shell, char **paths)
 			return (ft_strdup(shell->binary));
 		}
 		else
-		{	
+		{
 			free(bin_name);
 			return (NULL);
 		}
@@ -135,7 +135,7 @@ char			*search_binary(t_shell *shell, char **paths)
 			return (ft_strdup(shell->binary));
 		}
 		else
-		{	
+		{
 			free(bin_name);
 			return (NULL);
 		}
