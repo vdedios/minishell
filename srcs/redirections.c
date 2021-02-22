@@ -130,11 +130,9 @@ static int		validate_count(t_shell *shell
 	if (cont_output > 2)
 	{
 		if (cont_output < 4)
-			msg = ft_strjoin("syntax error near unexpected token `",
-					">'");
+			msg = ft_strjoin("syntax error near unexpected token `", ">'");
 		else
-			msg = ft_strjoin("syntax error near unexpected token `",
-					">>'");
+			msg = ft_strjoin("syntax error near unexpected token `", ">>'");
 		print_errors(shell, msg, NULL);
 		free(msg);
 		shell->stat_loc = 2;
@@ -142,8 +140,7 @@ static int		validate_count(t_shell *shell
 	}
 	if (cont_input > 2)
 	{
-		msg = ft_strjoin("syntax error near unexpected token `",
-				"<<'");
+		msg = ft_strjoin("syntax error near unexpected token `", "<<'");
 		print_errors(shell, msg, NULL);
 		free(msg);
 		shell->stat_loc = 2;
@@ -183,7 +180,6 @@ int				find_redirections(t_shell *shell)
 	int		fd;
 
 	it = 0;
-	fd = -5;
 	while (shell->args[it])
 	{
 		if (validator(shell, shell->args[it]))
