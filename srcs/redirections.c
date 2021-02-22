@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 19:01:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 12:32:30 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 15:27:40 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ static int		validate_count(t_shell *shell
 			msg = ft_strjoin("syntax error near unexpected token `",
 					">>'");
 		print_errors(shell, msg, NULL);
+		free(msg);
 		shell->stat_loc = 2;
 		return (0);
 	}
@@ -144,6 +145,7 @@ static int		validate_count(t_shell *shell
 		msg = ft_strjoin("syntax error near unexpected token `",
 				"<<'");
 		print_errors(shell, msg, NULL);
+		free(msg);
 		shell->stat_loc = 2;
 		return (0);
 	}

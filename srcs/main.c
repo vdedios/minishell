@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/21 00:14:34 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 16:15:45 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,7 +341,7 @@ static int		validator(t_shell *shell, char *line, char separator, int it)
 	{
 		tmp = ft_strjoin(key, ": ambiguous redirect");
 		print_errors(shell, tmp, NULL);
-		//free(key);
+		free(key);
 		free(tmp);
 		shell->stat_loc = 1;
 		return (1);
@@ -476,8 +476,15 @@ static void		read_input(char *line, t_shell *shell)
 		}
 		tmp = parse_input(line);
 		free(line);
-		line = tmp;
-		minishell(line, shell);
+		if (tmp)
+		{
+			line = tmp;
+			minishell(line, shell);
+		}
+		else
+		{
+			shell->stat_loc = 2;
+		}
 	}
 }
 
@@ -487,8 +494,15 @@ static void		exec_argument(char *line, t_shell *shell)
 
 	tmp = parse_input(line);
 	free(line);
-	line = tmp;
-	minishell(line, shell);
+	if (tmp)
+	{
+		line = tmp;
+		minishell(line, shell);
+	}
+	else
+	{
+		shell->stat_loc = 2;
+	}
 	clean_env(shell);
 	clean_matrix(shell->instructions);
 	free(shell->instructions);

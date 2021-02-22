@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 20:20:41 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/21 00:11:01 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 12:45:40 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,11 @@ static void		exec_arg(t_shell *shell)
 	if (!check_builtin(shell))
 	{
 		path = get_path(shell, &binary);
-		check_permissions(shell, path, &binary);
-		execve(path, shell->args, shell->env);
+		if (path)
+		{
+			if (check_permissions(shell, path, &binary))
+				execve(path, shell->args, shell->env);
+		}
 	}
 }
 
