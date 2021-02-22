@@ -61,7 +61,9 @@ void			find_pipes(t_shell *shell)
 	pid_t	aux_pid;
 	int		p[2];
 	int		it;
+	int		fd_stdin;
 
+	fd_stdin = dup(0);
 	it = -1;
 	while (shell->commands[++it])
 	{
@@ -69,7 +71,7 @@ void			find_pipes(t_shell *shell)
 		pipe(p);
 		pid = child_pipe(shell, it, p);
 		close(p[1]);
-		dup2(p[0], 0);
+		dup2(p[0], fd_stdin);
 		if (shell->commands[it])
 			waitpid(pid, &shell->stat_loc, WNOHANG);
 		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
