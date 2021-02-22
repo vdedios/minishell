@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 18:54:38 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 16:14:32 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 17:14:46 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,6 @@ char		*parse_quotes(char *str)
 		if (!(str_in_quotes = remove_quotes(str, &opening, &closing)))
 		{
 			free(buff);
-			//shell->stat_loc = 2;
 			return (NULL);
 		}
 		tmp = join_parsed_str(str, str_in_quotes, buff, opening);
