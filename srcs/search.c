@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static	void	to_lower(char *input)
+static	void	to_lower_in(char *input)
 {
 	size_t	it;
 
@@ -113,7 +113,7 @@ char			*search_binary(t_shell *shell, char **paths)
 
 	it = -1;
 	bin_name = ft_strdup(shell->args[0]);
-	to_lower(bin_name);
+	to_lower_in(bin_name);
 	while (paths[++it])
 		if (binary_path_exists(shell, paths[it], bin_name, &s))
 			return (absolute_bin_path(paths[it], shell->binary));
