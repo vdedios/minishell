@@ -6,12 +6,11 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:14:51 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/18 18:54:49 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:33:51 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static short	has_valid_name_unset(char *str)
 {

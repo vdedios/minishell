@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 16:15:45 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:25:19 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int				check_builtin(t_shell *shell)
 	return (ret);
 }
 
-void		    minishell(char *line, t_shell *shell)
+void			minishell(char *line, t_shell *shell)
 {
 	size_t	it;
 	size_t	jt;
