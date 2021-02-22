@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:53:16 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 18:27:17 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 18:30:14 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,5 @@ int			check_permissions(t_shell *shell, char *path)
 	}
 	else
 		return (set_err_message(shell, " command not found", 127
-					, shell->binary));
+								, shell->binary));
 }
