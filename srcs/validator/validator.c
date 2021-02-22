@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   validator.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 16:15:45 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:18:56 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static int		validator(t_shell *shell, char *line, char separator, int it)
 {
@@ -39,7 +38,7 @@ static int		validator(t_shell *shell, char *line, char separator, int it)
 	return (0);
 }
 
-int		        validate_input(t_shell *shell, char *line)
+int				validate_input(t_shell *shell, char *line)
 {
 	int it;
 

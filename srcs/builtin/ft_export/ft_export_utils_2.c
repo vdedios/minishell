@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_export.c                                        :+:      :+:    :+:   */
+/*   ft_export_utils_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/18 19:45:32 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 20:16:29 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:32:56 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int     ft_strncmp_equal(char *str1, char *str2, int len)
+int		ft_strncmp_equal(char *str1, char *str2, int len)
 {
 	while (*str1 && *str2 && len)
 	{

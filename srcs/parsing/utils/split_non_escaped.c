@@ -6,12 +6,11 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 19:29:44 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 19:30:50 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:28:20 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static	short	not_escaped(char *str, int i)
 {

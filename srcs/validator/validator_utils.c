@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   validator_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:18:23 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 16:15:45 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 22:26:43 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char		*post_to_token(t_shell *shell, char *line, int it, char token)
 	return (NULL);
 }
 
-short	prior_to_token(char *line, int it, char token)
+short		prior_to_token(char *line, int it, char token)
 {
 	int aux_it;
 
@@ -59,7 +59,7 @@ short	prior_to_token(char *line, int it, char token)
 	return (0);
 }
 
-short	nothing_after_pipe(char *line, int it)
+short		nothing_after_pipe(char *line, int it)
 {
 	if ((it - 2) >= 0 && *(line - 2) == '\\')
 		return (0);
@@ -70,7 +70,7 @@ short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
-int		get_validator_err(t_shell *shell,
+int			get_validator_err(t_shell *shell,
 		char *line, char separator, int it)
 {
 	if (separator == ';')
