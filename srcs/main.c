@@ -24,7 +24,7 @@ static void		read_input(char *line, t_shell *shell)
 		if (get_next_line(&line) == 0)
 		{
 			ft_putendl_fd("exit", 1);
-			clean_shell(shell);
+			clean_env(shell);
 			free(line);
 			exit(0);
 		}
