@@ -55,31 +55,41 @@ static int		child_pipe(t_shell *shell, int it, int p[2])
 	return (pid);
 }
 
+static void		wait_child(t_shell *shell, int *p, pid_t pid, int it)
+{
+	close(p[1]);
+	dup2(p[0], 0);
+	if (shell->commands[it])
+		waitpid(pid, &shell->stat_loc, WNOHANG);
+	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+	close(p[0]);
+	clean_matrix(shell->args);
+	free(shell->args);
+	free(shell->binary);
+}
+
 void			find_pipes(t_shell *shell)
 {
 	pid_t	pid;
 	pid_t	aux_pid;
 	int		p[2];
 	int		it;
+	int		std[2];
 
 	it = -1;
+	std[0] = dup(0);
+	std[1] = dup(1);
 	while (shell->commands[++it])
 	{
 		get_args_and_binary(shell, it);
 		pipe(p);
 		pid = child_pipe(shell, it, p);
-		close(p[1]);
-		dup2(p[0], 0);
-		if (shell->commands[it])
-			waitpid(pid, &shell->stat_loc, WNOHANG);
-		shell->stat_loc = WEXITSTATUS(shell->stat_loc);
-		close(p[0]);
-		clean_matrix(shell->args);
-		free(shell->args);
-		free(shell->binary);
+		wait_child(shell, p, pid, it);
 	}
 	while ((aux_pid = wait(&shell->stat_loc)) > 0)
 		if (aux_pid < pid)
 			shell->stat_loc = WEXITSTATUS(shell->stat_loc);
 	shell->stat_loc = WEXITSTATUS(shell->stat_loc);
+	dup2(std[0], 0);
+	dup2(std[1], 1);
 }
