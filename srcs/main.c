@@ -295,7 +295,7 @@ static short	nothing_after_pipe(char *line, int it)
 	return (0);
 }
 
-static int		select_validator_err(t_shell *shell,
+static int		get_validator_err(t_shell *shell,
 		char *line, char separator, int it)
 {
 	if (separator == ';')
@@ -314,14 +314,23 @@ static int		select_validator_err(t_shell *shell,
 	return (1);
 }
 
+static void		safe_print_err(t_shell *shell, char *key)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(key, ": ambiguous redirect");
+	print_errors(shell, tmp, NULL);
+	free(tmp);
+	free(key);
+}
+
 static int		validator(t_shell *shell, char *line, char separator, int it)
 {
 	char	*key;
-	char	*tmp;
 
 	if (prior_to_token(line, it - 1, line[it]))
 	{
-		if (select_validator_err(shell, line, separator, it))
+		if (get_validator_err(shell, line, separator, it))
 			return (1);
 		return (0);
 	}
@@ -334,10 +343,7 @@ static int		validator(t_shell *shell, char *line, char separator, int it)
 	}
 	else if ((key = post_to_token(shell, line, it, line[it])))
 	{
-		tmp = ft_strjoin(key, ": ambiguous redirect");
-		print_errors(shell, tmp, NULL);
-		free(key);
-		free(tmp);
+		safe_print_err(shell, key);
 		shell->stat_loc = 1;
 		return (1);
 	}
@@ -422,17 +428,25 @@ static char		*inject_spaces(char *line)
 	return (output);
 }
 
+static char		*safe_allocate(char *line, char *(*f)(char *))
+{
+	char	*tmp;
+	char	*aux;
+
+	tmp = f(line);
+	free(line);
+	aux = ft_strdup(tmp);
+	free(tmp);
+	return (aux);
+}
+
 static void		minishell(char *line, t_shell *shell)
 {
 	size_t	it;
 	size_t	jt;
-	char	*tmp;
 
 	it = 0;
-	tmp = inject_spaces(line);
-	free(line);
-	line = ft_strdup(tmp);
-	free(tmp);
+	line = safe_allocate(line, inject_spaces);
 	if (validate_input(shell, line))
 	{
 		shell->instructions = ft_split_non_escaped(line, ';');
@@ -477,9 +491,7 @@ static void		read_input(char *line, t_shell *shell)
 			minishell(line, shell);
 		}
 		else
-		{
 			shell->stat_loc = 2;
-		}
 	}
 }
 
