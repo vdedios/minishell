@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:53:16 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/22 18:21:55 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 18:27:17 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ int			check_permissions(t_shell *shell, char *path)
 	if (stat(path, &s) != -1)
 	{
 		if (s.st_mode & S_IFDIR)
-			return (set_err_message(shell, " is a directory", 126
-						, shell->binary));
+		{
+			return (set_err_message(shell, " is a directory", 126,
+						shell->binary));
+		}
 		if (shell->is_binary == 1 && (!(s.st_mode & S_IXUSR)))
 			return (set_err_message(shell, " Permission denied", 126, path));
 		else if (shell->is_binary == 0 &&
