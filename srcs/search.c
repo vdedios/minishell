@@ -94,6 +94,17 @@ static	short	binary_path_exists(t_shell *shell, char *path,
 	return (0);
 }
 
+static	char	*check_command(t_shell *shell, char *bin_name, struct stat s)
+{
+	if (command_exists(shell, bin_name, s))
+	{
+		free(bin_name);
+		return (ft_strdup(shell->binary));
+	}
+	free(bin_name);
+	return (NULL);
+}
+
 char			*search_binary(t_shell *shell, char **paths)
 {
 	size_t			it;
@@ -107,18 +118,7 @@ char			*search_binary(t_shell *shell, char **paths)
 		if (binary_path_exists(shell, paths[it], bin_name, &s))
 			return (absolute_bin_path(paths[it], shell->binary));
 	if (stat(bin_name, &s) != -1)
-	{
-		if (command_exists(shell, bin_name, s))
-		{
-			free(bin_name);
-			return (ft_strdup(shell->binary));
-		}
-		else
-		{
-			free(bin_name);
-			return (NULL);
-		}
-	}
+		return (check_command(shell, bin_name, s));
 	else if (lstat(bin_name, &s) != -1 ||
 			!ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
 	{
@@ -128,16 +128,5 @@ char			*search_binary(t_shell *shell, char **paths)
 		return (NULL);
 	}
 	else
-	{
-		if (command_exists(shell, bin_name, s))
-		{
-			free(bin_name);
-			return (ft_strdup(shell->binary));
-		}
-		else
-		{
-			free(bin_name);
-			return (NULL);
-		}
-	}
+		return (check_command(shell, bin_name, s));
 }

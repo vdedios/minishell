@@ -26,7 +26,8 @@ int			check_permissions(t_shell *shell, char *path)
 	if (stat(path, &s) != -1)
 	{
 		if (s.st_mode & S_IFDIR)
-			return (set_err_message(shell, " is a directory", 126, shell->binary));
+			return (set_err_message(shell, " is a directory", 126
+					, shell->binary));
 		if (shell->is_binary == 1 && (!(s.st_mode & S_IXUSR)))
 			return (set_err_message(shell, " Permission denied", 126, path));
 		else if (shell->is_binary == 0 &&
@@ -35,5 +36,6 @@ int			check_permissions(t_shell *shell, char *path)
 		return (1);
 	}
 	else
-		return (set_err_message(shell, " command not found", 127, shell->binary));
+		return (set_err_message(shell, " command not found", 127
+					, shell->binary));
 }
