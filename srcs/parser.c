@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 11:18:25 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 18:50:58 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 16:07:56 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,12 @@ char			*parse_input(char *input)
 	char *buff;
 
 	tmp = parse_quotes(input);
-	buff = parse_backslash(tmp, 0);
-	free(tmp);
+	if (tmp)
+	{
+		buff = parse_backslash(tmp, 0);
+		free(tmp);
+	}
+	else
+		buff = NULL;
 	return (buff);
 }

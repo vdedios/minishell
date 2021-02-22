@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 10:08:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 19:16:37 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 17:15:31 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,10 @@ char			*search_binary_in_pwd(t_shell *shell)
 	}
 	shell->stat_loc = 127;
 	print_errors(shell, " No such file or directory", shell->binary);
-	exit(shell->stat_loc);
 	return (NULL);
 }
 
-static	void	command_exists(t_shell *shell, char *bin_name
+static int		command_exists(t_shell *shell, char *bin_name
 								, struct stat s)
 {
 	if (S_ISDIR(s.st_mode) || S_ISREG(s.st_mode))
@@ -62,13 +61,14 @@ static	void	command_exists(t_shell *shell, char *bin_name
 		{
 			shell->stat_loc = 127;
 			print_errors(shell, " command not found", shell->binary);
-			exit(shell->stat_loc);
+			return (0);
 		}
 	}
+	return (1);
 }
 
-static	short	binary_path_exists(char *path, char *bin_name,
-									int *binary, struct stat *s)
+static	short	binary_path_exists(t_shell *shell, char *path,
+									char *bin_name, struct stat *s)
 {
 	DIR				*pdir;
 	struct dirent	*direntp;
@@ -82,8 +82,7 @@ static	short	binary_path_exists(char *path, char *bin_name,
 		{
 			if (ft_strcmp(direntp->d_name, bin_name))
 			{
-				if (binary)
-					*binary = 1;
+				shell->is_binary = 1;
 				closedir(pdir);
 				free(bin_name);
 				return (1);
@@ -95,7 +94,18 @@ static	short	binary_path_exists(char *path, char *bin_name,
 	return (0);
 }
 
-char			*search_binary(t_shell *shell, char **paths, int *binary)
+static	char	*check_command(t_shell *shell, char *bin_name, struct stat s)
+{
+	if (command_exists(shell, bin_name, s))
+	{
+		free(bin_name);
+		return (ft_strdup(shell->binary));
+	}
+	free(bin_name);
+	return (NULL);
+}
+
+char			*search_binary(t_shell *shell, char **paths)
 {
 	size_t			it;
 	struct stat		s;
@@ -105,21 +115,18 @@ char			*search_binary(t_shell *shell, char **paths, int *binary)
 	bin_name = ft_strdup(shell->args[0]);
 	to_lower(bin_name);
 	while (paths[++it])
-		if (binary_path_exists(paths[it], bin_name, binary, &s))
+		if (binary_path_exists(shell, paths[it], bin_name, &s))
 			return (absolute_bin_path(paths[it], shell->binary));
 	if (stat(bin_name, &s) != -1)
-	{
-		command_exists(shell, bin_name, s);
-		free(bin_name);
-		return (ft_strdup(shell->binary));
-	}
-	if (lstat(bin_name, &s) != -1 ||
+		return (check_command(shell, bin_name, s));
+	else if (lstat(bin_name, &s) != -1 ||
 			!ft_strncmp(bin_name, "./", 2) || ft_strchr(shell->args[0], '/'))
 	{
 		shell->stat_loc = 127;
 		print_errors(shell, " No such file or directory", shell->binary);
-		exit(shell->stat_loc);
+		free(bin_name);
+		return (NULL);
 	}
-	free(bin_name);
-	return (NULL);
+	else
+		return (check_command(shell, bin_name, s));
 }

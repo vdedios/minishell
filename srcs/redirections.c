@@ -6,7 +6,7 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 19:01:20 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 19:13:33 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 15:27:40 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ static int		redirections_input(t_shell *shell, size_t it)
 	return (fd);
 }
 
-static void		validate_count(t_shell *shell
+static int		validate_count(t_shell *shell
 							, size_t cont_output, size_t cont_input)
 {
 	char	*msg;
@@ -130,24 +130,26 @@ static void		validate_count(t_shell *shell
 	if (cont_output > 2)
 	{
 		if (cont_output < 4)
-			msg = ft_strjoin("syntax error near unexpected token `",
-					">'");
+			msg = ft_strjoin("syntax error near unexpected token `", ">'");
 		else
-			msg = ft_strjoin("syntax error near unexpected token `",
-					">>'");
+			msg = ft_strjoin("syntax error near unexpected token `", ">>'");
 		print_errors(shell, msg, NULL);
-		exit(2);
+		free(msg);
+		shell->stat_loc = 2;
+		return (0);
 	}
 	if (cont_input > 2)
 	{
-		msg = ft_strjoin("syntax error near unexpected token `",
-				"<<'");
+		msg = ft_strjoin("syntax error near unexpected token `", "<<'");
 		print_errors(shell, msg, NULL);
-		exit(2);
+		free(msg);
+		shell->stat_loc = 2;
+		return (0);
 	}
+	return (1);
 }
 
-static void		validator(t_shell *shell, char *str)
+static int		validator(t_shell *shell, char *str)
 {
 	size_t	cont_output;
 	size_t	cont_input;
@@ -167,7 +169,9 @@ static void		validator(t_shell *shell, char *str)
 		}
 		str++;
 	}
-	validate_count(shell, cont_output, cont_input);
+	if (!(validate_count(shell, cont_output, cont_input)))
+		return (0);
+	return (1);
 }
 
 int				find_redirections(t_shell *shell)
@@ -176,18 +180,24 @@ int				find_redirections(t_shell *shell)
 	int		fd;
 
 	it = 0;
-	fd = -5;
 	while (shell->args[it])
 	{
-		validator(shell, shell->args[it]);
-		if (ft_strcmp(shell->args[it], ">"))
-			fd = redirections_output(shell, it);
-		else if (ft_strcmp(shell->args[it], "<"))
-			fd = redirections_input(shell, it);
-		else if (ft_strcmp(shell->args[it], ">>"))
-			fd = redirections_append(shell, it);
+		if (validator(shell, shell->args[it]))
+		{
+			if (ft_strcmp(shell->args[it], ">"))
+				fd = redirections_output(shell, it);
+			else if (ft_strcmp(shell->args[it], "<"))
+				fd = redirections_input(shell, it);
+			else if (ft_strcmp(shell->args[it], ">>"))
+				fd = redirections_append(shell, it);
+			else
+				it++;
+		}
 		else
-			it++;
+		{
+			fd = -1;
+			break ;
+		}
 	}
 	close(fd);
 	return (fd);

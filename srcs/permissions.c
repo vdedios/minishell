@@ -6,33 +6,38 @@
 /*   By: migferna <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/07 12:53:16 by migferna          #+#    #+#             */
-/*   Updated: 2021/02/19 18:51:49 by migferna         ###   ########.fr       */
+/*   Updated: 2021/02/22 18:30:14 by migferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	set_err_message(t_shell *shell, char *err, int code, char *arg)
+static int	set_err_message(t_shell *shell, char *err, int code, char *arg)
 {
 	shell->stat_loc = code;
 	print_errors(shell, err, arg);
-	exit(shell->stat_loc);
+	return (0);
 }
 
-void		check_permissions(t_shell *shell, char *path, int *binary)
+int			check_permissions(t_shell *shell, char *path)
 {
 	struct stat s;
 
 	if (stat(path, &s) != -1)
 	{
 		if (s.st_mode & S_IFDIR)
-			set_err_message(shell, " is a directory", 126, shell->binary);
-		if (*binary == 1 && (!(s.st_mode & S_IXUSR)))
-			set_err_message(shell, " Permission denied", 126, path);
-		else if (*binary == 0 &&
+		{
+			return (set_err_message(shell, " is a directory", 126,
+						shell->binary));
+		}
+		if (shell->is_binary == 1 && (!(s.st_mode & S_IXUSR)))
+			return (set_err_message(shell, " Permission denied", 126, path));
+		else if (shell->is_binary == 0 &&
 				(!(s.st_mode & S_IXUSR) || !(s.st_mode & S_IRUSR)))
-			set_err_message(shell, " Permission denied", 126, path);
+			return (set_err_message(shell, " Permission denied", 126, path));
+		return (1);
 	}
 	else
-		set_err_message(shell, " command not found", 127, shell->binary);
+		return (set_err_message(shell, " command not found", 127
+								, shell->binary));
 }

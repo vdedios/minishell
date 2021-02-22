@@ -25,6 +25,7 @@ typedef struct	s_shell{
 	char		**env;
 	int			stat_loc;
 	int			previous_stat;
+	int			is_binary;
 }				t_shell;
 
 
@@ -56,16 +57,16 @@ char	**add_env(char **variable, char **env, int n);
 char	**realloc_matrix(char **envp, int additional);
 char	**get_args(char *input);
 char	*get_env(t_shell *env, char *arg);
-char	*search_binary(t_shell *shell, char **paths, int *binary);
+char	*search_binary(t_shell *shell, char **paths);
 char	*search_binary_in_pwd(t_shell *shell);
 int		get_next_line(char **line);
 int		find_redirections(t_shell *shell);
 void	find_pipes(t_shell *shell);
 int		check_builtin(t_shell *shell);
 int		run_command(t_shell *shell);
-void	check_permissions(t_shell *shell, char *path, int *binary);
+int		check_permissions(t_shell *shell, char *path);
 void	handle_shlvl(t_shell *shell);
-char	*get_path(t_shell *shell, int *binary);
+char	*get_path(t_shell *shell);
 
 /*
 ** Parsing functions
