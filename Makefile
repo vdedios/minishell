@@ -22,21 +22,26 @@ SRC_FILES =		main.c \
 				builtin/ft_exit.c \
 				parsing/backslash.c \
 				parsing/braces.c \
-				parsing/embrace_expansion.c \
-				parsing/expansion.c \
+				parsing/expansion/embrace_expansion.c \
+				parsing/expansion/expansion.c \
+				parsing/expansion/expansion_utils.c \
 				parsing/parser.c \
-				parsing/quotes.c \
-				parsing/quotes_utils.c \
-				parsing/split_non_escaped.c \
+				parsing/quotes/quotes.c \
+				parsing/quotes/quotes_utils.c \
+				parsing/quotes/quotes_utils_2.c \
+				parsing/utils/split_non_escaped.c \
+				parsing/utils/split_non_escaped_utils.c \
 				validator/validator.c \
 				validator/validator_utils.c \
+				redirections/redirections.c \
+				redirections/redirections_utils.c \
+				search/search.c \
+				search/search_utils.c \
 				get_next_line.c \
-				search.c \
 				signals.c \
 				errors.c \
 				clean.c \
 				utils.c \
-				redirections.c \
 				pipes.c \
 				permissions.c \
 				shlvl.c \
@@ -57,6 +62,11 @@ $(OBJ_DIR):
 				@mkdir -p $(OBJ_DIR)/builtin/ft_cd
 				@mkdir -p $(OBJ_DIR)/builtin/ft_export
 				@mkdir -p $(OBJ_DIR)/parsing
+				@mkdir -p $(OBJ_DIR)/parsing/expansion
+				@mkdir -p $(OBJ_DIR)/parsing/quotes
+				@mkdir -p $(OBJ_DIR)/parsing/utils
+				@mkdir -p $(OBJ_DIR)/search
+				@mkdir -p $(OBJ_DIR)/redirections
 				@mkdir -p $(OBJ_DIR)/validator
 
 $(NAME): 		$(OBJS)

@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-static	void	to_lower_in(char *input)
-{
-	size_t	it;
-
-	it = -1;
-	while (input[++it])
-	{
-		input[it] = ft_tolower(input[it]);
-	}
-}
-
 char			*search_binary_in_pwd(t_shell *shell)
 {
 	struct stat		s;

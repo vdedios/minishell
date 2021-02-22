@@ -67,6 +67,7 @@ int		run_command(t_shell *shell);
 int		check_permissions(t_shell *shell, char *path);
 void	handle_shlvl(t_shell *shell);
 char	*get_path(t_shell *shell);
+void	to_lower_in(char *input);
 
 /*
 ** Parsing functions
@@ -88,6 +89,42 @@ char	**ft_split_non_escaped(char *input, char delimiter);
 void	delete_environment(t_shell *shell, char *key, char **env);
 char	*set_opening_braces(char *str);
 char	*set_closing_braces(char *str);
+
+/*
+** Expansion-utils functions
+*/
+
+int		count_keys_to_scape(char *str, char key);
+char	*escape_char(char *str, char key);
+char	*append_expanded(char *buff, char *env);
+void	escape_char_safe(char **value, char c);
+
+/*
+** Quotes-utils functions
+*/
+
+char	*alloc_in_quotes(char *str, char quote, int opening, int closing);
+void	handle_quote_error(char quote);
+char	*get_string_between_quotes(char *str, int opening,
+										int closing, char quote);
+char	*find_closing_quote(char *str, char quote
+								, int opening, int *closing);
+
+/*
+** Split_non_escaped-utils functions
+*/
+
+short	is_whitespace(char c);
+short	is_delimiter(char input, char delimiter);
+int		count_args(char *input, char delimiter);
+
+/*
+** Redirections-utils functions
+*/
+
+int		redirections_append(t_shell *shell, size_t it);
+int		redirections_output(t_shell *shell, size_t it);
+short	redirection_exists(t_shell *shell, size_t it);
 
 /*
 ** Builtin functions
