@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include "minishell.h"
 
 char	*add_char(char *line, char buffer)
 {
@@ -49,6 +50,8 @@ int		get_next_line(char **line)
 	{
 		if ((output = read(0, &buffer, 1)) == -1)
 			return (-1);
+		if (!output)
+			ft_putstr_fd("\033[J", 1);
 		if (buffer == '\n')
 			break ;
 		if (!(*line = add_char(*line, buffer)))
