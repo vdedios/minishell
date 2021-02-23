@@ -45,7 +45,7 @@ int		get_next_line(char **line)
 	**line = '\0';
 	buffer = 0;
 	output = 1;
-	while (output)
+	while (output || buffer)
 	{
 		if ((output = read(0, &buffer, 1)) == -1)
 			return (-1);
