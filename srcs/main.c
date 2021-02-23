@@ -15,11 +15,14 @@
 static void		read_input(char *line, t_shell *shell)
 {
 	char *tmp;
+	int	 fd_out;
 
+	fd_out = dup(1);
 	signal(SIGQUIT, signal_handler_running);
 	while (1)
 	{
 		signal(SIGINT, signal_handler_running);
+		dup2(fd_out, 1);
 		ft_putstr_fd("$:\\>", 1);
 		if (get_next_line(&line) == 0)
 		{
@@ -37,7 +40,6 @@ static void		read_input(char *line, t_shell *shell)
 		}
 		else
 			shell->stat_loc = 2;
-		clean_instructions(shell);
 	}
 }
 

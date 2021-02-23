@@ -116,6 +116,5 @@ int				find_redirections(t_shell *shell)
 			break ;
 		}
 	}
-	close(fd);
 	return (fd);
 }

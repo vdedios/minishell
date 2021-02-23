@@ -50,11 +50,11 @@ int		get_next_line(char **line)
 	{
 		if ((output = read(0, &buffer, 1)) == -1)
 			return (-1);
-		if (!output)
-			ft_putstr_fd("\033[J", 1);
 		if (buffer == '\n')
 			break ;
-		if (!(*line = add_char(*line, buffer)))
+		if (!output)
+			ft_putstr_fd("\033[J", 1);
+		else if (!(*line = add_char(*line, buffer)))
 			return (-1);
 	}
 	return (output);
