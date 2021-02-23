@@ -31,6 +31,12 @@ void	clean_env(t_shell *shell)
 	shell->env = NULL;
 }
 
+void	clean_instructions(t_shell *shell)
+{
+	clean_matrix(shell->instructions);
+	free(shell->instructions);
+}
+
 void	clean_commands(t_shell *shell)
 {
 	clean_matrix(shell->commands);
