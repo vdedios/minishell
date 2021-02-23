@@ -34,6 +34,7 @@ typedef struct	s_shell{
 */
 
 void	clean_matrix(char **matrix);
+void	clean_instructions(t_shell *shell);
 void	clean_commands(t_shell *shell);
 void	clean_env(t_shell *shell);
 void	clean_shell(t_shell *shell);

@@ -37,6 +37,7 @@ static void		read_input(char *line, t_shell *shell)
 		}
 		else
 			shell->stat_loc = 2;
+		clean_instructions(shell);
 	}
 }
 
