@@ -19,10 +19,10 @@
 
 typedef struct	s_shell{
 	char		**instructions;
+	char		*binary;
 	char		**commands;
 	char		**args;
 	char		**env;
-	char		*binary;
 	char		*prompt;
 	int			stat_loc;
 	int			previous_stat;

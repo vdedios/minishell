@@ -35,8 +35,7 @@ static void		read_input(char *line, t_shell *shell)
 	{
 		signal(SIGINT, signal_handler_running);
 		dup2(fd_out, 1);
-	//	ft_putstr_fd(shell->prompt, 1);
-		ft_putstr_fd(">", 1);
+		ft_putstr_fd(shell->prompt, 1);
 		if (get_next_line(&line) == 0)
 		{
 			ft_putendl_fd("exit", 1);
@@ -88,7 +87,7 @@ int				main(int argc, char **argv, char **envp)
 	shell.instructions = NULL;
 	shell.prompt = NULL;
 	shell.env = ft_strdup_matrix(envp);
-	//updt_prompt(&shell);
+	updt_prompt(&shell);
 	getcwd(curr_pwd, 1024);
 	tmp = ft_strjoin("PWD=", curr_pwd);
 	ft_export(&shell, tmp);
