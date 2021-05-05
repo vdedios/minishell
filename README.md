@@ -66,12 +66,12 @@ This project has been exhaustively tested with [@cacharle](https://github.com/ca
 If you find any issue we suggest that you open a PR with the fix :)
 
 ## Contributors
-<div style="display: flex; flex-direction: row; align-items: center;">
-    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 10px;  margin-right: 10px">
+<div>
+    <div style="margin-right: 10px">
       <img src="https://cdn.intra.42.fr/users/small_vde-dios.jpg" style="border-radius: 50%; width: 140px">
       <a href="https://github.com/vdedios">@vdedios</a>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 10px">
+    <div style="margin-bottom: 10px">
       <img src="https://avatars.githubusercontent.com/u/559575?v=4" style="border-radius: 50%; width: 140px">
       <a href="https://github.com/migferna42">@migferna42</a>
     </div>
