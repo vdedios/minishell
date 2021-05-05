@@ -66,13 +66,17 @@ This project has been exhaustively tested with [@cacharle](https://github.com/ca
 If you find any issue we suggest that you open a PR with the fix :)
 
 ## Contributors
-<div>
-    <div style="margin-right: 10px">
-      <img src="https://cdn.intra.42.fr/users/small_vde-dios.jpg" style="border-radius: 50%; width: 140px">
-      <a href="https://github.com/vdedios">@vdedios</a>
-    </div>
-    <div style="margin-bottom: 10px">
-      <img src="https://avatars.githubusercontent.com/u/559575?v=4" style="border-radius: 50%; width: 140px">
-      <a href="https://github.com/migferna42">@migferna42</a>
-    </div>
-</div>
+<table>
+    <tr>
+        <td>
+          <img src="https://cdn.intra.42.fr/users/small_vde-dios.jpg" width=140px>
+          </br>
+          <a href="https://github.com/vdedios">@vdedios</a>
+        </td>
+        <td>
+            <img src="https://avatars.githubusercontent.com/u/559575?v=4" width=140px>
+            </br>
+            <a href="https://github.com/migferna42">@migferna42</a>
+        </td>
+    </tr>
+</table>
