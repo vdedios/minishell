@@ -4,7 +4,7 @@
 
 Minishell is a simple and lightweight shell, coded from scratch, which emulates several functionalities from `bash`.
 
-![demo](minishell_demo)
+![demo](minishell_demo.gif)
 ## Project specifications
 
 This shell covers the following functionalities:
