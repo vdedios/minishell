@@ -16,7 +16,8 @@ void	signal_handler_running(int sig)
 {
 	if (sig == SIGINT)
 	{
-		ft_putstr_fd("\033[2D\033[J\n$:\\>", 1);
+		//ft_putstr_fd("\033[2D\033[J\n", 1);
+		ft_putstr_fd("\033[H\033[J\n", 1);
 		signal(SIGINT, signal_handler_running);
 	}
 	else if (sig == SIGQUIT)

@@ -15,13 +15,22 @@
 static void		updt_prompt(t_shell *shell)
 {
 	char	curr_pwd[1024];
-	char	*tmp;
 
 	getcwd(curr_pwd, 1024);
-	tmp = ft_strjoin(curr_pwd, ":~$  ");
 	free(shell->prompt);
-	shell->prompt = ft_strjoin("→ ", tmp);
-	free(tmp);
+	shell->prompt = ft_strdup(curr_pwd);
+}
+
+static void		put_prompt(t_shell *shell)
+{
+	updt_prompt(shell);
+	ft_putstr_fd("\033[0;33m", 1);
+	ft_putstr_fd("→ ", 1);
+	ft_putstr_fd("\033[0;36m", 1);
+	ft_putstr_fd(shell->prompt, 1);
+	ft_putstr_fd("\033[0;34m", 1);
+	ft_putstr_fd(":~$ ", 1);
+	ft_putstr_fd("\033[0m", 1);
 }
 
 static void		read_input(char *line, t_shell *shell)
@@ -35,7 +44,7 @@ static void		read_input(char *line, t_shell *shell)
 	{
 		signal(SIGINT, signal_handler_running);
 		dup2(fd_out, 1);
-		ft_putstr_fd(shell->prompt, 1);
+		put_prompt(shell);
 		if (get_next_line(&line) == 0)
 		{
 			ft_putendl_fd("exit", 1);
@@ -87,7 +96,6 @@ int				main(int argc, char **argv, char **envp)
 	shell.instructions = NULL;
 	shell.prompt = NULL;
 	shell.env = ft_strdup_matrix(envp);
-	updt_prompt(&shell);
 	getcwd(curr_pwd, 1024);
 	tmp = ft_strjoin("PWD=", curr_pwd);
 	ft_export(&shell, tmp);
