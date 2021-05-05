@@ -61,10 +61,6 @@ This project has been exhaustively tested with [@cacharle](https://github.com/ca
     cd <MINISHELL>
     minishell_test
 ```
-## Support
-
-If you find any issue we suggest that you open a PR with the fix :)
-
 ## Contributors
 <table>
     <tr>
@@ -80,3 +76,7 @@ If you find any issue we suggest that you open a PR with the fix :)
         </td>
     </tr>
 </table>
+
+## Support
+
+If you find any issue we suggest that you open a PR with the fix 🙂
